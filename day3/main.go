@@ -12,6 +12,11 @@ type Point struct {
 	Y int
 }
 
+type Intersection struct {
+	Point Point
+	Steps int
+}
+
 type Vector struct {
 	Direction string
 	Magnitude int
@@ -22,15 +27,59 @@ var DeltaY = map[string]int{"R": 0, "L": 0, "D": -1, "U": 1}
 
 func main() {
 	wireLines, _ := file.ReadFile("./day3/input.txt")
-	fmt.Println(Run(wireLines))
+	minIntersectionDistance, minStepDistance := Run(wireLines)
+	fmt.Printf("Intersection Distance: %d\nStep Distance: %d", minIntersectionDistance, minStepDistance)
 }
 
-func Run(wireLines []string) int {
+func Run(wireLines []string) (minIntersectionDistance int, minStepDistance int) {
 	var wires [][]string
 	for _, wireLine := range wireLines {
 		wires = append(wires, strings.Split(wireLine, ","))
 	}
-	return getMinimumDistanceIntersection(wires)
+	intersections := getIntersections(wires)
+	return getMinimumDistance(intersections)
+}
+
+func getMinimumDistance(intersections []Intersection) (int, int) {
+	minIntersectionDistance := int(^uint(0) >> 1)
+	minStepDistance := int(^uint(0) >> 1)
+	for _, intersection := range intersections {
+		minIntersectionDistance = Min(minIntersectionDistance, getManhattanDistance(intersection.Point))
+		minStepDistance = Min(minStepDistance, intersection.Steps)
+	}
+	return minIntersectionDistance, minStepDistance
+}
+
+func getIntersections(wires [][]string) (intersections []Intersection) {
+	grid := make(map[Point]map[int]int)
+
+	for wireID, wire := range wires {
+		x := 0
+		y := 0
+		steps := 0
+		for _, vectorString := range wire {
+			vector := NewVector(vectorString)
+			for i := 0; i < vector.Magnitude; i++ {
+				x += DeltaX[vector.Direction]
+				y += DeltaY[vector.Direction]
+				steps++
+				point := Point{x, y}
+
+				if pointMap, ok := grid[point]; ok {
+					for otherWireID, otherWireSteps := range pointMap {
+						if otherWireID != wireID {
+							intersections = append(intersections, Intersection{point, otherWireSteps + steps})
+						}
+					}
+				}
+
+				grid[point] = make(map[int]int)
+				grid[point][wireID] = steps
+			}
+		}
+	}
+
+	return intersections
 }
 
 func NewVector(value string) Vector {
@@ -40,42 +89,8 @@ func NewVector(value string) Vector {
 	return Vector{direction, magnitude}
 }
 
-func getMinimumDistanceIntersection(wires [][]string) int {
-	intersections := getIntersections(wires)
-	minDistance := int(^uint(0) >> 1)
-	for _, intersection := range intersections {
-		minDistance = Min(minDistance, getManhattanDistance(intersection))
-	}
-	return minDistance
-}
-
 func getManhattanDistance(point Point) int {
 	return Abs(point.X) + Abs(point.Y)
-}
-
-func getIntersections(wires [][]string) (intersections []Point) {
-	grid := make(map[Point]int)
-
-	for wireId, wire := range wires {
-		x := 0
-		y := 0
-		for _, vectorString := range wire {
-			vector := NewVector(vectorString)
-			for i := 0; i < vector.Magnitude; i++ {
-				x += DeltaX[vector.Direction]
-				y += DeltaY[vector.Direction]
-				point := Point{x, y}
-
-				if _, ok := grid[point]; ok && grid[point] != wireId {
-					intersections = append(intersections, point)
-				} else {
-					grid[point] = wireId
-				}
-			}
-		}
-	}
-
-	return intersections
 }
 
 func Abs(x int) int {
