@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/file"
+	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
+	"github.com/wrporter/advent-of-code-2019/internal/common/file"
 )
 
 func main() {
@@ -21,5 +21,5 @@ func calculateRequiredFuel(moduleMasses []int) int {
 }
 
 func calculateModuleFuel(mass int) int {
-	return mass / 3 - 2
+	return mass/3 - 2
 }
