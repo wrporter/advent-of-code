@@ -21,5 +21,15 @@ func calculateRequiredFuel(moduleMasses []int) int {
 }
 
 func calculateModuleFuel(mass int) int {
+	nextMass := calculateFuel(mass)
+	totalFuel := 0
+	for nextMass > 0 {
+		totalFuel += nextMass
+		nextMass = calculateFuel(nextMass)
+	}
+	return totalFuel
+}
+
+func calculateFuel(mass int) int {
 	return mass/3 - 2
 }
