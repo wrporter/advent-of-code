@@ -7,35 +7,53 @@ import (
 	"strings"
 )
 
-type OpType int
+type OpCode int
 
 const (
-	Add      OpType = 1
-	Multiply OpType = 2
+	Add      OpCode = 1
+	Multiply OpCode = 2
+	Exit     OpCode = 99
 )
 
-type Op struct {
-	Type          OpType
-	InputOneIndex int
-	InputTwoIndex int
-	OutputIndex   int
+type Instruction struct {
+	OpCode     OpCode
+	Parameters []int
 }
 
 func main() {
 	codeLines, _ := file.ReadFile("./day2/input.txt")
 	program, _ := conversion.ToInts(strings.Split(codeLines[0], ","))
 	//program := []int{1,9,10,3,2,3,11,0,99,30,40,50}
-	restoreGravityAssist(program)
-	fmt.Println(Solve(program))
+	fmt.Println(SolvePart1(copyArray(program)))
+	fmt.Println(SolvePart2(copyArray(program), 19690720))
 }
 
-func Solve(program []int) []int {
+func SolvePart2(program []int, target int) int {
+	for noun := 0; noun <= 99; noun++ {
+		for verb := 0; verb <= 99; verb++ {
+			candidate := copyArray(program)
+			load(candidate, noun, verb)
+			Execute(candidate)
+			if candidate[0] == target {
+				return 100*noun + verb
+			}
+		}
+	}
+	return -1
+}
+
+func SolvePart1(program []int) []int {
+	load(program, 12, 2)
+	return Execute(program)
+}
+
+func Execute(program []int) []int {
 	index := 0
 	opcode := program[index]
 
 	for opcode != 99 {
-		op := parseOp(program, index)
-		executeOp(program, op)
+		op := parseInstruction(program, index)
+		execute(program, op)
 
 		index += 4
 		opcode = program[index]
@@ -44,30 +62,38 @@ func Solve(program []int) []int {
 	return program
 }
 
-func restoreGravityAssist(program []int) {
-	program[1] = 12
-	program[2] = 2
+func load(program []int, noun int, verb int) {
+	program[1] = noun
+	program[2] = verb
 }
 
-func executeOp(program []int, op Op) {
+func execute(program []int, instruction Instruction) {
 	result := 0
-	value1 := program[op.InputOneIndex]
-	value2 := program[op.InputTwoIndex]
+	value1 := program[instruction.Parameters[0]]
+	value2 := program[instruction.Parameters[1]]
 
-	if op.Type == Add {
+	if instruction.OpCode == Add {
 		result = value1 + value2
-	} else if op.Type == Multiply {
+	} else if instruction.OpCode == Multiply {
 		result = value1 * value2
 	}
 
-	program[op.OutputIndex] = result
+	program[instruction.Parameters[2]] = result
 }
 
-func parseOp(program []int, index int) Op {
-	return Op{
-		OpType(program[index]),
-		program[index+1],
-		program[index+2],
-		program[index+3],
+func parseInstruction(program []int, index int) Instruction {
+	return Instruction{
+		OpCode(program[index]),
+		[]int{
+			program[index+1],
+			program[index+2],
+			program[index+3],
+		},
 	}
+}
+
+func copyArray(array []int) []int {
+	cpy := make([]int, len(array))
+	copy(cpy, array)
+	return cpy
 }
