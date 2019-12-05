@@ -1,36 +1,32 @@
 package computer
 
-type Code int
-type OpCode struct {
-	Code          Code
-	NumParameters int
-}
-
+type OpCode int
 type Intcode struct {
 	OpCode         OpCode
+	NumParameters  int
 	ParameterModes []ParameterMode
 }
 
 const (
-	Add         Code = 1
-	Multiply    Code = 2
-	Input       Code = 3
-	Output      Code = 4
-	JumpIfTrue  Code = 5
-	JumpIfFalse Code = 6
-	LessThan    Code = 7
-	Equals      Code = 8
-	Exit        Code = 99
+	Add         OpCode = 1
+	Multiply    OpCode = 2
+	Input       OpCode = 3
+	Output      OpCode = 4
+	JumpIfTrue  OpCode = 5
+	JumpIfFalse OpCode = 6
+	LessThan    OpCode = 7
+	Equals      OpCode = 8
+	Exit        OpCode = 99
 )
 
-var OpCodes = map[Code]OpCode{
-	Add:         {Add, 3},
-	Multiply:    {Multiply, 3},
-	Input:       {Input, 1},
-	Output:      {Output, 1},
-	JumpIfTrue:  {JumpIfTrue, 2},
-	JumpIfFalse: {JumpIfFalse, 2},
-	LessThan:    {LessThan, 3},
-	Equals:      {Equals, 3},
-	Exit:        {Exit, 0},
+var OpCodeNumParameters = map[OpCode]int{
+	Add:         3,
+	Multiply:    3,
+	Input:       1,
+	Output:      1,
+	JumpIfTrue:  2,
+	JumpIfFalse: 2,
+	LessThan:    3,
+	Equals:      3,
+	Exit:        0,
 }

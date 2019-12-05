@@ -16,16 +16,16 @@ func parseIntcode(intcode int) Intcode {
 	intcodeString := strconv.Itoa(intcode)
 
 	opCodeSpace := getOpCodeSpace(intcodeString)
-	code := Code(convert.StringToInt(intcodeString[opCodeSpace:]))
-	opCode := OpCodes[code]
+	opCode := OpCode(convert.StringToInt(intcodeString[opCodeSpace:]))
+	numParameters := OpCodeNumParameters[opCode]
 
 	parameterModeCodes := convert.Reverse(intcodeString[:opCodeSpace])
-	parameterModes := make([]ParameterMode, opCode.NumParameters)
+	parameterModes := make([]ParameterMode, numParameters)
 	for i := 0; i < len(parameterModeCodes); i++ {
 		parameterModes[i] = ParameterMode(convert.RuneToInt(parameterModeCodes[i]))
 	}
 
-	return Intcode{opCode, parameterModes}
+	return Intcode{opCode, numParameters, parameterModes}
 }
 
 func getOpCodeSpace(intcode string) int {

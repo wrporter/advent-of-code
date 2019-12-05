@@ -12,7 +12,7 @@ type InstructionResult struct {
 
 type InstructionHandler func(program []int, instruction Instruction, input int) (result *InstructionResult)
 
-var InstructionHandlers = map[Code]InstructionHandler{
+var InstructionHandlers = map[OpCode]InstructionHandler{
 	Add: func(program []int, instruction Instruction, input int) (result *InstructionResult) {
 		value1 := getValue(program, instruction, 0)
 		value2 := getValue(program, instruction, 1)
@@ -86,7 +86,7 @@ func NewInstructionResult(nextAddress int, output []int) *InstructionResult {
 }
 
 func jumpAddress(instruction Instruction) int {
-	return instruction.Address + instruction.Intcode.OpCode.NumParameters + 1
+	return instruction.Address + instruction.Intcode.NumParameters + 1
 }
 
 func getValue(program []int, instruction Instruction, parameter int) int {

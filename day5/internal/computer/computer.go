@@ -10,7 +10,7 @@ func (c *Computer) Run(program []int, input int) (output []int) {
 	address := 0
 	instruction := ParseInstruction(program, address)
 
-	for instruction.Intcode.OpCode.Code != Exit {
+	for instruction.Intcode.OpCode != Exit {
 		result := execute(program, instruction, input)
 		output = append(output, result.Output...)
 		address = result.NextAddress
@@ -22,5 +22,5 @@ func (c *Computer) Run(program []int, input int) (output []int) {
 }
 
 func execute(program []int, instruction Instruction, input int) (result *InstructionResult) {
-	return InstructionHandlers[instruction.Intcode.OpCode.Code](program, instruction, input)
+	return InstructionHandlers[instruction.Intcode.OpCode](program, instruction, input)
 }
