@@ -8,7 +8,8 @@ import (
 
 func main() {
 	orbits, _ := file.ReadFile("./day6/input.txt")
-	//orbits := []string{"B)C", "C)D", "D)E", "E)F", "B)G", "G)H", "D)I", "E)J", "J)K", "COM)B", "K)L"}
-	orbitMap := orbit.New()
-	fmt.Println(orbitMap.Count(orbits))
+	//orbits := []string{"COM)B", "B)C", "C)D", "D)E", "E)F", "B)G", "G)H", "D)I", "E)J", "J)K", "K)L", "K)YOU", "I)SAN"}
+	orbitFactory := orbit.New()
+	orbitMap := orbitFactory.Generate(orbits)
+	fmt.Println(orbitFactory.Distance(orbitMap.Tree, orbit.You, orbit.Santa))
 }
