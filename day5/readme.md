@@ -93,3 +93,7 @@ This time, when the TEST diagnostic program runs its input instruction to get th
 What is the diagnostic code for system ID 5?
 
 Although it hasn't changed, you can still get your puzzle input.
+
+Your puzzle answer was `10428568`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
