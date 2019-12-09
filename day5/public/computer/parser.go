@@ -1,7 +1,7 @@
 package computer
 
 import (
-	"github.com/wrporter/advent-of-code-2019/day5/internal/convert"
+	"github.com/wrporter/advent-of-code-2019/day5/public/convert"
 	"strconv"
 )
 

@@ -1,17 +1,22 @@
 package computer
 
+import "github.com/wrporter/advent-of-code-2019/internal/common/arrays"
+
 type Computer struct{}
 
 func New() *Computer {
 	return &Computer{}
 }
 
-func (c *Computer) Run(program []int, input int) (output []int) {
+func (c *Computer) Run(program []int, input []int) (output []int) {
 	address := 0
 	instruction := ParseInstruction(program, address)
 
 	for instruction.Intcode.OpCode != Exit {
 		result := execute(program, instruction, input)
+		if result.ReadInput {
+			_, input = arrays.Poll(input)
+		}
 		output = append(output, result.Output...)
 		address = result.NextAddress
 
@@ -21,6 +26,6 @@ func (c *Computer) Run(program []int, input int) (output []int) {
 	return output
 }
 
-func execute(program []int, instruction Instruction, input int) (result *InstructionResult) {
+func execute(program []int, instruction Instruction, input []int) (result *InstructionResult) {
 	return InstructionHandlers[instruction.Intcode.OpCode](program, instruction, input)
 }
