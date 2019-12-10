@@ -1,13 +1,23 @@
 package image
 
 import (
+	"fmt"
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
 	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"strings"
 )
 
 type Image struct {
 	Layers [][][]int
+	Width  int
+	Height int
 }
+
+const (
+	White       = 0
+	Black       = 1
+	Transparent = 2
+)
 
 func New(data string, width int, height int) *Image {
 	var layers [][][]int
@@ -29,14 +39,14 @@ func New(data string, width int, height int) *Image {
 		}
 	}
 
-	return &Image{layers}
+	return &Image{layers, width, height}
 }
 
-func (i *Image) Validate() int {
+func (img *Image) Validate() int {
 	minZeroes := math.MaxInt
 	result := 0
 
-	for _, layer := range i.Layers {
+	for _, layer := range img.Layers {
 		counts := map[int]int{
 			0: 0,
 			1: 0,
@@ -58,4 +68,36 @@ func (i *Image) Validate() int {
 	}
 
 	return result
+}
+
+func (img *Image) Decode() [][]int {
+	result := make([][]int, img.Height)
+
+	for h := 0; h < img.Height; h++ {
+		row := make([]int, img.Width)
+		for w := 0; w < img.Width; w++ {
+			color := Transparent
+			for i := 0; i < len(img.Layers) && color == Transparent; i++ {
+				color = img.Layers[i][h][w]
+			}
+			row[w] = color
+		}
+		result[h] = row
+	}
+
+	return result
+}
+
+func Print(image [][]int) {
+	for _, row := range image {
+		line := make([]string, len(row))
+		for col, value := range row {
+			if value == Black {
+				line[col] = "X"
+			} else {
+				line[col] = " "
+			}
+		}
+		fmt.Println(strings.Join(line, ""))
+	}
 }
