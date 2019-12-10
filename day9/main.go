@@ -16,7 +16,7 @@ func main() {
 	//memory := []int{104, 1125899906842624, 99}
 	cpu := computer.New()
 	program := computer.NewProgram(memory)
-	program.Input <- 1
+	program.Input <- 2
 	go cpu.RunProgram(program)
 
 	var actualOutput []int
