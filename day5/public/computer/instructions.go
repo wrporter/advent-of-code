@@ -15,20 +15,19 @@ var InstructionHandlers = map[OpCode]InstructionHandler{
 	Add: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value1 := getValue(program, instruction, 0)
 		value2 := getValue(program, instruction, 1)
-		writeAddress := program.Memory[instruction.Address+3]
+		writeAddress := program.getAddress(instruction, 2)
 		program.Memory[writeAddress] = value1 + value2
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	Multiply: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value1 := getValue(program, instruction, 0)
 		value2 := getValue(program, instruction, 1)
-		writeAddress := program.Memory[instruction.Address+3]
+		writeAddress := program.getAddress(instruction, 2)
 		program.Memory[writeAddress] = value1 * value2
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	Input: func(program *Program, instruction Instruction) (result *InstructionResult) {
-		//address := program.Memory[instruction.Address+1]
-		address := getAddress(program, instruction.Address+1, instruction.Intcode.ParameterModes[0])
+		address := program.getAddress(instruction, 0)
 		program.Memory[address] = <-program.Input
 		return NewInstructionResult(instruction.nextAddress())
 	},
@@ -40,24 +39,23 @@ var InstructionHandlers = map[OpCode]InstructionHandler{
 	JumpIfTrue: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value := getValue(program, instruction, 0)
 		if value != 0 {
-			writeValue := getValue(program, instruction, 1)
-			return NewInstructionResult(writeValue)
+			jumpAddress := getValue(program, instruction, 1)
+			return NewInstructionResult(jumpAddress)
 		}
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	JumpIfFalse: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value := getValue(program, instruction, 0)
 		if value == 0 {
-			writeValue := getValue(program, instruction, 1)
-			return NewInstructionResult(writeValue)
+			jumpAddress := getValue(program, instruction, 1)
+			return NewInstructionResult(jumpAddress)
 		}
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	LessThan: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value1 := getValue(program, instruction, 0)
 		value2 := getValue(program, instruction, 1)
-		//writeAddress := getAddress(program, instruction.Address + 1, instruction.Intcode.ParameterModes[2])
-		writeAddress := program.Memory[instruction.Address+3]
+		writeAddress := program.getAddress(instruction, 2)
 		writeValue := 0
 		if value1 < value2 {
 			writeValue = 1
@@ -68,7 +66,7 @@ var InstructionHandlers = map[OpCode]InstructionHandler{
 	Equals: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		value1 := getValue(program, instruction, 0)
 		value2 := getValue(program, instruction, 1)
-		writeAddress := program.Memory[instruction.Address+3]
+		writeAddress := program.getAddress(instruction, 2)
 		writeValue := 0
 		if value1 == value2 {
 			writeValue = 1
@@ -92,6 +90,10 @@ func NewInstructionResult(nextAddress int) *InstructionResult {
 
 func (instruction Instruction) nextAddress() int {
 	return instruction.Address + instruction.Intcode.NumParameters + 1
+}
+
+func (p *Program) getAddress(instruction Instruction, parameter int) int {
+	return getAddress(p, instruction.Address+parameter+1, instruction.Intcode.ParameterModes[parameter])
 }
 
 func getValue(program *Program, instruction Instruction, parameter int) int {
