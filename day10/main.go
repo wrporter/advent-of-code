@@ -32,5 +32,7 @@ func main() {
 	//}
 	field := monitor.SplitLines(lines)
 	m := monitor.New()
-	fmt.Println(m.FindBestAsteroid(field))
+	station, _ := m.FindBestAsteroid(field)
+	fmt.Println(station)
+	fmt.Println(m.ZapAsteroids(field, 200))
 }

@@ -1,7 +1,8 @@
 package monitor
 
 import (
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"math"
+	"sort"
 	"strings"
 )
 
@@ -11,40 +12,30 @@ type Station struct {
 	Point               Point
 }
 type Point struct {
-	X float64
-	Y float64
+	X int
+	Y int
 }
 
 func NewPoint(x int, y int) Point {
-	return Point{float64(x), float64(y)}
+	return Point{x, y}
 }
 
 func (p Point) slope(p1 Point) float64 {
-	return (p.Y - p1.Y) / (p.X - p.X)
+	return float64((p.Y - p1.Y) / (p.X - p.X))
 }
 func (p Point) equals(p1 Point) bool {
 	return p.Y == p1.Y && p.X == p1.X
 }
-
-type Line struct {
-	P1 Point
-	P2 Point
+func (p Point) distance(p1 Point) float64 {
+	return math.Sqrt(math.Pow(float64(p.X-p1.X), 2) + math.Pow(float64(p.Y-p1.Y), 2))
 }
 
-func (l Line) slope() float64 {
-	return (l.P2.Y - l.P1.Y) / (l.P2.X - l.P1.X)
-}
-func (l Line) slopeIsUndefined() bool {
-	return l.P2.X-l.P1.X == 0
-}
-func (l Line) intercept() float64 {
-	return l.P1.Y - l.slope()*l.P1.X
-}
-func (l Line) contains(p Point) bool {
-	if l.slopeIsUndefined() {
-		return p.X == l.P1.X && p.X == l.P2.X
+func Angle(origin Point, target Point) float64 {
+	degrees := 180 - (math.Atan2(float64(origin.Y-target.Y), float64(origin.X-target.X)))*180/math.Pi
+	if degrees < 0 {
+		degrees += 360
 	}
-	return p.Y == math.ToFixed(l.slope()*p.X+l.intercept(), 2)
+	return degrees
 }
 
 const (
@@ -56,61 +47,82 @@ func New() *Monitor {
 	return &Monitor{}
 }
 
-func (m *Monitor) FindBestAsteroid(field [][]string) Station {
-	station := Station{}
-
+func (m *Monitor) FindBestAsteroid(field [][]string) (station Station, asteroids map[float64][]Point) {
 	for y, row := range field {
 		for x, thing := range row {
 			if thing == Asteroid {
 				p := NewPoint(x, y)
-				count := countVisibleAsteroids(field, p)
+				candidate := getVisibleAsteroids(field, p)
 
-				if count > station.NumVisibleAsteroids {
-					station.NumVisibleAsteroids = count
+				if len(candidate) > station.NumVisibleAsteroids {
+					asteroids = candidate
+					station.NumVisibleAsteroids = len(candidate)
 					station.Point = p
 				}
 			}
 		}
 	}
 
-	return station
+	return station, asteroids
 }
 
-func countVisibleAsteroids(field [][]string, station Point) int {
-	count := 0
+func (m *Monitor) ZapAsteroids(field [][]string, target int) (int, *Point) {
+	station, asteroids := m.FindBestAsteroid(field)
+	angles := clockwise(asteroids)
+
+	for _, points := range asteroids {
+		sort.Slice(points, func(i, j int) bool {
+			return points[i].distance(station.Point) < points[j].distance(station.Point)
+		})
+	}
+
+	numZapped := 0
+	var asteroid Point
+
+	for numZapped < target {
+		for _, angle := range angles {
+			if len(asteroids[angle]) > 0 {
+				numZapped++
+				asteroid, asteroids[angle] = poll(asteroids[angle])
+				if numZapped == target {
+					return asteroid.X*100 + asteroid.Y, &asteroid
+				}
+			}
+		}
+	}
+
+	return 0, nil
+}
+
+func getVisibleAsteroids(field [][]string, station Point) map[float64][]Point {
+	asteroids := make(map[float64][]Point)
 
 	for y, row := range field {
 		for x, thing := range row {
-			p := NewPoint(x, y)
+			asteroid := NewPoint(x, y)
 
-			if thing == Asteroid &&
-				!station.equals(p) &&
-				canSeeAsteroid(field, station, p) {
-				count++
+			if thing == Asteroid && !station.equals(asteroid) {
+				angle := Angle(station, asteroid)
+				asteroids[angle] = append(asteroids[angle], asteroid)
 			}
 		}
 	}
 
-	return count
+	return asteroids
 }
 
-func canSeeAsteroid(field [][]string, station Point, asteroid Point) bool {
-	line := Line{station, asteroid}
-
-	for y := math.Min(int(station.Y), int(asteroid.Y)); y <= math.Max(int(station.Y), int(asteroid.Y)); y++ {
-		for x := math.Min(int(station.X), int(asteroid.X)); x <= math.Max(int(station.X), int(asteroid.X)); x++ {
-			p := NewPoint(x, y)
-
-			if field[y][x] == Asteroid &&
-				!station.equals(p) &&
-				!asteroid.equals(p) &&
-				line.contains(p) {
-				return false
-			}
-		}
+func clockwise(m map[float64][]Point) []float64 {
+	var keys []float64
+	for k := range m {
+		keys = append(keys, k)
 	}
-
-	return true
+	sort.Slice(keys, func(i, j int) bool {
+		return shift(keys[i]) > shift(keys[j])
+	})
+	return keys
+}
+func shift(angle float64) float64 {
+	return math.Mod(angle+270, 361)
 }
 
 func SplitLines(lines []string) [][]string {
@@ -119,4 +131,8 @@ func SplitLines(lines []string) [][]string {
 		result[i] = strings.Split(line, "")
 	}
 	return result
+}
+
+func poll(array []Point) (Point, []Point) {
+	return array[0], array[1:]
 }
