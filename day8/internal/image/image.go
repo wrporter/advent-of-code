@@ -1,7 +1,6 @@
 package image
 
 import (
-	"fmt"
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
 	"github.com/wrporter/advent-of-code-2019/internal/common/math"
 	"strings"
@@ -88,7 +87,9 @@ func (img *Image) Decode() [][]int {
 	return result
 }
 
-func Print(image [][]int) {
+func Draw(image [][]int) string {
+	result := ""
+
 	for _, row := range image {
 		line := make([]string, len(row))
 		for col, value := range row {
@@ -98,6 +99,10 @@ func Print(image [][]int) {
 				line[col] = " "
 			}
 		}
-		fmt.Println(strings.Join(line, ""))
+
+		result += strings.Join(line, "")
+		result += "\n"
 	}
+
+	return result
 }
