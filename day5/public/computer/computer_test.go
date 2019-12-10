@@ -139,21 +139,38 @@ func TestComputer_Run(t *testing.T) {
 			[]int{5},
 			[]int{10428568},
 		},
+		{
+			"relative mode: copy program",
+			[]int{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99},
+			[]int{},
+			[]int{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99},
+		},
+		{
+			"relative mode: output 16-digit number",
+			[]int{1102, 34915192, 34915192, 7, 4, 7, 99, 0},
+			[]int{},
+			[]int{1219070632396864},
+		},
+		{
+			"relative mode: output large number in middle",
+			[]int{104, 1125899906842624, 99},
+			[]int{},
+			[]int{1125899906842624},
+		},
 	}
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
-			c := &Computer{}
-			input := make(chan int, 1)
+			c := New()
+			p := NewProgram(tt.program)
+			p.Output = make(chan int, 100)
 			for _, value := range tt.input {
-				input <- value
+				p.Input <- value
 			}
 
-			output := make(chan int, 100)
+			c.RunProgram(p)
 			var actualOutput []int
-
-			c.Run(tt.program, input, output)
-			for value := range output {
+			for value := range p.Output {
 				actualOutput = append(actualOutput, value)
 			}
 			if !reflect.DeepEqual(actualOutput, tt.wantOutput) {

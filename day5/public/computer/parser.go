@@ -5,10 +5,10 @@ import (
 	"strconv"
 )
 
-func ParseInstruction(program []int, index int) Instruction {
+func ParseInstruction(program *Program) Instruction {
 	return Instruction{
-		Intcode: parseIntcode(program[index]),
-		Address: index,
+		Intcode: parseIntcode(program.Memory[program.address]),
+		Address: program.address,
 	}
 }
 

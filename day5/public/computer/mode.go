@@ -3,6 +3,7 @@ package computer
 type ParameterMode int
 
 const (
-	Position  = 0
-	Immediate = 1
+	Position  ParameterMode = 0
+	Immediate ParameterMode = 1
+	Relative  ParameterMode = 2
 )

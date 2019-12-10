@@ -10,15 +10,42 @@ func New() *Computer {
 	return &Computer{}
 }
 
-func (c *Computer) Run(program []int, input chan int, output chan int) {
-	address := 0
-	instruction := ParseInstruction(program, address)
+type Program struct {
+	Memory          []int
+	Input           chan int
+	Output          chan int
+	address         int
+	relativeAddress int
+}
+
+func NewProgram(code []int) *Program {
+	return &Program{
+		Memory:          addMemory(code),
+		address:         0,
+		relativeAddress: 0,
+		Input:           make(chan int, 1),
+		Output:          make(chan int, 1),
+	}
+}
+
+func (c *Computer) RunProgram(program *Program) {
+	c.Run(program.Memory, program.Input, program.Output)
+}
+
+func addMemory(code []int) []int {
+	newMemory := make([]int, len(code)<<20)
+	copy(newMemory, code)
+	return newMemory
+}
+
+func (c *Computer) Run(memory []int, input chan int, output chan int) {
+	program := &Program{memory, input, output, 0, 0}
+	instruction := ParseInstruction(program)
 
 	for instruction.Intcode.OpCode != Exit {
-		result := execute(program, instruction, input, output)
-		address = result.NextAddress
-
-		instruction = ParseInstruction(program, address)
+		result := execute(program, instruction)
+		program.address = result.NextAddress
+		instruction = ParseInstruction(program)
 	}
 	close(output)
 }
@@ -28,6 +55,6 @@ func (c *Computer) Thread(wg *sync.WaitGroup, program []int, input chan int, out
 	wg.Done()
 }
 
-func execute(program []int, instruction Instruction, input chan int, output chan int) (result *InstructionResult) {
-	return InstructionHandlers[instruction.Intcode.OpCode](program, instruction, input, output)
+func execute(program *Program, instruction Instruction) (result *InstructionResult) {
+	return InstructionHandlers[instruction.Intcode.OpCode](program, instruction)
 }
