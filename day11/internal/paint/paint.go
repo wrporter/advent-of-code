@@ -2,6 +2,7 @@ package paint
 
 import (
 	"github.com/wrporter/advent-of-code-2019/day5/public/computer"
+	"github.com/wrporter/advent-of-code-2019/internal/common/math"
 	"sync"
 )
 
@@ -17,6 +18,11 @@ const (
 const (
 	Black = 0
 	White = 1
+)
+
+const (
+	BlackChar = "."
+	WhiteChar = "#"
 )
 
 const (
@@ -43,10 +49,12 @@ func NewRobot(code []int) *Robot {
 	}
 }
 
-func (r *Robot) Paint() int {
+func (r *Robot) Paint(startColor int) (int, [][]string) {
 	var wg sync.WaitGroup
-	panels := make(map[Position]int)
+	panels := map[Position]int{Position{0, 0}: startColor}
 	cpu := computer.New()
+	topLeft := Position{0, 0}
+	bottomRight := Position{0, 0}
 
 	wg.Add(1)
 	go cpu.ThreadProgram(&wg, r.program)
@@ -67,13 +75,61 @@ func (r *Robot) Paint() int {
 			} else {
 				break
 			}
+
+			topLeft.Col = math.Min(topLeft.Col, r.position.Col)
+			topLeft.Row = math.Max(topLeft.Row, r.position.Row)
+			bottomRight.Col = math.Max(bottomRight.Col, r.position.Col)
+			bottomRight.Row = math.Min(bottomRight.Row, r.position.Row)
 		}
 		wg.Done()
 	}()
 
 	wg.Wait()
 
-	return len(panels)
+	numPaintedPanels := len(panels)
+	paint := toPaintedRegion(topLeft, bottomRight, panels)
+
+	return numPaintedPanels, paint
+}
+
+func toPaintedRegion(topLeft Position, bottomRight Position, panels map[Position]int) [][]string {
+	width := math.Abs(topLeft.Col) + math.Abs(bottomRight.Col) + 1
+	height := math.Abs(topLeft.Row) + math.Abs(bottomRight.Row) + 1
+	region := make([][]string, height)
+
+	for h := 0; h < height; h++ {
+		row := make([]string, width)
+		region[h] = row
+
+		for w := 0; w < width; w++ {
+			color := panels[Position{h, w}]
+			if color == White {
+				row[w] = WhiteChar
+			} else {
+				row[w] = BlackChar
+			}
+		}
+	}
+
+	return region
+}
+
+func RenderPaintedRegion(region [][]string) string {
+	result := ""
+
+	for row := 0; row < len(region); row++ {
+		for col := 0; col < len(region[row]); col++ {
+			color := region[row][col]
+			if color == BlackChar {
+				result += " "
+			} else {
+				result += WhiteChar
+			}
+		}
+		result += "\n"
+	}
+
+	return result
 }
 
 func (r *Robot) camera(panels map[Position]int) int {
