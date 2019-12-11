@@ -23,13 +23,20 @@ func NewProgram(code []int) *Program {
 		Memory:          addMemory(code),
 		address:         0,
 		relativeAddress: 0,
-		Input:           make(chan int, 1),
-		Output:          make(chan int, 1),
+		Input:           make(chan int, 2),
+		Output:          make(chan int, 2),
 	}
 }
 
 func (c *Computer) RunProgram(program *Program) {
-	c.Run(program.Memory, program.Input, program.Output)
+	instruction := ParseInstruction(program)
+
+	for instruction.Intcode.OpCode != Exit {
+		result := execute(program, instruction)
+		program.address = result.NextAddress
+		instruction = ParseInstruction(program)
+	}
+	close(program.Output)
 }
 
 func addMemory(code []int) []int {
@@ -40,18 +47,16 @@ func addMemory(code []int) []int {
 
 func (c *Computer) Run(memory []int, input chan int, output chan int) {
 	program := &Program{memory, input, output, 0, 0}
-	instruction := ParseInstruction(program)
-
-	for instruction.Intcode.OpCode != Exit {
-		result := execute(program, instruction)
-		program.address = result.NextAddress
-		instruction = ParseInstruction(program)
-	}
-	close(output)
+	c.RunProgram(program)
 }
 
 func (c *Computer) Thread(wg *sync.WaitGroup, program []int, input chan int, output chan int) {
 	c.Run(program, input, output)
+	wg.Done()
+}
+
+func (c *Computer) ThreadProgram(wg *sync.WaitGroup, program *Program) {
+	c.RunProgram(program)
 	wg.Done()
 }
 
