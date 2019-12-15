@@ -32,10 +32,20 @@ func New() *NanoFactory {
 	return &NanoFactory{}
 }
 
+func (n *NanoFactory) OreToFuel(reactionStrings []string, ore int) int {
+	costOfOne := n.GetRequiredOre(reactionStrings, 1)
+	low := ore / costOfOne
+	high := low * 2
+
+	return binarySearch(ore, low, high, func(value int) int {
+		return n.GetRequiredOre(reactionStrings, value)
+	})
+}
+
 func (n *NanoFactory) GetRequiredOre(reactionStrings []string, fuel int) int {
 	reactions := parseReactions(reactionStrings)
 	tree := map[string]*Chemical{Fuel: {Fuel, fuel}}
-	toProcess := []Chemical{{Fuel, 1}}
+	toProcess := []Chemical{*tree[Fuel]}
 	var next Chemical
 
 	for len(toProcess) > 0 {
@@ -69,6 +79,25 @@ func (n *NanoFactory) GetRequiredOre(reactionStrings []string, fuel int) int {
 	return tree[Ore].Amount
 }
 
+func binarySearch(needle int, low int, high int, f func(value int) int) int {
+	for low+1 < high {
+		median := (low + high) / 2
+		value := f(median)
+
+		if value > needle {
+			high = median
+		} else if value < needle {
+			low = median
+		} else {
+			return median
+		}
+	}
+	if f(high) > needle {
+		return high - 1
+	}
+	return high
+}
+
 func distanceToOre(tree map[string]Reaction, chemical string) int {
 	return distanceToOreRec(tree, chemical, 1)
 }
@@ -91,10 +120,6 @@ func leastAmount(tree map[string]*Chemical, next Chemical, reactions map[string]
 		float64(tree[next.Name].Amount) /
 			float64(reactions[next.Name].Output.Amount),
 	))
-}
-
-func onlyInputIsOre(reactions map[string]Reaction, input Chemical) bool {
-	return len(reactions[input.Name].Input) == 1 && reactions[input.Name].Input[0].Name == Ore
 }
 
 func parseReactions(reactionStrings []string) map[string]Reaction {
@@ -129,12 +154,6 @@ func parseChemical(chemical string) Chemical {
 	return Chemical{
 		Name:   match[2],
 		Amount: conversion.StringToInt(match[1]),
-	}
-}
-
-func reverse(reactions []Reaction) {
-	for i, j := 0, len(reactions)-1; i < j; i, j = i+1, j-1 {
-		reactions[i], reactions[j] = reactions[j], reactions[i]
 	}
 }
 
