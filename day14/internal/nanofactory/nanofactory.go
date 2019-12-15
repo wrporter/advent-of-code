@@ -5,6 +5,7 @@ import (
 	mymath "github.com/wrporter/advent-of-code-2019/internal/common/math"
 	"math"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -31,66 +32,65 @@ func New() *NanoFactory {
 	return &NanoFactory{}
 }
 
-func (n *NanoFactory) GetRequiredOre(reactionStrings []string) int {
+func (n *NanoFactory) GetRequiredOre(reactionStrings []string, fuel int) int {
 	reactions := parseReactions(reactionStrings)
-	tree := map[string]*Chemical{Fuel: {Fuel, 1}}
-	ore := 0
-
-	queue := []Chemical{{Fuel, 1}}
+	tree := map[string]*Chemical{Fuel: {Fuel, fuel}}
+	toProcess := []Chemical{{Fuel, 1}}
 	var next Chemical
 
-	for len(queue) > 0 {
-		next, queue = poll(queue)
-		if _, ok := tree[next.Name]; !ok {
+	for len(toProcess) > 0 {
+		next, toProcess = poll(toProcess)
+		if _, processable := tree[next.Name]; !processable {
 			continue
 		}
+
 		need := leastAmount(tree, next, reactions)
 		delete(tree, next.Name)
 
 		for _, input := range reactions[next.Name].Input {
+			var chemical Chemical
 			if _, ok := tree[input.Name]; ok {
 				tree[input.Name].Amount += input.Amount * need
-				if !(onlyInputIsOre(reactions, input)) {
-					queue = append(queue, Chemical{input.Name, input.Amount})
-				}
+				chemical = Chemical{input.Name, input.Amount}
 			} else {
-				chemical := &Chemical{input.Name, input.Amount * need}
-				tree[input.Name] = chemical
-				if !(onlyInputIsOre(reactions, input)) {
-					queue = append(queue, *chemical)
-				}
+				chemical = Chemical{input.Name, input.Amount * need}
+				tree[input.Name] = &chemical
+			}
+			if chemical.Name != Ore {
+				toProcess = append(toProcess, chemical)
 			}
 		}
+
+		sort.Slice(toProcess, func(i, j int) bool {
+			return distanceToOre(reactions, toProcess[i].Name) > distanceToOre(reactions, toProcess[j].Name)
+		})
 	}
 
-	for _, chemical := range tree {
-		need := leastAmount(tree, *chemical, reactions)
-		ore += reactions[chemical.Name].Input[0].Amount * need
-	}
-
-	return ore
+	return tree[Ore].Amount
 }
 
-func distanceToOre(tree map[string]Reaction, reaction Reaction) int {
-	return distanceToOreRec(tree, reaction, 1)
+func distanceToOre(tree map[string]Reaction, chemical string) int {
+	return distanceToOreRec(tree, chemical, 1)
 }
 
-func distanceToOreRec(tree map[string]Reaction, reaction Reaction, level int) int {
-	minDistance := level
-	for _, input := range reaction.Input {
+func distanceToOreRec(tree map[string]Reaction, chemical string, level int) int {
+	distance := level
+	for _, input := range tree[chemical].Input {
 		if input.Name == Ore {
 			return level
 		} else {
-			distance := distanceToOreRec(tree, tree[input.Name], level+1)
-			minDistance = mymath.Min(minDistance, distance)
+			nextDist := distanceToOreRec(tree, input.Name, level+1)
+			distance = mymath.Max(distance, nextDist)
 		}
 	}
-	return minDistance
+	return distance
 }
 
 func leastAmount(tree map[string]*Chemical, next Chemical, reactions map[string]Reaction) int {
-	need := int(math.Ceil(float64(tree[next.Name].Amount) / float64(reactions[next.Name].Output.Amount)))
-	return need
+	return int(math.Ceil(
+		float64(tree[next.Name].Amount) /
+			float64(reactions[next.Name].Output.Amount),
+	))
 }
 
 func onlyInputIsOre(reactions map[string]Reaction, input Chemical) bool {

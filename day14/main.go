@@ -22,6 +22,14 @@ func main() {
 	//	"1 VJHF, 6 MNCFX => 4 RFSQX",
 	//	"176 ORE => 6 VJHF",
 	//}
+	//lines := []string{
+	//	"10 ORE => 10 A",
+	//	"1 ORE => 1 B",
+	//	"7 A, 1 B => 1 C",
+	//	"7 A, 1 C => 1 D",
+	//	"7 A, 1 D => 1 E",
+	//	"7 A, 1 E => 1 FUEL",
+	//}
 	factory := nanofactory.New()
-	fmt.Println(factory.GetRequiredOre(lines))
+	fmt.Println(factory.GetRequiredOre(lines, 1))
 }
