@@ -29,10 +29,12 @@ var InstructionHandlers = map[OpCode]InstructionHandler{
 	Input: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		address := program.getAddress(instruction, 0)
 		program.Memory[address] = <-program.Input
+		//fmt.Printf("Input: %d\n", program.Memory[address])
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	Output: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		outputValue := getValue(program, instruction, 0)
+		//fmt.Printf("Output: %d\n", outputValue)
 		program.Output <- outputValue
 		return NewInstructionResult(instruction.nextAddress())
 	},

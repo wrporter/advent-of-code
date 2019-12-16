@@ -32,3 +32,30 @@ var OpCodeNumParameters = map[OpCode]int{
 	ModifyRelativeBase: 1,
 	Exit:               0,
 }
+
+func (o OpCode) String() string {
+	switch o {
+	case Add:
+		return "Add"
+	case Multiply:
+		return "Multiply"
+	case Input:
+		return "Input"
+	case Output:
+		return "Output"
+	case JumpIfTrue:
+		return "JumpIfTrue"
+	case JumpIfFalse:
+		return "JumpIfFalse"
+	case LessThan:
+		return "LessThan"
+	case Equals:
+		return "Equals"
+	case ModifyRelativeBase:
+		return "ModifyRelativeBase"
+	case Exit:
+		return "Exit"
+	default:
+		return "NoOp"
+	}
+}
