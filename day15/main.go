@@ -13,5 +13,6 @@ func main() {
 	code, _ := conversion.ToInts(strings.Split(lines[0], ","))
 	d := droid.New(code)
 	m, start, oxygen := d.ScanShip()
-	fmt.Printf("Shortest path: %d", d.FindShortestPath(m, start, oxygen))
+	fmt.Printf("Shortest path: %d\n", d.FindShortestPath(m, start, oxygen))
+	fmt.Printf("Time to fill oxygen: %d\n", d.TimeToFillOxygen(m, oxygen))
 }

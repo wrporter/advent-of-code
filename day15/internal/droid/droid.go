@@ -99,6 +99,18 @@ type node struct {
 }
 
 func (d *Droid) FindShortestPath(ship [][]string, from Point, to Point) int {
+	return d.FindAllPaths(ship, from)[to]
+}
+
+func (d *Droid) TimeToFillOxygen(ship [][]string, from Point) int {
+	maxTime := 0
+	for _, steps := range d.FindAllPaths(ship, from) {
+		maxTime = math.Max(maxTime, steps)
+	}
+	return maxTime
+}
+
+func (d *Droid) FindAllPaths(ship [][]string, from Point) map[Point]int {
 	visited := make(map[Point]bool)
 	paths := make(map[Point]int)
 
@@ -118,7 +130,7 @@ func (d *Droid) FindShortestPath(ship [][]string, from Point, to Point) int {
 		}
 	}
 
-	return paths[to]
+	return paths
 }
 
 func (d *Droid) explore(m map[Point]Status, p Point) {
