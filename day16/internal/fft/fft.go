@@ -23,7 +23,7 @@ func Decode(signal string) string {
 		sum := 0
 		for i := len(realSignal) - 1; i >= 0; i-- {
 			sum += realSignal[i]
-			realSignal[i] = math.Abs(sum) % 10
+			realSignal[i] = sum % 10
 		}
 	}
 
