@@ -9,6 +9,27 @@ import (
 
 var pattern = []int{0, 1, 0, -1}
 
+const (
+	NumPhases     = 100
+	NumReps       = 10000
+	MessageOffset = 7
+	MessageSize   = 8
+)
+
+func Decode(signal string) string {
+	realSignal := getRealSignal(signal)
+
+	for phase := 0; phase < NumPhases; phase++ {
+		sum := 0
+		for i := len(realSignal) - 1; i >= 0; i-- {
+			sum += realSignal[i]
+			realSignal[i] = math.Abs(sum) % 10
+		}
+	}
+
+	return toString(realSignal[:MessageSize])
+}
+
 func Apply(signal string, phases int) string {
 	output := parse(signal)
 	next := make([]int, len(output))
@@ -28,6 +49,22 @@ func Apply(signal string, phases int) string {
 	}
 
 	return toString(output)
+}
+
+func getRealSignal(signal string) []int {
+	digits := parse(signal)
+	offset := getOffset(signal)
+	result := make([]int, len(signal)*NumReps-offset)
+
+	for i := range result {
+		digit := (offset + i) % len(digits)
+		result[i] = digits[digit]
+	}
+	return result
+}
+
+func getOffset(signal string) int {
+	return conversion.StringToInt(signal[:MessageOffset])
 }
 
 func coefficient(row, col int) int {

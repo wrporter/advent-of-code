@@ -8,12 +8,9 @@ import (
 
 func main() {
 	lines, _ := file.ReadFile("./day16/input.txt")
-	input := lines[0]
-	//input := "12345678"
+	signal := lines[0]
+	//signal := "03036732577212944063491565474664"
 
-	const digits = 8
-	const phases = 100
-
-	output := fft.Apply(input, phases)[:digits]
-	fmt.Printf("Output signal: %s\n", output)
+	fmt.Printf("Output signal: %s\n", fft.Apply(signal, 100)[:8])
+	fmt.Printf("Decoded signal: %s\n", fft.Decode(signal))
 }

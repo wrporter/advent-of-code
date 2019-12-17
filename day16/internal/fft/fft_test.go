@@ -60,3 +60,21 @@ func TestApply(t *testing.T) {
 		})
 	}
 }
+
+func TestDecode(t *testing.T) {
+	tests := []struct {
+		signal string
+		want   string
+	}{
+		{"03036732577212944063491565474664", "84462026"},
+		{"02935109699940807407585447034323", "78725270"},
+		{"03081770884921959731165446850517", "53553731"},
+	}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
+			if got := Decode(tt.signal); got != tt.want {
+				t.Errorf("Decode() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

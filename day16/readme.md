@@ -1,4 +1,5 @@
 --- Day 16: Flawed Frequency Transmission ---
+
 You're 3/4ths of the way through the gas giants. Not only do roundtrip signals to Earth take five hours, but the signal quality is quite bad as well. You can clean up the signal with the Flawed Frequency Transmission algorithm, or FFT.
 
 As input, FFT takes a list of numbers. In the signal you received (your puzzle input), each number is a single digit: data like 15243 represents the sequence 1, 5, 2, 4, 3.
@@ -67,4 +68,29 @@ Here are the first eight digits of the final output list after 100 phases for so
 69317163492948606335995924319873 becomes 52432133.
 After 100 phases of FFT, what are the first eight digits in the final output list?
 
-To begin, get your puzzle input.
+Your puzzle answer was 10332447.
+
+The first half of this puzzle is complete! It provides one gold star: *
+
+--- Part Two ---
+
+Now that your FFT is working, you can decode the real signal.
+
+The real signal is your puzzle input repeated 10000 times. Treat this new signal as a single input list. Patterns are still calculated as before, and 100 phases of FFT are still applied.
+
+The first seven digits of your initial input signal also represent the message offset. The message offset is the location of the eight-digit message in the final output list. Specifically, the message offset indicates the number of digits to skip before reading the eight-digit message. For example, if the first seven digits of your initial input signal were 1234567, the eight-digit message would be the eight digits after skipping 1,234,567 digits of the final output list. Or, if the message offset were 7 and your final output list were 98765432109876543210, the eight-digit message would be 21098765. (Of course, your real message offset will be a seven-digit number, not a one-digit number like 7.)
+
+Here is the eight-digit message in the final output list after 100 phases. The message offset given in each input has been highlighted. (Note that the inputs given below are repeated 10000 times to find the actual starting input lists.)
+
+03036732577212944063491565474664 becomes 84462026.
+02935109699940807407585447034323 becomes 78725270.
+03081770884921959731165446850517 becomes 53553731.
+After repeating your input signal 10000 times and running 100 phases of FFT, what is the eight-digit message embedded in the final output list?
+
+Your puzzle answer was 14288025.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.
