@@ -117,4 +117,10 @@ As the vacuum robot finds other robots and notifies them of the impending solar 
 
 After visiting every part of the scaffold at least once, how much dust does the vacuum robot report it has collected?
 
-Although it hasn't changed, you can still get your puzzle input.
+Your puzzle answer was 1168948.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.

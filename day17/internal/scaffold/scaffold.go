@@ -3,6 +3,7 @@ package scaffold
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code-2019/day13/public/computer"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -74,15 +75,10 @@ func (s *Scaffold) SumAlignmentIntersections(grid [][]rune) int {
 
 func (s *Scaffold) MoveRobot(grid [][]rune, robot *VacuumRobot) int {
 	robot.wakeUp(s.code)
-	//commands := buildCommands(grid, robot)
-	commands := "A,B,A,C,B,C,A,B,A,C\n" +
-		"R,6,L,10,R,8,R,8\n" +
-		"R,12,L,8,L,10\n" +
-		"R,12,L,10,R,6,L,10\n" +
-		"n\n"
+	input := buildInput(buildCommands(grid, robot))
 
 	go func() {
-		for _, command := range commands {
+		for _, command := range input {
 			robot.input <- int(command)
 		}
 	}()
@@ -127,7 +123,18 @@ type node struct {
 	direction Direction
 }
 
-func buildCommands(grid [][]rune, robot *VacuumRobot) {
+func buildInput(routine string, moves map[string]string) string {
+	input := []string{
+		routine,
+		moves["A"],
+		moves["B"],
+		moves["C"],
+		"n\n",
+	}
+	return strings.Join(input, "\n")
+}
+
+func buildCommands(grid [][]rune, robot *VacuumRobot) (string, map[string]string) {
 	queue := []node{{robot.point, robot.direction}}
 	visited := make(map[Point]bool)
 	var commands []string
@@ -155,7 +162,50 @@ func buildCommands(grid [][]rune, robot *VacuumRobot) {
 		}
 	}
 
-	fmt.Println(strings.Join(commands, ","))
+	return compressCommands(strings.Join(commands, ","))
+}
+
+func compressCommands(commands string) (string, map[string]string) {
+	for a := 1; a <= 20; a++ {
+		for b := 1; b <= 20; b++ {
+			for c := 1; c <= 20; c++ {
+				matches := make(map[string]string)
+				remaining := commands
+
+				matches["A"] = remaining[:a]
+				remaining = replace(remaining, matches["A"]+",?", "")
+				matches["B"] = remaining[:b]
+				remaining = replace(remaining, matches["B"]+",?", "")
+				matches["C"] = remaining[:c]
+				remaining = replace(remaining, matches["C"]+",?", "")
+
+				if len(remaining) == 0 {
+					compressed := commands
+					for key, value := range matches {
+						compressed = replace(compressed, value, key)
+					}
+					if isMainRoutine(compressed) {
+						return compressed, matches
+					}
+				}
+			}
+		}
+	}
+	return "", nil
+}
+
+func isMainRoutine(str string) bool {
+	for _, function := range strings.Split(str, ",") {
+		if function != "A" && function != "B" && function != "C" {
+			return false
+		}
+	}
+	return true
+}
+
+func replace(str string, regex string, replacement string) string {
+	re := regexp.MustCompile(regex)
+	return re.ReplaceAllString(str, replacement)
 }
 
 func nextIsOpen(grid [][]rune, point Point, direction Direction) bool {
