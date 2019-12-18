@@ -7,6 +7,15 @@ const MinUint = 0
 const MaxInt = int(MaxUint >> 1)
 const MinInt = -MaxInt - 1
 
+func Sign(x int) int {
+	if x < 0 {
+		return -1
+	} else if x > 0 {
+		return 1
+	}
+	return 0
+}
+
 func Abs(x int) int {
 	if x < 0 {
 		return -x
@@ -56,4 +65,12 @@ func LCM(a, b int, integers ...int) int {
 	}
 
 	return result
+}
+
+func WrapMod(d, m int) int {
+	var res = d % m
+	if (res < 0 && m > 0) || (res > 0 && m < 0) {
+		return res + m
+	}
+	return res
 }

@@ -11,6 +11,10 @@ import (
 func main() {
 	lines, _ := file.ReadFile("./day17/input.txt")
 	code, _ := conversion.ToInts(strings.Split(lines[0], ","))
+
 	s := scaffold.New(code)
-	fmt.Printf("Alignment parameter sum: %d\n", s.SumAlignmentIntersections())
+	grid, robot := s.Scan()
+
+	fmt.Printf("Alignment parameter sum: %d\n", s.SumAlignmentIntersections(grid))
+	fmt.Printf("Dust collected: %d\n", s.MoveRobot(grid, robot))
 }
