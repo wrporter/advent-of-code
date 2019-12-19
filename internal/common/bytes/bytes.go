@@ -1,6 +1,8 @@
 package bytes
 
-import "unicode"
+import (
+	"unicode"
+)
 
 func ToUpper(b byte) byte {
 	return byte(unicode.ToUpper(rune(b)))
@@ -16,4 +18,11 @@ func IsUpper(b byte) bool {
 
 func IsLower(b byte) bool {
 	return unicode.IsLower(rune(b))
+}
+
+func CopyAdd(bytes []byte, b byte) []byte {
+	newArray := make([]byte, len(bytes)+1)
+	copy(newArray, bytes)
+	newArray[len(bytes)] = b
+	return newArray
 }

@@ -15,10 +15,11 @@ const (
 )
 
 type Vault struct {
-	maze     map[geometry.Point]byte
-	entrance geometry.Point
-	keys     map[byte]geometry.Point
-	doors    map[byte]geometry.Point
+	maze      map[geometry.Point]byte
+	entrance  geometry.Point
+	keys      map[byte]geometry.Point
+	doors     map[byte]geometry.Point
+	distances map[byte][]Distance
 }
 
 func New(vault []string) *Vault {
@@ -46,81 +47,117 @@ func New(vault []string) *Vault {
 		}
 	}
 
+	distances := computeDistances(maze, copyAddMap(keys, Entrance, entrance))
+
 	return &Vault{
-		maze:     maze,
-		entrance: entrance,
-		keys:     keys,
-		doors:    doors,
+		maze:      maze,
+		entrance:  entrance,
+		keys:      keys,
+		doors:     doors,
+		distances: distances,
 	}
 }
 
-type VisitedIteration struct {
-	point       geometry.Point
+type CacheKey struct {
+	from        byte
 	currentKeys string
 }
 
 func (v *Vault) MinSteps() int {
-	return v.minSteps(v.entrance, "", make(map[VisitedIteration]int))
+	return v.minSteps(Entrance, "", make(map[CacheKey]int))
 }
 
-func (v *Vault) minSteps(from geometry.Point, currentKeys string, visited map[VisitedIteration]int) int {
-	iteration := VisitedIteration{from, currentKeys}
-	if steps, ok := visited[iteration]; ok {
+func (v *Vault) minSteps(from byte, currentKeys string, cache map[CacheKey]int) int {
+	iteration := CacheKey{from, currentKeys}
+	if steps, ok := cache[iteration]; ok {
 		return steps
 	}
 
 	steps := 0
-	keys := v.findKeys(from, currentKeys)
+	keys := v.getReachableKeys(from, currentKeys)
 
 	if len(keys) > 0 {
 		var possibleSteps []int
-		for key, distance := range keys {
-			cur := distance + v.minSteps(v.keys[key], mystrings.SortString(currentKeys+string(key)), visited)
+		for _, distance := range keys {
+			cur := distance.distance + v.minSteps(distance.key, mystrings.SortString(currentKeys+string(distance.key)), cache)
 			possibleSteps = append(possibleSteps, cur)
 		}
 		steps = arrays.Min(possibleSteps)
 	}
 
-	visited[iteration] = steps
+	cache[iteration] = steps
 	return steps
 }
 
-type Node struct {
-	Element byte
-	Point   geometry.Point
+type KeyDistance struct {
+	key      byte
+	distance int
 }
 
-func (v *Vault) findKeys(from geometry.Point, currentKeys string) map[byte]int {
-	keys := make(map[byte]int)
-	distance := map[geometry.Point]int{from: 0}
-	queue := []geometry.Point{from}
-	var current geometry.Point
+func (v *Vault) getReachableKeys(from byte, currentKeys string) []KeyDistance {
+	var keys []KeyDistance
+	for _, distance := range v.distances[from] {
+		if !hasKey(currentKeys, distance.key) &&
+			len(strings.Trim(string(distance.neededKeys), currentKeys)) == 0 {
+			keys = append(keys, KeyDistance{distance.key, distance.distance})
+		}
+	}
+	return keys
+}
 
-	for len(queue) > 0 {
-		current, queue = queue[0], queue[1:]
+// '@': {
+// 		key: 'b',
+//		neededKeys: {'A', 'B'}
+//		distance: 5
+// },
+// 'a': { ... }, ...
+type Distance struct {
+	key        byte
+	neededKeys []byte
+	distance   int
+}
 
-		for _, direction := range geometry.Directions {
-			point := current.Add(direction)
-			if _, ok := distance[point]; ok {
-				continue
-			}
+type node struct {
+	point      geometry.Point
+	neededKeys []byte
+}
 
-			if item, ok := v.maze[point]; ok {
-				distance[point] = distance[current] + 1
+func computeDistances(maze map[geometry.Point]byte, startKeys map[byte]geometry.Point) map[byte][]Distance {
+	distances := make(map[byte][]Distance)
 
-				if isDoor(item) && !hasKey(currentKeys, getKey(item)) {
+	for key, point := range startKeys {
+		var keys []Distance
+		distance := map[geometry.Point]int{point: 0}
+		queue := []node{{point, nil}}
+		var current node
+
+		for len(queue) > 0 {
+			current, queue = queue[0], queue[1:]
+
+			for _, direction := range geometry.Directions {
+				nextPoint := current.point.Add(direction)
+				if _, ok := distance[nextPoint]; ok {
 					continue
 				}
-				if isKey(item) && !hasKey(currentKeys, item) {
-					keys[item] = distance[point]
-				} else {
-					queue = append(queue, point)
+
+				if tile, ok := maze[nextPoint]; ok {
+					distance[nextPoint] = distance[current.point] + 1
+
+					if isKey(tile) {
+						keys = append(keys, Distance{tile, current.neededKeys, distance[nextPoint]})
+					}
+
+					if isDoor(tile) {
+						queue = append(queue, node{nextPoint, bytes.CopyAdd(current.neededKeys, getKey(tile))})
+					} else {
+						queue = append(queue, node{nextPoint, current.neededKeys})
+					}
 				}
 			}
 		}
+		distances[key] = keys
 	}
-
-	return keys
+	return distances
 }
 
 func hasKey(keys string, key byte) bool {
@@ -141,4 +178,13 @@ func isDoor(b byte) bool {
 
 func isKey(b byte) bool {
 	return bytes.IsLower(b)
+}
+
+func copyAddMap(m map[byte]geometry.Point, key byte, value geometry.Point) map[byte]geometry.Point {
+	target := make(map[byte]geometry.Point)
+	for key, value := range m {
+		target[key] = value
+	}
+	target[key] = value
+	return target
 }
