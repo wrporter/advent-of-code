@@ -51,6 +51,8 @@ func New(vault []string) *Vault {
 		}
 	}
 
+	// Pruning does not actually speed up performance because the BFS search does not go far into dead ends.
+	//pruneDeadEnds(maze)
 	distances := computeDistances(maze, keys)
 
 	return &Vault{
@@ -200,4 +202,31 @@ func copyAddMap(m map[byte]geometry.Point, key byte, value geometry.Point) map[b
 	}
 	target[key] = value
 	return target
+}
+
+func pruneDeadEnds(maze map[geometry.Point]byte) {
+	for point := range maze {
+		fillDeadEnd(maze, point)
+	}
+}
+
+func fillDeadEnd(maze map[geometry.Point]byte, point geometry.Point) {
+	if ok, next := isDeadEnd(maze, point); ok {
+		delete(maze, point)
+		fillDeadEnd(maze, next)
+	}
+}
+
+func isDeadEnd(maze map[geometry.Point]byte, point geometry.Point) (bool, geometry.Point) {
+	walls := 0
+	var next geometry.Point
+	for _, direction := range geometry.Directions {
+		p := point.Add(direction)
+		if _, ok := maze[p]; !ok {
+			walls++
+		} else {
+			next = p
+		}
+	}
+	return walls == 3 && maze[point] == OpenPassage, next
 }
