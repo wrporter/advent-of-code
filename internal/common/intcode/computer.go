@@ -1,4 +1,4 @@
-package computer
+package intcode
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func New() *Computer {
 }
 
 type Program struct {
-	Memory          []int
+	Memory          map[int]int
 	Input           chan int
 	Output          chan int
 	address         int
@@ -29,7 +29,7 @@ type Program struct {
 
 func NewProgram(code []int) *Program {
 	return &Program{
-		Memory:          addMemory(code),
+		Memory:          createMemory(code),
 		Input:           make(chan int),
 		Output:          make(chan int),
 		address:         0,
@@ -53,10 +53,12 @@ func (c *Computer) executeProgram(program *Program) {
 	close(program.Output)
 }
 
-func addMemory(code []int) []int {
-	newMemory := make([]int, len(code)+64)
-	copy(newMemory, code)
-	return newMemory
+func createMemory(code []int) map[int]int {
+	memory := make(map[int]int)
+	for i, v := range code {
+		memory[i] = v
+	}
+	return memory
 }
 
 func execute(program *Program, instruction Instruction) (result *InstructionResult) {

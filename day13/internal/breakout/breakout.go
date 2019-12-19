@@ -2,7 +2,7 @@ package breakout
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/day13/public/computer"
+	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
 	"strings"
 	"time"
 )
@@ -29,7 +29,7 @@ const (
 )
 
 type Breakout struct {
-	program *computer.Program
+	program *intcode.Program
 }
 
 type State struct {
@@ -46,7 +46,7 @@ type Point struct {
 }
 
 func New(code []int) *Breakout {
-	return &Breakout{computer.NewProgram(code)}
+	return &Breakout{intcode.NewProgram(code)}
 }
 
 func (b *Breakout) InsertQuarters(quarters int) {
@@ -57,7 +57,7 @@ func (b *Breakout) Play() State {
 	state := State{0, makeGrid(), 0}
 	b.program.Input = make(chan int, 1)
 	b.program.Output = make(chan int)
-	cpu := computer.New()
+	cpu := intcode.New()
 	cpu.Run(b.program)
 	var ball, paddle Point
 

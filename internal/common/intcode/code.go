@@ -1,4 +1,4 @@
-package computer
+package intcode
 
 type OpCode int
 type Intcode struct {

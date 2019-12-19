@@ -1,4 +1,4 @@
-package computer
+package intcode
 
 import (
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"

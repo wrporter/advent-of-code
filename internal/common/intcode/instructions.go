@@ -1,4 +1,4 @@
-package computer
+package intcode
 
 type Instruction struct {
 	Intcode Intcode

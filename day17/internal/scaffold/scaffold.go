@@ -2,7 +2,7 @@ package scaffold
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/day13/public/computer"
+	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
 	"regexp"
 	"strings"
 	"time"
@@ -52,8 +52,8 @@ func New(code []int) *Scaffold {
 }
 
 func (s *Scaffold) Scan() (grid [][]rune, robot *VacuumRobot) {
-	cpu := computer.New()
-	program := computer.NewProgram(s.code)
+	cpu := intcode.New()
+	program := intcode.NewProgram(s.code)
 	output := program.Output
 	cpu.Run(program)
 
@@ -221,8 +221,8 @@ func isInBounds(grid [][]rune, p Point) bool {
 }
 
 func (r *VacuumRobot) wakeUp(code []int) {
-	cpu := computer.New()
-	program := computer.NewProgram(code)
+	cpu := intcode.New()
+	program := intcode.NewProgram(code)
 	program.Memory[0] = 2
 	r.input = program.Input
 	r.output = program.Output

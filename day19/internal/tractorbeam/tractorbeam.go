@@ -1,7 +1,7 @@
 package tractorbeam
 
 import (
-	"github.com/wrporter/advent-of-code-2019/day13/public/computer"
+	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
 )
 
 type Drone struct {
@@ -53,8 +53,8 @@ func (d *Drone) isInBeam(x int, y int) bool {
 }
 
 func (d *Drone) deploy() (chan int, chan int) {
-	cpu := computer.New()
-	program := computer.NewProgram(d.code)
+	cpu := intcode.New()
+	program := intcode.NewProgram(d.code)
 	in := program.Input
 	out := program.Output
 	cpu.Run(program)

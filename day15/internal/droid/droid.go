@@ -2,14 +2,14 @@ package droid
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/day13/public/computer"
+	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
 	"github.com/wrporter/advent-of-code-2019/internal/common/math"
 	"strings"
 	"time"
 )
 
 type Droid struct {
-	program *computer.Program
+	program *intcode.Program
 	point   Point
 }
 
@@ -81,11 +81,11 @@ const (
 )
 
 func New(code []int) *Droid {
-	return &Droid{computer.NewProgram(code), Point{0, 0}}
+	return &Droid{intcode.NewProgram(code), Point{0, 0}}
 }
 
 func (d *Droid) ScanShip() ([][]string, Point, Point) {
-	cpu := computer.New()
+	cpu := intcode.New()
 	cpu.Run(d.program)
 	m := map[Point]Status{Point{0, 0}: Empty}
 	d.explore(m, Point{0, 0})
