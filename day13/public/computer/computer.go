@@ -2,7 +2,16 @@ package computer
 
 import (
 	"fmt"
+	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
+	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	"strings"
 )
+
+func ReadCode(filePath string) []int {
+	lines, _ := file.ReadFile(filePath)
+	code, _ := conversion.ToInts(strings.Split(lines[0], ","))
+	return code
+}
 
 type Computer struct{}
 
