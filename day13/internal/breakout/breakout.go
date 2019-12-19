@@ -55,8 +55,6 @@ func (b *Breakout) InsertQuarters(quarters int) {
 
 func (b *Breakout) Play() State {
 	state := State{0, makeGrid(), 0}
-	b.program.Input = make(chan int, 1)
-	b.program.Output = make(chan int)
 	cpu := intcode.New()
 	cpu.Run(b.program)
 	var ball, paddle Point

@@ -8,6 +8,11 @@ type Drone struct {
 	code []int
 }
 
+const (
+	Stationary = 0
+	Pull       = 1
+)
+
 func NewDrone(code []int) *Drone {
 	return &Drone{code}
 }
@@ -49,14 +54,12 @@ func (d *Drone) isInBeam(x int, y int) bool {
 	in, out := d.deploy()
 	in <- x
 	in <- y
-	return <-out == 1
+	return <-out == Pull
 }
 
-func (d *Drone) deploy() (chan int, chan int) {
+func (d *Drone) deploy() (chan<- int, <-chan int) {
 	cpu := intcode.New()
 	program := intcode.NewProgram(d.code)
-	in := program.Input
-	out := program.Output
 	cpu.Run(program)
-	return in, out
+	return program.Input, program.Output
 }

@@ -21,17 +21,23 @@ func New() *Computer {
 
 type Program struct {
 	Memory          map[int]int
-	Input           chan int
-	Output          chan int
+	Input           chan<- int
+	Output          <-chan int
+	input           <-chan int
+	output          chan<- int
 	address         int
 	relativeAddress int
 }
 
 func NewProgram(code []int) *Program {
+	in := make(chan int)
+	out := make(chan int)
 	return &Program{
 		Memory:          createMemory(code),
-		Input:           make(chan int),
-		Output:          make(chan int),
+		Input:           in,
+		Output:          out,
+		input:           in,
+		output:          out,
 		address:         0,
 		relativeAddress: 0,
 	}
@@ -50,7 +56,7 @@ func (c *Computer) executeProgram(program *Program) {
 		program.address = result.NextAddress
 		instruction = ParseInstruction(program)
 	}
-	close(program.Output)
+	close(program.output)
 }
 
 func createMemory(code []int) map[int]int {

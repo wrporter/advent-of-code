@@ -28,14 +28,14 @@ var InstructionHandlers = map[OpCode]InstructionHandler{
 	},
 	Input: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		address := program.getAddress(instruction, 0)
-		program.Memory[address] = <-program.Input
+		program.Memory[address] = <-program.input
 		//fmt.Printf("Input: %d\n", program.Memory[address])
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	Output: func(program *Program, instruction Instruction) (result *InstructionResult) {
 		outputValue := getValue(program, instruction, 0)
 		//fmt.Printf("Output: %d\n", outputValue)
-		program.Output <- outputValue
+		program.output <- outputValue
 		return NewInstructionResult(instruction.nextAddress())
 	},
 	JumpIfTrue: func(program *Program, instruction Instruction) (result *InstructionResult) {
