@@ -26,3 +26,9 @@ func CopyAdd(bytes []byte, b byte) []byte {
 	newArray[len(bytes)] = b
 	return newArray
 }
+
+func Copy(bytes []byte) []byte {
+	newArray := make([]byte, len(bytes))
+	copy(newArray, bytes)
+	return newArray
+}

@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	lines, _ := file.ReadFile("./day18/input.txt")
-	//lines := []string{
-	//	"#########",
-	//	"#b.A.@.a#",
-	//	"#########",
-	//}
+	runMaze("./day18/input.txt")
+	runMaze("./day18/input2.txt")
+}
+
+func runMaze(inputFile string) {
+	lines, _ := file.ReadFile(inputFile)
 	defer timeTrack(time.Now(), "find keys")
 	v := vault.New(lines)
 	fmt.Println(v.MinSteps())

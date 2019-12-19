@@ -16,7 +16,7 @@ const (
 
 type Vault struct {
 	maze      map[geometry.Point]byte
-	entrance  geometry.Point
+	entrances []geometry.Point
 	keys      map[byte]geometry.Point
 	doors     map[byte]geometry.Point
 	distances map[byte][]Distance
@@ -24,9 +24,10 @@ type Vault struct {
 
 func New(vault []string) *Vault {
 	maze := make(map[geometry.Point]byte)
-	var entrance geometry.Point
 	keys := make(map[byte]geometry.Point)
+	var entrances []geometry.Point
 	doors := make(map[byte]geometry.Point)
+	var entranceCounter byte = 0
 
 	for y, line := range vault {
 		for x, char := range line {
@@ -36,7 +37,10 @@ func New(vault []string) *Vault {
 				maze[geometry.NewPoint(x, y)] = spot
 			}
 			if spot == Entrance {
-				entrance = geometry.NewPoint(x, y)
+				entrance := geometry.NewPoint(x, y)
+				keys[entranceCounter] = entrance
+				entranceCounter++
+				entrances = append(entrances, entrance)
 			}
 			if isKey(spot) {
 				keys[spot] = geometry.NewPoint(x, y)
@@ -47,28 +51,32 @@ func New(vault []string) *Vault {
 		}
 	}
 
-	distances := computeDistances(maze, copyAddMap(keys, Entrance, entrance))
+	distances := computeDistances(maze, keys)
 
 	return &Vault{
 		maze:      maze,
-		entrance:  entrance,
 		keys:      keys,
 		doors:     doors,
 		distances: distances,
+		entrances: entrances,
 	}
 }
 
 type CacheKey struct {
-	from        byte
+	from        string
 	currentKeys string
 }
 
 func (v *Vault) MinSteps() int {
-	return v.minSteps(Entrance, "", make(map[CacheKey]int))
+	entranceKeys := make([]byte, len(v.entrances))
+	for i := range v.entrances {
+		entranceKeys[i] = byte(i)
+	}
+	return v.minSteps(entranceKeys, "", make(map[CacheKey]int))
 }
 
-func (v *Vault) minSteps(from byte, currentKeys string, cache map[CacheKey]int) int {
-	iteration := CacheKey{from, currentKeys}
+func (v *Vault) minSteps(from []byte, currentKeys string, cache map[CacheKey]int) int {
+	iteration := CacheKey{string(from), currentKeys}
 	if steps, ok := cache[iteration]; ok {
 		return steps
 	}
@@ -79,7 +87,9 @@ func (v *Vault) minSteps(from byte, currentKeys string, cache map[CacheKey]int) 
 	if len(keys) > 0 {
 		var possibleSteps []int
 		for _, distance := range keys {
-			cur := distance.distance + v.minSteps(distance.key, mystrings.SortString(currentKeys+string(distance.key)), cache)
+			nextFrom := bytes.Copy(from)
+			nextFrom[distance.robot] = distance.key
+			cur := distance.distance + v.minSteps(nextFrom, mystrings.SortString(currentKeys+string(distance.key)), cache)
 			possibleSteps = append(possibleSteps, cur)
 		}
 		steps = arrays.Min(possibleSteps)
@@ -90,16 +100,19 @@ func (v *Vault) minSteps(from byte, currentKeys string, cache map[CacheKey]int) 
 }
 
 type KeyDistance struct {
+	robot    byte
 	key      byte
 	distance int
 }
 
-func (v *Vault) getReachableKeys(from byte, currentKeys string) []KeyDistance {
+func (v *Vault) getReachableKeys(from []byte, currentKeys string) []KeyDistance {
 	var keys []KeyDistance
-	for _, distance := range v.distances[from] {
-		if !hasKey(currentKeys, distance.key) &&
-			len(strings.Trim(string(distance.neededKeys), currentKeys)) == 0 {
-			keys = append(keys, KeyDistance{distance.key, distance.distance})
+	for robot, fromKey := range from {
+		for _, distance := range v.distances[fromKey] {
+			if !hasKey(currentKeys, distance.key) &&
+				len(strings.Trim(string(distance.neededKeys), currentKeys)) == 0 {
+				keys = append(keys, KeyDistance{byte(robot), distance.key, distance.distance})
+			}
 		}
 	}
 	return keys
