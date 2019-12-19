@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code-2019/day18/internal/vault"
 	"github.com/wrporter/advent-of-code-2019/internal/common/file"
-	"log"
+	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
 	"time"
 )
 
@@ -15,12 +15,7 @@ func main() {
 
 func runMaze(inputFile string) {
 	lines, _ := file.ReadFile(inputFile)
-	defer timeTrack(time.Now(), "find keys")
+	defer timeit.Track(time.Now(), "find keys")
 	v := vault.New(lines)
 	fmt.Println(v.MinSteps())
-}
-
-func timeTrack(start time.Time, name string) {
-	elapsed := time.Since(start)
-	log.Printf("%s took %s", name, elapsed)
 }

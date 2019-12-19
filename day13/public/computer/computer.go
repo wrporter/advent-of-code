@@ -54,7 +54,7 @@ func (c *Computer) executeProgram(program *Program) {
 }
 
 func addMemory(code []int) []int {
-	newMemory := make([]int, len(code)<<20)
+	newMemory := make([]int, len(code)+64)
 	copy(newMemory, code)
 	return newMemory
 }
