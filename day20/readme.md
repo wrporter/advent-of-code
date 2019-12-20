@@ -1,4 +1,4 @@
-## Day 18
+## Day 20
 
 This one was a walk in the park compared to day18. Perhaps the biggest part was parsing the portals and the code is pretty hard to read. 
 
