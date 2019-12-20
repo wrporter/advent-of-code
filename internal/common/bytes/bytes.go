@@ -4,6 +4,10 @@ import (
 	"unicode"
 )
 
+func IsLetter(b byte) bool {
+	return unicode.IsLetter(rune(b))
+}
+
 func ToUpper(b byte) byte {
 	return byte(unicode.ToUpper(rune(b)))
 }
