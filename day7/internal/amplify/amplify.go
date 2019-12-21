@@ -2,7 +2,7 @@ package amplify
 
 import (
 	"github.com/wrporter/advent-of-code-2019/day5/public/computer"
-	"github.com/wrporter/advent-of-code-2019/internal/common/arrays"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"github.com/wrporter/advent-of-code-2019/internal/common/probability"
 	"sync"
 )
@@ -54,14 +54,14 @@ func (ac *AmplificationCircuit) Amplify(phaseSettingOptions []int) AmpCombo {
 		thrusterSignal := <-amplifiers[len(amplifiers)-1].output
 		if thrusterSignal > maxCombo.MaxThrusterSignal {
 			maxCombo.MaxThrusterSignal = thrusterSignal
-			maxCombo.PhaseSettings = arrays.CopyInts(phaseSettings)
+			maxCombo.PhaseSettings = ints.Copy(phaseSettings)
 		}
 	})
 	return maxCombo
 }
 
 func (ac *AmplificationCircuit) copyProgram() []int {
-	return arrays.CopyInts(ac.program)
+	return ints.Copy(ac.program)
 }
 
 type Amplifier struct {

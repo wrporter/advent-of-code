@@ -78,3 +78,17 @@ func WrapMod(d, m int) int {
 	}
 	return res
 }
+
+func Copy(array []int) []int {
+	cpy := make([]int, len(array))
+	copy(cpy, array)
+	return cpy
+}
+
+func Copy2D(grid [][]int) [][]int {
+	cpy := make([][]int, len(grid))
+	for i := range grid {
+		cpy[i] = Copy(grid[i])
+	}
+	return cpy
+}
