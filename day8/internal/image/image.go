@@ -2,7 +2,7 @@ package image
 
 import (
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"strings"
 )
 
@@ -42,7 +42,7 @@ func New(data string, width int, height int) *Image {
 }
 
 func (img *Image) Validate() int {
-	minZeroes := math.MaxInt
+	minZeroes := ints.MaxInt
 	result := 0
 
 	for _, layer := range img.Layers {

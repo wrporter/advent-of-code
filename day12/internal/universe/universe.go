@@ -3,7 +3,7 @@ package universe
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"regexp"
 )
 
@@ -89,7 +89,7 @@ func (u *Universe) StepsForFullCycle() int {
 		}
 	}
 
-	return math.LCM(steps[0], steps[1], steps[2])
+	return ints.LCM(steps[0], steps[1], steps[2])
 }
 
 func allAtInitialAxis(u *Universe, initial *Universe, axis int) bool {
@@ -152,11 +152,11 @@ func (p *Particle) ApplyVelocity() {
 }
 
 func (p Particle) PotentialEnergy() int {
-	return math.Abs(p.Position.X) + math.Abs(p.Position.Y) + math.Abs(p.Position.Z)
+	return ints.Abs(p.Position.X) + ints.Abs(p.Position.Y) + ints.Abs(p.Position.Z)
 }
 
 func (p Particle) KineticEnergy() int {
-	return math.Abs(p.Velocity.X) + math.Abs(p.Velocity.Y) + math.Abs(p.Velocity.Z)
+	return ints.Abs(p.Velocity.X) + ints.Abs(p.Velocity.Y) + ints.Abs(p.Velocity.Z)
 }
 
 func (p Particle) TotalEnergy() int {

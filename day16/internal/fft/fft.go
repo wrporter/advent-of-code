@@ -3,7 +3,7 @@ package fft
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"strings"
 )
 
@@ -42,7 +42,7 @@ func Apply(signal string, phases int) string {
 				coef := coefficient(row+1, col+1)
 				sum += inputDigit * coef
 			}
-			next[row] = math.Abs(sum) % 10
+			next[row] = ints.Abs(sum) % 10
 		}
 
 		output, next = next, output

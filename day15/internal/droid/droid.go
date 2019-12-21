@@ -3,7 +3,7 @@ package droid
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"strings"
 	"time"
 )
@@ -105,7 +105,7 @@ func (d *Droid) FindShortestPath(ship [][]string, from Point, to Point) int {
 func (d *Droid) TimeToFillOxygen(ship [][]string, from Point) int {
 	maxTime := 0
 	for _, steps := range d.FindAllPaths(ship, from) {
-		maxTime = math.Max(maxTime, steps)
+		maxTime = ints.Max(maxTime, steps)
 	}
 	return maxTime
 }
@@ -168,14 +168,14 @@ func (d *Droid) mapToGrid(m map[Point]Status) (grid [][]string, start Point, oxy
 	topLeft := Point{0, 0}
 	bottomRight := Point{0, 0}
 	for p := range m {
-		topLeft.X = math.Min(topLeft.X, p.X)
-		topLeft.Y = math.Max(topLeft.Y, p.Y)
-		bottomRight.X = math.Max(bottomRight.X, p.X)
-		bottomRight.Y = math.Min(bottomRight.Y, p.Y)
+		topLeft.X = ints.Min(topLeft.X, p.X)
+		topLeft.Y = ints.Max(topLeft.Y, p.Y)
+		bottomRight.X = ints.Max(bottomRight.X, p.X)
+		bottomRight.Y = ints.Min(bottomRight.Y, p.Y)
 	}
 
-	width := math.Abs(topLeft.X) + math.Abs(bottomRight.X) + 1
-	height := math.Abs(topLeft.Y) + math.Abs(bottomRight.Y) + 1
+	width := ints.Abs(topLeft.X) + ints.Abs(bottomRight.X) + 1
+	height := ints.Abs(topLeft.Y) + ints.Abs(bottomRight.Y) + 1
 	region := make([][]string, height)
 
 	for y := 0; y < height; y++ {

@@ -2,7 +2,7 @@ package nanofactory
 
 import (
 	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	mymath "github.com/wrporter/advent-of-code-2019/internal/common/math"
+	mymath "github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"math"
 	"regexp"
 	"sort"

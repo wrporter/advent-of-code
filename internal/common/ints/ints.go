@@ -1,4 +1,4 @@
-package math
+package ints
 
 import "math"
 
@@ -39,6 +39,10 @@ func Min(x int, y int) int {
 
 func Round(num float64) int {
 	return int(num + math.Copysign(0.5, num))
+}
+
+func Sqrt(num int) int {
+	return int(math.Sqrt(float64(num)))
 }
 
 func ToFixed(num float64, precision int) float64 {

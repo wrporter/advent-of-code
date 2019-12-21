@@ -2,7 +2,7 @@ package paint
 
 import (
 	"github.com/wrporter/advent-of-code-2019/day5/public/computer"
-	"github.com/wrporter/advent-of-code-2019/internal/common/math"
+	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
 	"sync"
 )
 
@@ -76,10 +76,10 @@ func (r *Robot) Paint(startColor int) (int, [][]string) {
 				break
 			}
 
-			topLeft.Col = math.Min(topLeft.Col, r.position.Col)
-			topLeft.Row = math.Max(topLeft.Row, r.position.Row)
-			bottomRight.Col = math.Max(bottomRight.Col, r.position.Col)
-			bottomRight.Row = math.Min(bottomRight.Row, r.position.Row)
+			topLeft.Col = ints.Min(topLeft.Col, r.position.Col)
+			topLeft.Row = ints.Max(topLeft.Row, r.position.Row)
+			bottomRight.Col = ints.Max(bottomRight.Col, r.position.Col)
+			bottomRight.Row = ints.Min(bottomRight.Row, r.position.Row)
 		}
 		wg.Done()
 	}()
@@ -93,8 +93,8 @@ func (r *Robot) Paint(startColor int) (int, [][]string) {
 }
 
 func toPaintedRegion(topLeft Position, bottomRight Position, panels map[Position]int) [][]string {
-	width := math.Abs(topLeft.Col) + math.Abs(bottomRight.Col) + 1
-	height := math.Abs(topLeft.Row) + math.Abs(bottomRight.Row) + 1
+	width := ints.Abs(topLeft.Col) + ints.Abs(bottomRight.Col) + 1
+	height := ints.Abs(topLeft.Row) + ints.Abs(bottomRight.Row) + 1
 	region := make([][]string, height)
 
 	for h := 0; h < height; h++ {
