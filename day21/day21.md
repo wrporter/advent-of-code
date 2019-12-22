@@ -80,4 +80,28 @@ However, if the springdroid successfully makes it across, it will use an output 
 
 Program the springdroid with logic that allows it to survey the hull without falling into space. What amount of hull damage does it report?
 
-To begin, get your puzzle input.
+Your puzzle answer was 19353074.
+
+The first half of this puzzle is complete! It provides one gold star: *
+
+--- Part Two ---
+There are many areas the springdroid can't reach. You flip through the manual and discover a way to increase its sensor range.
+
+Instead of ending your springcode program with WALK, use RUN. Doing this will enable extended sensor mode, capable of sensing ground up to nine tiles away. This data is available in five new read-only registers:
+
+Register E indicates whether there is ground five tiles away.
+Register F indicates whether there is ground six tiles away.
+Register G indicates whether there is ground seven tiles away.
+Register H indicates whether there is ground eight tiles away.
+Register I indicates whether there is ground nine tiles away.
+All other functions remain the same.
+
+Successfully survey the rest of the hull by ending your program with RUN. What amount of hull damage does the springdroid now report?
+
+Your puzzle answer was 1147582556.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.

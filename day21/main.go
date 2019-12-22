@@ -23,13 +23,26 @@ var surveyHullCommands = []string{
 	"WALK",
 }
 
-func (d *SpringDroid) SurveyHull() {
+var surveyEntireHullCommands = []string{
+	"NOT C T",
+	"NOT B J",
+	"OR T J",
+	"NOT A T",
+	"OR T J",
+	"OR E T",
+	"OR H T",
+	"AND D T",
+	"AND T J",
+	"RUN",
+}
+
+func (d *SpringDroid) SurveyHull(commands []string) {
 	cpu := intcode.New()
 	program := intcode.NewProgram(d.code)
 	cpu.Run(program)
 	fmt.Println(receive(program.Output))
 
-	for _, command := range surveyHullCommands {
+	for _, command := range commands {
 		send(program.Input, command)
 	}
 
@@ -61,5 +74,6 @@ func send(ch chan<- int, command string) {
 func main() {
 	code := intcode.ReadCode("./day21/input.txt")
 	droid := &SpringDroid{code}
-	droid.SurveyHull()
+	droid.SurveyHull(surveyHullCommands)
+	droid.SurveyHull(surveyEntireHullCommands)
 }
