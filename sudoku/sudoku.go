@@ -9,32 +9,32 @@ import (
 )
 
 func main() {
-	puzzles := [][][]int{
-		{
-			{0, 0, 4, 3, 0, 0, 0, 0, 0},
-			{0, 0, 1, 2, 0, 0, 0, 7, 0},
-			{5, 7, 3, 9, 1, 0, 0, 0, 0},
-			{6, 3, 5, 0, 0, 2, 0, 0, 0},
-			{0, 0, 8, 0, 0, 0, 6, 0, 0},
-			{0, 0, 0, 6, 0, 0, 4, 8, 5},
-			{0, 0, 0, 0, 9, 8, 5, 2, 3},
-			{0, 4, 0, 0, 0, 3, 9, 0, 0},
-			{0, 0, 0, 0, 0, 7, 8, 0, 0},
-		},
-	}
 	//puzzles := [][][]int{
 	//	{
-	//		{8, 0, 0, 0, 0, 0, 0, 0, 0},
-	//		{0, 0, 3, 6, 0, 0, 0, 0, 0},
-	//		{0, 7, 0, 0, 9, 0, 2, 0, 0},
-	//		{0, 5, 0, 0, 0, 7, 0, 0, 0},
-	//		{0, 0, 0, 0, 4, 5, 7, 0, 0},
-	//		{0, 0, 0, 1, 0, 0, 0, 3, 0},
-	//		{0, 0, 1, 0, 0, 0, 0, 6, 8},
-	//		{0, 0, 8, 5, 0, 0, 0, 1, 0},
-	//		{0, 9, 0, 0, 0, 0, 4, 0, 0},
+	//		{0, 0, 4, 3, 0, 0, 0, 0, 0},
+	//		{0, 0, 1, 2, 0, 0, 0, 7, 0},
+	//		{5, 7, 3, 9, 1, 0, 0, 0, 0},
+	//		{6, 3, 5, 0, 0, 2, 0, 0, 0},
+	//		{0, 0, 8, 0, 0, 0, 6, 0, 0},
+	//		{0, 0, 0, 6, 0, 0, 4, 8, 5},
+	//		{0, 0, 0, 0, 9, 8, 5, 2, 3},
+	//		{0, 4, 0, 0, 0, 3, 9, 0, 0},
+	//		{0, 0, 0, 0, 0, 7, 8, 0, 0},
 	//	},
 	//}
+	puzzles := [][][]int{
+		{
+			{8, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 3, 6, 0, 0, 0, 0, 0},
+			{0, 7, 0, 0, 9, 0, 2, 0, 0},
+			{0, 5, 0, 0, 0, 7, 0, 0, 0},
+			{0, 0, 0, 0, 4, 5, 7, 0, 0},
+			{0, 0, 0, 1, 0, 0, 0, 3, 0},
+			{0, 0, 1, 0, 0, 0, 0, 6, 8},
+			{0, 0, 8, 5, 0, 0, 0, 1, 0},
+			{0, 9, 0, 0, 0, 0, 4, 0, 0},
+		},
+	}
 	Solve(puzzles[0])
 }
 
@@ -67,8 +67,8 @@ func backtrack(board [][]int, original [][]int) ([][]int, bool) {
 	if !exists {
 		return board, true
 	}
-	available := getAvailable(board, row, col)
-	for _, number := range available {
+
+	for _, number := range getAvailableNumbers(board, row, col) {
 		board[row][col] = number
 		PrintBoard(board, original)
 
@@ -78,6 +78,7 @@ func backtrack(board [][]int, original [][]int) ([][]int, bool) {
 			board[row][col] = 0
 		}
 	}
+
 	return board, false
 }
 
@@ -94,12 +95,12 @@ func getNextEmptyCell(board [][]int) (int, int, bool) {
 
 var Numbers = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-func getAvailable(board [][]int, row int, col int) []int {
+func getAvailableNumbers(board [][]int, row int, col int) []int {
 	taken := make(map[int]bool)
 
 	// Filter out numbers already in the row
-	for _, value := range board[row] {
-		taken[value] = true
+	for _, number := range board[row] {
+		taken[number] = true
 	}
 
 	// Filter out numbers already in the column

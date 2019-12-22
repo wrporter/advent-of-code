@@ -106,14 +106,15 @@ func moveJoystick(ball Point, paddle Point) int {
 
 func (s *State) display() {
 	out := &strings.Builder{}
-	out.WriteString("\033c")
+	out.WriteString("\033[2J")
+	out.WriteString("\033[H")
 	out.WriteString(s.render())
 	fmt.Print(out.String())
 	time.Sleep(time.Millisecond * 20)
 }
 
 func (s *State) render() string {
-	return fmt.Sprintf("Score: %d\n%s", s.Score, s.Grid.render())
+	return fmt.Sprintf("\033[32mScore: %d\033[0m\n%s", s.Score, s.Grid.render())
 }
 
 func (g Grid) render() string {
@@ -130,13 +131,13 @@ func (g Grid) render() string {
 func (t Tile) render() string {
 	switch t {
 	case Wall:
-		return "|"
+		return "\u001b[40m \u001b[0m"
 	case Block:
-		return "="
+		return "\u001b[41m \u001b[0m"
 	case Paddle:
 		return "‾"
 	case Ball:
-		return "O"
+		return "\033[34mO\033[0m"
 	default:
 		return " "
 	}
