@@ -92,3 +92,19 @@ func Copy2D(grid [][]int) [][]int {
 	}
 	return cpy
 }
+
+func Prepend(array []int, value int) []int {
+	array = append(array, 0)
+	copy(array[1:], array)
+	array[0] = value
+	return array
+}
+
+func Poll(array []int) (int, []int) {
+	return array[0], array[1:]
+}
+
+func Pop(array []int) (int, []int) {
+	size := len(array)
+	return array[size-1], array[:size-1]
+}
