@@ -16,10 +16,10 @@ type SpringDroid struct {
 }
 
 var surveyHullCommands = []string{
-	"NOT A J",
+	"NOT A J", // if no hull 1 tile away, jump
 	"NOT C T",
 	"AND D T",
-	"OR T J",
+	"OR T J", // if no hull 3 or 4 tiles away, jump
 	"WALK",
 }
 
@@ -28,11 +28,11 @@ var surveyEntireHullCommands = []string{
 	"NOT B J",
 	"OR T J",
 	"NOT A T",
-	"OR T J",
+	"OR T J", // if no hull 1 or 2 or 3 tiles away, jump
 	"OR E T",
 	"OR H T",
 	"AND D T",
-	"AND T J",
+	"AND T J", // if hull 4 tiles away, jump
 	"RUN",
 }
 
