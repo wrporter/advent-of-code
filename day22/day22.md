@@ -151,4 +151,10 @@ You'll need to be careful, though - one wrong move with this many cards and you 
 
 After shuffling your new, giant, factory order deck that many times, what number is on the card that ends up in position 2020?
 
-Although it hasn't changed, you can still get your puzzle input.
+Your puzzle answer was 12706692375144.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should return to your Advent calendar and try another puzzle.
+
+If you still want to see it, you can get your puzzle input.

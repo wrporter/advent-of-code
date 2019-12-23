@@ -7,6 +7,10 @@ const MinUint = 0
 const MaxInt = int(MaxUint >> 1)
 const MinInt = -MaxInt - 1
 
+func Pow(x int, y int) int {
+	return int(math.Pow(float64(x), float64(y)))
+}
+
 func Sign(x int) int {
 	if x < 0 {
 		return -1
