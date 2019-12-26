@@ -106,5 +106,7 @@ To more easily visualize this, I made a floor-plan of the ship :D.
 Once I made a map of the place, I hardcoded commands to traverse the ship and pick up all the **safe** items and get to the `Security Checkpoint`. I then try automatically every combination of items until the door opens and we find Santa!
 
 ```
-A loud, robotic voice says "Analysis complete! You may proceed." and you enter the cockpit. Santa notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly. "Oh, hello! You should be able to get in by typing 1073874948 on the keypad at the main airlock."
+A loud, robotic voice says "Analysis complete! You may proceed." and you enter the cockpit.
+Santa notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.
+"Oh, hello! You should be able to get in by typing 1073874948 on the keypad at the main airlock."
 ```
