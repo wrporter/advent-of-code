@@ -12,13 +12,13 @@ func Combo(values []string, size int, emit func([]string)) {
 	var rc func(int, int)
 
 	rc = func(start, next int) {
-		for end, value := range values {
+		for current, value := range values {
 			s[start] = value
 
 			if start == last {
 				emit(s)
 			} else {
-				rc(start+1, end+1)
+				rc(start+1, current+1)
 			}
 		}
 		return
