@@ -21,7 +21,6 @@ func Combo(values []string, size int, emit func([]string)) {
 				rc(start+1, current+1)
 			}
 		}
-		return
 	}
 
 	rc(0, 0)
