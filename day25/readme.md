@@ -6,7 +6,7 @@ The final day! We're finally about to save Santa!
 
 My initial impression of this is that we will have to do another BFS-type algorithm to navigate around the ship and get the right weight for our droid. 
 
-I was wrong! This was super fun. I used a scanner for input from the console to manually control the droid. I explored the entire ship and catalogued each room.
+I was wrong! This was super fun. The best puzzle was saved for last. Some manual driving of the droid was required to gain an understanding of the problem, then some automation to loop through possibilities. I used a scanner for input from the console to manually control the droid. I explored the entire ship and catalogued each room.
 
 ```
 A - Hull Breach
