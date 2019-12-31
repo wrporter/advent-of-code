@@ -2,8 +2,8 @@ package fft
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"strings"
 )
 

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	vault2 "github.com/wrporter/advent-of-code-2019/2019/day18/internal/vault"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
-	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
+	vault2 "github.com/wrporter/advent-of-code/2019/day18/internal/vault"
+	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"time"
 )
 

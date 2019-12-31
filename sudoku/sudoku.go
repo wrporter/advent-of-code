@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
-	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
 	"time"
 )

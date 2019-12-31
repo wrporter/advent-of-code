@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	tractorbeam2 "github.com/wrporter/advent-of-code-2019/2019/day19/internal/tractorbeam"
-	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
-	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
+	tractorbeam2 "github.com/wrporter/advent-of-code/2019/day19/internal/tractorbeam"
+	"github.com/wrporter/advent-of-code/internal/common/intcode"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"time"
 )
 

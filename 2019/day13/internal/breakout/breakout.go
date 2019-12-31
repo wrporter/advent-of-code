@@ -2,7 +2,7 @@ package breakout
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
+	"github.com/wrporter/advent-of-code/internal/common/intcode"
 	"strings"
 	"time"
 )

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strconv"
 	"strings"
 )
@@ -26,7 +26,7 @@ var DeltaX = map[string]int{"R": 1, "L": -1, "D": 0, "U": 0}
 var DeltaY = map[string]int{"R": 0, "L": 0, "D": -1, "U": 1}
 
 func main() {
-	wireLines, _ := file.ReadFile("./day3/input.txt")
+	wireLines, _ := file.ReadFile("./2019/day3/input.txt")
 	minIntersectionDistance, minStepDistance := Run(wireLines)
 	fmt.Printf("Intersection Distance: %d\nStep Distance: %d", minIntersectionDistance, minStepDistance)
 }

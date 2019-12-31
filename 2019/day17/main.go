@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	scaffold2 "github.com/wrporter/advent-of-code-2019/2019/day17/internal/scaffold"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	scaffold2 "github.com/wrporter/advent-of-code/2019/day17/internal/scaffold"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strings"
 )
 
 func main() {
-	lines, _ := file.ReadFile("./day17/input.txt")
+	lines, _ := file.ReadFile("./2019/day17/input.txt")
 	code, _ := conversion.ToInts(strings.Split(lines[0], ","))
 
 	s := scaffold2.New(code)

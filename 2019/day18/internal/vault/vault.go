@@ -1,10 +1,10 @@
 package vault
 
 import (
-	"github.com/wrporter/advent-of-code-2019/internal/common/arrays"
-	"github.com/wrporter/advent-of-code-2019/internal/common/bytes"
-	"github.com/wrporter/advent-of-code-2019/internal/common/geometry"
-	"github.com/wrporter/advent-of-code-2019/internal/common/mystrings"
+	"github.com/wrporter/advent-of-code/internal/common/arrays"
+	"github.com/wrporter/advent-of-code/internal/common/bytes"
+	"github.com/wrporter/advent-of-code/internal/common/geometry"
+	"github.com/wrporter/advent-of-code/internal/common/mystrings"
 	"strings"
 )
 

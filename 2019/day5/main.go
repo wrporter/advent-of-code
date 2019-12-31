@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	computer2 "github.com/wrporter/advent-of-code-2019/2019/day5/public/computer"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
+	computer2 "github.com/wrporter/advent-of-code/2019/day5/public/computer"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"strings"
 )
 
 func main() {
-	//codeLines, _ := file.ReadFile("./day5/input.txt")
+	//codeLines, _ := file.ReadFile("./2019/day5/input.txt")
 	codeLines := []string{"3,0,4,0,99"}
 	//codeLines := []string{"1002,4,3,4,33"}
 	//codeLines := []string{"1101,100,-1,4,0"}

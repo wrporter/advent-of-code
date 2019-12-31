@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/intcode"
-	"github.com/wrporter/advent-of-code-2019/internal/common/probability"
+	"github.com/wrporter/advent-of-code/internal/common/intcode"
+	"github.com/wrporter/advent-of-code/internal/common/probability"
 	"os"
 	"strings"
 )

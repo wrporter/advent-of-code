@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	universe2 "github.com/wrporter/advent-of-code-2019/2019/day12/internal/universe"
+	universe2 "github.com/wrporter/advent-of-code/2019/day12/internal/universe"
 )
 
 func main() {
-	//lines, _ := file.ReadFile("./day12/input.txt")
+	//lines, _ := file.ReadFile("./2019/day12/input.txt")
 	//u := universe.New(lines)
 	u := universe2.New([]string{
 		"<x=-1, y=0, z=2>",

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
-	"github.com/wrporter/advent-of-code-2019/internal/common/ints"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"math/big"
 	"regexp"
 )
@@ -136,7 +136,7 @@ func New(size int) *Deck {
 }
 
 func main() {
-	techniques, _ := file.ReadFile("./day22/input.txt")
+	techniques, _ := file.ReadFile("./2019/day22/input.txt")
 	deck := New(SpaceDeckSize)
 	deck.Shuffle(techniques)
 	fmt.Println(deck.Find(2019))

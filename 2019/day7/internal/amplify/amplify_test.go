@@ -2,7 +2,7 @@ package amplify
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/2019/day5/public/computer"
+	"github.com/wrporter/advent-of-code/2019/day5/public/computer"
 	"reflect"
 	"testing"
 )

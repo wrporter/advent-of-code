@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	maze2 "github.com/wrporter/advent-of-code-2019/2019/day20/internal/maze"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
-	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
+	maze2 "github.com/wrporter/advent-of-code/2019/day20/internal/maze"
+	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"time"
 )
 

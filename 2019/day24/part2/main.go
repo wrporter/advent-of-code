@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
-	"github.com/wrporter/advent-of-code-2019/internal/common/geometry"
-	"github.com/wrporter/advent-of-code-2019/internal/common/timeit"
+	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/geometry"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
 	"time"
 )
@@ -193,7 +193,7 @@ func (b *BugSensor) Display() {
 }
 
 func main() {
-	lines, _ := file.ReadFile("./day24/input.txt")
+	lines, _ := file.ReadFile("./2019/day24/input.txt")
 	defer timeit.Track(time.Now(), "Time")
 	sensor := New(lines)
 	fmt.Printf("Bugs: %d\n", sensor.CountBugs(200))

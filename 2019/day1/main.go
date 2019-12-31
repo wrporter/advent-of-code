@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 )
 
 func main() {
-	moduleMassStrings, _ := file.ReadFile("./day1/input.txt")
+	moduleMassStrings, _ := file.ReadFile("./2019/day1/input.txt")
 	moduleMasses, _ := conversion.ToInts(moduleMassStrings)
 	fmt.Println(calculateRequiredFuel(moduleMasses))
 }

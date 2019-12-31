@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	fft2 "github.com/wrporter/advent-of-code-2019/2019/day16/internal/fft"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	fft2 "github.com/wrporter/advent-of-code/2019/day16/internal/fft"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 )
 
 func main() {
-	lines, _ := file.ReadFile("./day16/input.txt")
+	lines, _ := file.ReadFile("./2019/day16/input.txt")
 	signal := lines[0]
 	//signal := "03036732577212944063491565474664"
 

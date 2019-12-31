@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strings"
 )
 
@@ -21,7 +21,7 @@ type Instruction struct {
 }
 
 func main() {
-	codeLines, _ := file.ReadFile("./day2/input.txt")
+	codeLines, _ := file.ReadFile("./2019/day2/input.txt")
 	program, _ := conversion.ToInts(strings.Split(codeLines[0], ","))
 	//program := []int{1,9,10,3,2,3,11,0,99,30,40,50}
 	fmt.Println(SolvePart1(copyArray(program)))

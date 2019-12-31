@@ -2,8 +2,8 @@ package intcode
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code-2019/internal/common/conversion"
-	"github.com/wrporter/advent-of-code-2019/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strings"
 )
 
