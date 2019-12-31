@@ -22,3 +22,21 @@ func Test_deliver(t *testing.T) {
 		})
 	}
 }
+
+func Test_deliverWithRobo(t *testing.T) {
+	tests := []struct {
+		directions string
+		want       int
+	}{
+		{"^v", 3},
+		{"^>v<", 3},
+		{"^v^v^v^v^v", 11},
+	}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
+			if got := deliverWithRobo(tt.directions); got != tt.want {
+				t.Errorf("deliverWithRobo() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
