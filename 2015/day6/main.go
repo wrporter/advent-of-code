@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
 )
 
@@ -24,6 +25,38 @@ type instruction struct {
 }
 
 var regex = regexp.MustCompile(`^(turn on|toggle|turn off) (\d+),(\d+) through (\d+),(\d+)$`)
+
+func setupLightBrightness(instructions []string) int {
+	grid := [1000][1000]int{}
+
+	for _, instructionString := range instructions {
+		ins := toInstruction(instructionString)
+
+		for row := ins.startRow; row <= ins.endRow; row++ {
+			for col := ins.startCol; col <= ins.endCol; col++ {
+				if ins.command == on {
+					grid[row][col] += 1
+				} else if ins.command == off {
+					grid[row][col] = ints.Max(0, grid[row][col]-1)
+				} else if ins.command == toggle {
+					grid[row][col] += 2
+				}
+			}
+		}
+	}
+
+	return getTotalBrightness(grid)
+}
+
+func getTotalBrightness(grid [1000][1000]int) int {
+	total := 0
+	for row := range grid {
+		for _, brightness := range grid[row] {
+			total += brightness
+		}
+	}
+	return total
+}
 
 func setupLights(instructions []string) int {
 	grid := [1000][1000]bool{}
@@ -74,4 +107,5 @@ func toInstruction(instructionString string) instruction {
 func main() {
 	instructions, _ := file.ReadFile("./2015/day6/input.txt")
 	fmt.Println(setupLights(instructions))
+	fmt.Println(setupLightBrightness(instructions))
 }
