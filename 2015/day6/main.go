@@ -29,36 +29,25 @@ func setupLights(instructions []string) int {
 	grid := [1000][1000]bool{}
 
 	for _, instructionString := range instructions {
-		match := regex.FindStringSubmatch(instructionString)
-		ins := instruction{
-			command:  instructionCommand(match[1]),
-			startCol: conversion.StringToInt(match[2]),
-			startRow: conversion.StringToInt(match[3]),
-			endCol:   conversion.StringToInt(match[4]),
-			endRow:   conversion.StringToInt(match[5]),
-		}
+		ins := toInstruction(instructionString)
 
-		if ins.command == on {
-			for row := ins.startRow; row <= ins.endRow; row++ {
-				for col := ins.startCol; col <= ins.endCol; col++ {
+		for row := ins.startRow; row <= ins.endRow; row++ {
+			for col := ins.startCol; col <= ins.endCol; col++ {
+				if ins.command == on {
 					grid[row][col] = true
-				}
-			}
-		} else if ins.command == off {
-			for row := ins.startRow; row <= ins.endRow; row++ {
-				for col := ins.startCol; col <= ins.endCol; col++ {
+				} else if ins.command == off {
 					grid[row][col] = false
-				}
-			}
-		} else if ins.command == toggle {
-			for row := ins.startRow; row <= ins.endRow; row++ {
-				for col := ins.startCol; col <= ins.endCol; col++ {
+				} else if ins.command == toggle {
 					grid[row][col] = !grid[row][col]
 				}
 			}
 		}
 	}
 
+	return countOnLights(grid)
+}
+
+func countOnLights(grid [1000][1000]bool) int {
 	numLightsOn := 0
 	for row := range grid {
 		for _, light := range grid[row] {
@@ -68,6 +57,18 @@ func setupLights(instructions []string) int {
 		}
 	}
 	return numLightsOn
+}
+
+func toInstruction(instructionString string) instruction {
+	match := regex.FindStringSubmatch(instructionString)
+	ins := instruction{
+		command:  instructionCommand(match[1]),
+		startCol: conversion.StringToInt(match[2]),
+		startRow: conversion.StringToInt(match[3]),
+		endCol:   conversion.StringToInt(match[4]),
+		endRow:   conversion.StringToInt(match[5]),
+	}
+	return ins
 }
 
 func main() {
