@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func countCharacterDiff(stringLiterals []string) int {
+func countMemoryCharDiff(stringLiterals []string) int {
 	numCodeChars := 0
 	numMemoryChars := 0
 
@@ -19,7 +19,21 @@ func countCharacterDiff(stringLiterals []string) int {
 	return numCodeChars - numMemoryChars
 }
 
+func countEncodedCharDiff(stringLiterals []string) int {
+	numCodeChars := 0
+	numEncodedChars := 0
+
+	for _, stringLiteral := range stringLiterals {
+		numCodeChars += len(stringLiteral)
+		encodedString := strconv.Quote(stringLiteral)
+		numEncodedChars += len(encodedString)
+	}
+
+	return numEncodedChars - numCodeChars
+}
+
 func main() {
 	lines, _ := file.ReadFile("./2015/day8/input.txt")
-	fmt.Println(countCharacterDiff(lines))
+	fmt.Println(countMemoryCharDiff(lines))
+	fmt.Println(countEncodedCharDiff(lines))
 }
