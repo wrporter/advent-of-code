@@ -11,4 +11,8 @@ I then wrote a recursive function for evaluating the signal for a given wire.
 I got into what appeared to either be infinite recursion or just a ton of unnecessary processing and the program just hung. I then added a type of cache for signals we've already computed and we pull from there instead if the value exists already.
 
 I'm sure there is a lot of cleanup that can happen in the expression parsing and evaluating. Maybe I'll clean it up someday or in Part 2.
+
+### Part 2
+
+Oh haha! Nevermind, I'm not going to do refactoring for this part. I just manually overwrote the value in the input file for wire `b` with the signal from `a` in Part 1. Sometimes, you don't need to be clever to solve these puzzles. Just quick for the competition :).
  

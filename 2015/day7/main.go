@@ -133,15 +133,7 @@ func getSignal(tree map[string]instruction, wire string, signals map[string]uint
 
 func main() {
 	lines, _ := file.ReadFile("./2015/day7/input.txt")
-	//lines := []string {
-	//	"123 -> x",
-	//	"456 -> y",
-	//	"x AND y -> d",
-	//	"x OR y -> e",
-	//	"x LSHIFT 2 -> f",
-	//	"y RSHIFT 2 -> g",
-	//	"NOT x -> h",
-	//	"NOT y -> i",
-	//}
 	fmt.Println(assemble(lines, "a"))
+	linesPart2, _ := file.ReadFile("./2015/day7/input-part2.txt")
+	fmt.Println(assemble(linesPart2, "a"))
 }
