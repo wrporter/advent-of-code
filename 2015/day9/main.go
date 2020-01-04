@@ -38,10 +38,12 @@ type Node struct {
 	visited  map[string]bool
 }
 
-func getShortestRoute(distanceStrings []string) ([]string, int) {
+func getShortestRoute(distanceStrings []string) ([]string, int, []string, int) {
 	tickets := parse(distanceStrings)
 	shortest := ints.MaxInt
-	var route []string
+	longest := 0
+	var shortestRoute []string
+	var longestRoute []string
 
 	var queue []*Node
 	for start := range tickets {
@@ -59,7 +61,12 @@ func getShortestRoute(distanceStrings []string) ([]string, int) {
 		if allVisited(tickets, node.visited) {
 			if node.distance < shortest {
 				shortest = node.distance
-				route = buildRoute(node)
+				shortestRoute = buildRoute(node)
+				continue
+			}
+			if node.distance > longest {
+				longest = node.distance
+				longestRoute = buildRoute(node)
 				continue
 			}
 		}
@@ -76,7 +83,7 @@ func getShortestRoute(distanceStrings []string) ([]string, int) {
 		}
 	}
 
-	return route, shortest
+	return shortestRoute, shortest, longestRoute, longest
 }
 
 func buildRoute(node *Node) []string {
@@ -101,7 +108,8 @@ func allVisited(tickets map[string][]Destination, visited map[string]bool) bool 
 func main() {
 	lines, _ := file.ReadFile("./2015/day9/input.txt")
 	fmt.Println(getShortestRoute(lines))
-	//[Tristram AlphaCentauri Norrath Straylight Faerun Snowdin Tambi Arbre] 141
+	// [Tristram AlphaCentauri Norrath Straylight Faerun Snowdin Tambi Arbre] 141
+	// [AlphaCentauri Arbre Tristram Snowdin Straylight Tambi Norrath Faerun] 736
 }
 
 func prepend(array []string, value string) []string {
