@@ -112,3 +112,11 @@ func Pop(array []int) (int, []int) {
 	size := len(array)
 	return array[size-1], array[:size-1]
 }
+
+func Sum(array []int) int {
+	sum := 0
+	for _, value := range array {
+		sum += value
+	}
+	return sum
+}
