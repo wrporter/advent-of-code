@@ -12,6 +12,21 @@ var regex = regexp.MustCompile(`([a-zA-Z]+) would (lose|gain) (\d+) happiness un
 
 func getOptimalRating(ratingStrings []string) (int, []string) {
 	ratings, people := parse(ratingStrings)
+	return getOptimalSeating(people, ratings)
+}
+
+func getOptimalRatingWithMe(ratingStrings []string) (int, []string) {
+	ratings, people := parse(ratingStrings)
+	people = append(people, "Me")
+	// Not needed because Go will use the int empty value of 0
+	// for person := range ratings {
+	// 	 ratings["Me"] = map[string]int{person: 0}
+	// 	 ratings[person]["Me"] = 0
+	// }
+	return getOptimalSeating(people, ratings)
+}
+
+func getOptimalSeating(people []string, ratings map[string]map[string]int) (int, []string) {
 	var maxHappiness int
 	var bestSeatingArrangement []string
 
@@ -75,4 +90,5 @@ func main() {
 	//	"David would gain 41 happiness units by sitting next to Carol.",
 	//}
 	fmt.Println(getOptimalRating(lines))
+	fmt.Println(getOptimalRatingWithMe(lines))
 }
