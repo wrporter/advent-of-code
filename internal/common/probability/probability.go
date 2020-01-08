@@ -44,3 +44,22 @@ func permute(values []int, output func([]int), i int) {
 		values[i], values[j] = values[j], values[i]
 	}
 }
+
+func PermuteStrings(values []string, output func([]string)) {
+	permuteStrings(values, output, 0)
+}
+
+func permuteStrings(values []string, output func([]string), i int) {
+	if i > len(values) {
+		output(values)
+		return
+	}
+
+	permuteStrings(values, output, i+1)
+
+	for j := i + 1; j < len(values); j++ {
+		values[i], values[j] = values[j], values[i]
+		permuteStrings(values, output, i+1)
+		values[i], values[j] = values[j], values[i]
+	}
+}
