@@ -19,13 +19,15 @@ type Reindeer struct {
 type DeerState struct {
 	name     string
 	distance int
+	score    int
 	flyTime  int
 	restTime int
 }
 
-func getWinner(reindeerSpeeds []string, time int) DeerState {
+func getWinner(reindeerSpeeds []string, time int) (DeerState, DeerState) {
 	race, speeds := parse(reindeerSpeeds)
 	leader := &DeerState{distance: 0}
+	winner := &DeerState{score: 0}
 
 	for timeStep := 0; timeStep < time; timeStep++ {
 		for name, state := range race {
@@ -44,10 +46,14 @@ func getWinner(reindeerSpeeds []string, time int) DeerState {
 			if state.distance > leader.distance {
 				leader = state
 			}
+			if state.score > winner.score {
+				winner = state
+			}
 		}
+		leader.score++
 	}
 
-	return *leader
+	return *leader, *winner
 }
 
 func parse(reindeerSpeeds []string) (map[string]*DeerState, map[string]Reindeer) {
