@@ -7,9 +7,11 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 )
 
-func countPermutations(values []int, target int) int {
+func countPermutations(values []int, target int) (int, int) {
 	count := 0
 	var permute func([]int, int, int)
+	sizes := make(map[int]int)
+	min := ints.MaxInt
 
 	permute = func(current []int, target int, index int) {
 		if target < 0 {
@@ -17,6 +19,10 @@ func countPermutations(values []int, target int) int {
 		}
 
 		if target == 0 {
+			size := len(current)
+			sizes[size]++
+			min = ints.Min(min, size)
+
 			count++
 			return
 		}
@@ -29,12 +35,12 @@ func countPermutations(values []int, target int) int {
 	}
 	permute(nil, target, 0)
 
-	return count
+	return count, sizes[min]
 }
 
 func main() {
 	lines, _ := file.ReadFile("./2015/day17/input.txt")
 	containers, _ := conversion.ToInts(lines)
-	//fmt.Println(countPermutations([]int{20, 15, 10, 5, 5}, 25))
+	fmt.Println(countPermutations([]int{20, 15, 10, 5, 5}, 25))
 	fmt.Println(countPermutations(containers, 150))
 }

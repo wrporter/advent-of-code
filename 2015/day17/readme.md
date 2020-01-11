@@ -7,3 +7,7 @@ Ah, the classic Subset Sum problem. I used to ask this question in software engi
 Of course the puzzle also leads us astray by specifically using the word "combinations" when it really means "permutations". Ugh!
 
 But yeah, just gotta go through all the permutations from 1 item to all of them that meet the target value.
+
+### Part 2
+
+I kept track of the counts of all the sizes and the smallest amount of containers to optimize at the end without having to loop over the whole thing again.
