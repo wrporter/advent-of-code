@@ -7,7 +7,7 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 )
 
-func countPermutations(values []int, target int) (int, int) {
+func subsetSum(values []int, target int) (int, int) {
 	count := 0
 	var permute func([]int, int, int)
 	sizes := make(map[int]int)
@@ -41,6 +41,6 @@ func countPermutations(values []int, target int) (int, int) {
 func main() {
 	lines, _ := file.ReadFile("./2015/day17/input.txt")
 	containers, _ := conversion.ToInts(lines)
-	fmt.Println(countPermutations([]int{20, 15, 10, 5, 5}, 25))
-	fmt.Println(countPermutations(containers, 150))
+	fmt.Println(subsetSum([]int{20, 15, 10, 5, 5}, 25))
+	fmt.Println(subsetSum(containers, 150))
 }
