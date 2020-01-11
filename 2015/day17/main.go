@@ -28,9 +28,9 @@ func countPermutations(values []int, target int) (int, int) {
 		}
 
 		for i := index; i < len(values); i++ {
-			next := ints.Copy(current)
-			next = append(next, values[i])
-			permute(next, target-values[i], i+1)
+			current = append(current, values[i])
+			permute(current, target-values[i], i+1)
+			current = current[:len(current)-1]
 		}
 	}
 	permute(nil, target, 0)
