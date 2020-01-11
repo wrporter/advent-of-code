@@ -11,7 +11,7 @@ import (
 var sueRegex = regexp.MustCompile(`(Sue \d+): (.*)`)
 var itemRegex = regexp.MustCompile(`([a-z]+): (\d+)`)
 
-func matchAuntSue(auntSueStrings []string, theOne map[string]int) string {
+func matchAuntSue(auntSueStrings []string, theOne map[string]int, shouldCompare bool) string {
 	for _, auntSueString := range auntSueStrings {
 		match := sueRegex.FindStringSubmatch(auntSueString)
 		sue := make(map[string]int)
@@ -24,7 +24,13 @@ func matchAuntSue(auntSueStrings []string, theOne map[string]int) string {
 
 		found := true
 		for item, quantity := range sue {
-			if theOne[item] != quantity {
+			if shouldCompare {
+				if !((item == "cats" || item == "trees") && quantity >= theOne[item]) &&
+					!((item == "pomeranians" || item == "goldfish") && quantity <= theOne[item]) &&
+					theOne[item] != quantity {
+					found = false
+				}
+			} else if theOne[item] != quantity {
 				found = false
 			}
 		}
@@ -50,5 +56,6 @@ func main() {
 		"cars":        2,
 		"perfumes":    1,
 	}
-	fmt.Println(matchAuntSue(input, theOne))
+	fmt.Println(matchAuntSue(input, theOne, false))
+	fmt.Println(matchAuntSue(input, theOne, true))
 }
