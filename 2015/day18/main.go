@@ -14,8 +14,9 @@ const (
 )
 
 type GameOfLife struct {
-	grid     [][]byte
-	numAlive int
+	grid               [][]byte
+	numAlive           int
+	cornersAlwaysAlive bool
 }
 
 var directions = []geometry.Point{
@@ -29,14 +30,19 @@ var directions = []geometry.Point{
 	{1, 1},
 }
 
-func New(lines []string) *GameOfLife {
+func New(lines []string, cornersAlwaysAlive bool) *GameOfLife {
 	grid := make([][]byte, len(lines))
 	numAlive := 0
 
 	for y, line := range lines {
 		row := make([]byte, len(line))
 		for x, char := range line {
-			row[x] = byte(char)
+			if cornersAlwaysAlive && isCorner(x, y, row, grid) {
+				row[x] = Alive
+			} else {
+				row[x] = byte(char)
+			}
+
 			if row[x] == Alive {
 				numAlive++
 			}
@@ -44,7 +50,14 @@ func New(lines []string) *GameOfLife {
 		grid[y] = row
 	}
 
-	return &GameOfLife{grid, numAlive}
+	return &GameOfLife{grid, numAlive, cornersAlwaysAlive}
+}
+
+func isCorner(x int, y int, row []byte, grid [][]byte) bool {
+	return (x == 0 && y == 0) ||
+		(x == len(row)-1 && y == 0) ||
+		(x == 0 && y == len(grid)-1) ||
+		(x == len(row)-1 && y == len(grid)-1)
 }
 
 func (g *GameOfLife) Step(steps int) {
@@ -63,7 +76,9 @@ func (g *GameOfLife) Next() {
 			numAliveNeighbors := g.getNumAliveNeighbors(y, x)
 			nextRow[x] = Dead
 
-			if (cell == Alive && (numAliveNeighbors == 2 || numAliveNeighbors == 3)) ||
+			if g.cornersAlwaysAlive && isCorner(x, y, nextRow, next) {
+				nextRow[x] = Alive
+			} else if (cell == Alive && (numAliveNeighbors == 2 || numAliveNeighbors == 3)) ||
 				(cell == Dead && numAliveNeighbors == 3) {
 				nextRow[x] = Alive
 			}
@@ -119,8 +134,11 @@ func main() {
 	//	"#.#..#",
 	//	"####..",
 	//}
-	game := New(lines)
+	game := New(lines, false)
 	game.Step(100)
-	game.Display()
+	fmt.Println(game.CountAlive())
+
+	game = New(lines, true)
+	game.Step(100)
 	fmt.Println(game.CountAlive())
 }
