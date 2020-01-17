@@ -3,33 +3,48 @@ package main
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
+	"time"
 )
 
-func getPresents(house int) int {
-	presents := 0
+func part1(minPresents int) int {
+	defer timeit.Track(time.Now(), "part1")
+	for house := 1; ; house++ {
+		presents := 0
+		divisors := ints.GetDivisors(house)
 
-	for elf := 1; elf <= ints.Sqrt(house); elf++ {
-		if house%elf == 0 {
+		for _, elf := range divisors {
 			presents += elf
-			if house/elf != elf {
-				presents += house / elf
-			}
+		}
+		presents *= 10
+
+		if presents >= minPresents {
+			return house
 		}
 	}
-
-	return presents * 10
 }
 
-func getHouseWith(presents int) int {
+func part2(minPresents int) int {
+	defer timeit.Track(time.Now(), "part2")
 	for house := 1; ; house++ {
-		delivered := getPresents(house)
+		presents := 0
+		divisors := ints.GetDivisors(house)
+		divisors = ints.TakeLast(divisors, 50)
 
-		if delivered >= presents {
+		for _, elf := range divisors {
+			if elf*50 >= house {
+				presents += elf
+			}
+		}
+		presents *= 11
+
+		if presents >= minPresents {
 			return house
 		}
 	}
 }
 
 func main() {
-	fmt.Println(getHouseWith(33100000))
+	fmt.Println(part1(33100000))
+	fmt.Println(part2(33100000))
 }

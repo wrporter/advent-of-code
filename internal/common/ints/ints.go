@@ -120,3 +120,29 @@ func Sum(array []int) int {
 	}
 	return sum
 }
+
+func GetDivisors(num int) []int {
+	var divisors []int
+	var lastOnes []int
+
+	end := Sqrt(num)
+	for candidate := 1; candidate <= end; candidate++ {
+		if num%candidate == 0 {
+			divisors = append(divisors, candidate)
+			if num/candidate != candidate {
+				lastOnes = Prepend(lastOnes, num/candidate)
+			}
+		}
+	}
+
+	divisors = append(divisors, lastOnes...)
+	return divisors
+}
+
+func TakeLast(values []int, count int) []int {
+	start := len(values) - count
+	if start < 0 {
+		start = 0
+	}
+	return values[start:]
+}
