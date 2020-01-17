@@ -46,6 +46,25 @@ func replace(target string, value string, startIndex int, endIndex int) string {
 	return target[:startIndex] + value + target[endIndex:]
 }
 
+func stepsToProduceMolecule(replacements map[string][]string, medicineMolecule string) int {
+	steps := 0
+	molecule := medicineMolecule
+
+	for molecule != "e" {
+		for input, outputs := range replacements {
+			for _, output := range outputs {
+				if strings.Contains(molecule, output) {
+					endIndex := strings.LastIndex(molecule, output)
+					molecule = replace(molecule, input, endIndex, endIndex+len(output))
+					steps++
+				}
+			}
+		}
+	}
+
+	return steps
+}
+
 func main() {
 	lines, _ := file.ReadFile("./2015/day19/input.txt")
 	fmt.Println(combinations(parse([]string{
@@ -56,4 +75,5 @@ func main() {
 		"HOHOHO",
 	})))
 	fmt.Println(combinations(parse(lines)))
+	fmt.Println(stepsToProduceMolecule(parse(lines)))
 }
