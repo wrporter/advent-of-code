@@ -26,6 +26,27 @@ func Combo(values []string, size int, emit func([]string)) {
 	rc(0, 0)
 }
 
+func PermuteSize(values []int, startSize int, endSize int, emit func([]int)) {
+	var permuteSize func([]int, int, int)
+
+	permuteSize = func(current []int, index int, size int) {
+		if len(current) == size {
+			emit(current)
+			return
+		}
+
+		for i := index; i < len(values); i++ {
+			current = append(current, values[i])
+			permuteSize(current, i+1, size)
+			current = current[:len(current)-1]
+		}
+	}
+
+	for size := startSize; size <= endSize; size++ {
+		permuteSize(nil, 0, size)
+	}
+}
+
 func Permute(values []int, output func([]int)) {
 	permute(values, output, 0)
 }
