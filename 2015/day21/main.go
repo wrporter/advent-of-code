@@ -112,9 +112,20 @@ func attackDamage(attacker Character, defender Character) int {
 	return attacker.Damage - defender.Armor
 }
 
-func minGoldToDefeatBoss() (int, []Item) {
-	minGold := ints.MaxInt
-	var inventory []Item
+type Purchase struct {
+	gold  int
+	items []Item
+}
+
+func minGoldToDefeatBoss() (Purchase, Purchase) {
+	minWinningPurchase := Purchase{
+		gold:  ints.MaxInt,
+		items: nil,
+	}
+	maxLosingPurchase := Purchase{
+		gold:  0,
+		items: nil,
+	}
 	boss := Character{
 		HitPoints: 100,
 		Damage:    8,
@@ -143,17 +154,26 @@ func minGoldToDefeatBoss() (int, []Item) {
 					player.Equip(item)
 				}
 
-				if playerWins(*player, boss) && cost < minGold {
-					minGold = cost
-					inventory = make([]Item, 0)
-					inventory = append(inventory, weapons...)
-					inventory = append(inventory, armor...)
-					inventory = append(inventory, rings...)
+				if playerWins(*player, boss) && cost < minWinningPurchase.gold {
+					minWinningPurchase.gold = cost
+					minWinningPurchase.items = make([]Item, 0)
+					minWinningPurchase.items = append(minWinningPurchase.items, weapons...)
+					minWinningPurchase.items = append(minWinningPurchase.items, armor...)
+					minWinningPurchase.items = append(minWinningPurchase.items, rings...)
+				}
+
+				if !playerWins(*player, boss) && cost > maxLosingPurchase.gold {
+					maxLosingPurchase.gold = cost
+					maxLosingPurchase.items = make([]Item, 0)
+					maxLosingPurchase.items = append(maxLosingPurchase.items, weapons...)
+					maxLosingPurchase.items = append(maxLosingPurchase.items, armor...)
+					maxLosingPurchase.items = append(maxLosingPurchase.items, rings...)
 				}
 			})
 		})
 	})
-	return minGold, inventory
+
+	return minWinningPurchase, maxLosingPurchase
 }
 
 func main() {
