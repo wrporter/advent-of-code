@@ -75,10 +75,10 @@ func LCM(a, b int, integers ...int) int {
 	return result
 }
 
-func WrapMod(d, m int) int {
-	var res = d % m
-	if (res < 0 && m > 0) || (res > 0 && m < 0) {
-		return res + m
+func WrapMod(value, modulus int) int {
+	var res = value % modulus
+	if (res < 0 && modulus > 0) || (res > 0 && modulus < 0) {
+		return res + modulus
 	}
 	return res
 }
