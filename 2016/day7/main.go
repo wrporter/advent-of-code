@@ -9,7 +9,7 @@ func part1(input []string) int {
 	countSupportingTLS := 0
 
 	for _, ip := range input {
-		if hasABBA(ip) {
+		if supportsTLS(ip) {
 			countSupportingTLS++
 		}
 	}
@@ -17,7 +17,71 @@ func part1(input []string) int {
 	return countSupportingTLS
 }
 
-func hasABBA(ip string) bool {
+func part2(input []string) int {
+	countSupportsSSL := 0
+
+	for _, ip := range input {
+		if supportsSSL(ip) {
+			countSupportsSSL++
+		}
+	}
+
+	return countSupportsSSL
+}
+
+func supportsSSL(ip string) bool {
+	outsideBrackets, insideBrackets := extractSequences(ip)
+	babs := extractABAsOrBABs(insideBrackets)
+	supportsSSL := everyABAHasBAB(outsideBrackets, babs)
+	return supportsSSL
+}
+
+func everyABAHasBAB(outsideBrackets []string, babs []string) bool {
+	hasBAB := func(aba string) bool {
+		return abaHasBAB(aba, babs)
+	}
+
+	for _, sequence := range outsideBrackets {
+		abas := extractABAsOrBABsFromSequence(sequence)
+		if some(abas, hasBAB) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func abaHasBAB(aba string, babs []string) bool {
+	for _, bab := range babs {
+		if aba[0] == bab[1] &&
+			aba[1] == bab[0] &&
+			aba[1] == bab[2] {
+			return true
+		}
+	}
+	return false
+}
+
+func extractABAsOrBABs(sequences []string) []string {
+	var abas []string
+	for _, sequence := range sequences {
+		abas = append(abas, extractABAsOrBABsFromSequence(sequence)...)
+	}
+	return abas
+}
+
+func extractABAsOrBABsFromSequence(sequence string) []string {
+	var abas []string
+	for i := 2; i < len(sequence); i++ {
+		if sequence[i-2] == sequence[i] &&
+			sequence[i] != sequence[i-1] {
+			abas = append(abas, sequence[i-2:i+1])
+		}
+	}
+	return abas
+}
+
+func supportsTLS(ip string) bool {
 	outsideBrackets, insideBrackets := extractSequences(ip)
 
 	if !some(outsideBrackets, hasRepeatBackwardsPair) ||
@@ -79,5 +143,7 @@ func hasRepeatBackwardsPair(str string) bool {
 func main() {
 	input, _ := file.ReadFile("./2016/day7/input.txt")
 	answer1 := part1(input)
+	answer2 := part2(input)
 	fmt.Println(answer1)
+	fmt.Println(answer2)
 }

@@ -13,8 +13,6 @@ How many IPs in your puzzle input support TLS?
 
 Your puzzle answer was 115.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 You would also like to know which IPs support SSL (super-secret listening).
 
@@ -27,3 +25,7 @@ xyx[xyx]xyx does not support SSL (xyx, but no corresponding yxy).
 aaa[kek]eke supports SSL (eke in supernet with corresponding kek in hypernet; the aaa sequence is not related, because the interior character must be different).
 zazbz[bzb]cdb supports SSL (zaz has no corresponding aza, but zbz has a corresponding bzb, even though zaz and zbz overlap).
 How many IPs in your puzzle input support SSL?
+
+Your puzzle answer was 231.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
