@@ -12,15 +12,14 @@ func main() {
 	})
 	fmt.Println("Channels")
 
-	output := make(chan []int, 1)
-	go PermuteSize([]int{1, 2, 3}, 2, 2, output)
-	for values := range output {
+	for values := range PermuteSize([]int{1, 2, 3}, 2, 2) {
 		fmt.Println(values)
 	}
 }
 
-func PermuteSize(values []int, startSize int, endSize int, emit chan<- []int) {
+func PermuteSize(values []int, startSize int, endSize int) <-chan []int {
 	var permuteSize func([]int, int, int)
+	emit := make(chan []int, 1)
 
 	permuteSize = func(current []int, index int, size int) {
 		if len(current) == size {
@@ -33,11 +32,15 @@ func PermuteSize(values []int, startSize int, endSize int, emit chan<- []int) {
 			permuteSize(current, i+1, size)
 			current = current[:len(current)-1]
 		}
+
+		if index == 0 && size == startSize {
+			close(emit)
+		}
 	}
 
 	for size := startSize; size <= endSize; size++ {
-		permuteSize(nil, 0, size)
+		go permuteSize(nil, 0, size)
 	}
 
-	close(emit)
+	return emit
 }
