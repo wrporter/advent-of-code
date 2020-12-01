@@ -26,6 +26,26 @@ func Combo(values []string, size int, emit func([]string)) {
 	rc(0, 0)
 }
 
+func ComboInts(values []int, size int, emit func([]int)) {
+	s := make([]int, size)
+	last := size - 1
+	var rc func(int, int)
+
+	rc = func(start, next int) {
+		for current, value := range values {
+			s[start] = value
+
+			if start == last {
+				emit(s)
+			} else {
+				rc(start+1, current+1)
+			}
+		}
+	}
+
+	rc(0, 0)
+}
+
 func PermuteSize(values []int, startSize int, endSize int, emit func([]int)) {
 	var permuteSize func([]int, int, int)
 
