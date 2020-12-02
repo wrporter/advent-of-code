@@ -7,17 +7,17 @@ import (
 )
 
 func main() {
-	probability.PermuteSize([]int{1, 2, 3}, 2, 2, func(ints []int) {
+	probability.ComboSize([]int{1, 2, 3}, 2, 2, func(ints []int) {
 		fmt.Println(ints)
 	})
 	fmt.Println("Channels")
 
-	for values := range PermuteSize([]int{1, 2, 3}, 2, 2) {
+	for values := range ComboSize([]int{1, 2, 3}, 2, 2) {
 		fmt.Println(values)
 	}
 }
 
-func PermuteSize(values []int, startSize int, endSize int) <-chan []int {
+func ComboSize(values []int, startSize int, endSize int) <-chan []int {
 	var permuteSize func([]int, int, int)
 	emit := make(chan []int, 1)
 

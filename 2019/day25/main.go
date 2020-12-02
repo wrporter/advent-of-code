@@ -97,7 +97,7 @@ func (d *Droid) Deploy(manual bool) {
 				d.drop(inventory)
 
 				// Try all combinations of items until the droid is the correct weight
-				probability.ComboSpots(safeItems, 1, len(safeItems), func(candidateItems []string) {
+				probability.PermuteSpots(safeItems, 1, len(safeItems), func(candidateItems []string) {
 					d.take(candidateItems)
 					sendAndReceive(d.program, "inv")
 					sendAndReceive(d.program, "north")

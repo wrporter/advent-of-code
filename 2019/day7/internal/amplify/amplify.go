@@ -30,7 +30,7 @@ func New(program []int) *AmplificationCircuit {
 func (ac *AmplificationCircuit) Amplify(phaseSettingOptions []int) AmpCombo {
 	maxCombo := AmpCombo{0, nil}
 
-	probability.Permute(phaseSettingOptions, func(phaseSettings []int) {
+	probability.Combo(phaseSettingOptions, func(phaseSettings []int) {
 		amplifiers := make([]*Amplifier, 0)
 		input := make(chan int, 2)
 		var wg sync.WaitGroup

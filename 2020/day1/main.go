@@ -35,7 +35,7 @@ func part1(entries []int) int {
 
 func part1b(entries []int) int {
 	result := -1
-	probability.PermuteSize(entries, 2, 2, func(ints []int) {
+	probability.ComboSize(entries, 2, 2, func(ints []int) {
 		if ints[0]+ints[1] == 2020 {
 			result = ints[0] * ints[1]
 		}

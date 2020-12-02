@@ -30,7 +30,7 @@ func getOptimalSeating(people []string, ratings map[string]map[string]int) (int,
 	var maxHappiness int
 	var bestSeatingArrangement []string
 
-	probability.PermuteStrings(people, func(table []string) {
+	probability.ComboStrings(people, func(table []string) {
 		happiness := 0
 		for i, person := range table {
 			if i == 0 {
