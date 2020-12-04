@@ -1,21 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/probability"
 )
 
 func main() {
+	out.Day(2020, 1)
 	input, _ := file.ReadFile("./2020/day1/input.txt")
 	entries, _ := conversion.ToInts(input)
-	answer1 := part1(entries)
 	answer1b := part1b(entries)
+	out.Part1(answer1b)
 	answer2 := part2(entries)
-	fmt.Println(answer1)
-	fmt.Println(answer1b)
-	fmt.Println(answer2)
+	out.Part2(answer2)
 }
 
 func part1(entries []int) int {

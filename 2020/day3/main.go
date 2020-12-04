@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/out"
 )
 
 type Slope struct {
@@ -11,9 +11,10 @@ type Slope struct {
 }
 
 func main() {
+	out.Day(2020, 3)
 	input, _ := file.ReadFile("./2020/day3/input.txt")
 	answer1 := part1(input, 3, 1)
-	fmt.Println(answer1)
+	out.Part1(answer1)
 	answer2 := part2(input, []Slope{
 		{1, 1},
 		{3, 1},
@@ -21,7 +22,7 @@ func main() {
 		{7, 1},
 		{1, 2},
 	})
-	fmt.Println(answer2)
+	out.Part2(answer2)
 }
 
 func part1(input []string, dx int, dy int) int {

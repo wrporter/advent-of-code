@@ -1,18 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/out"
 	"regexp"
 )
 
 func main() {
+	out.Day(2020, 2)
 	input, _ := file.ReadFile("./2020/day2/input.txt")
 	answer1 := part1(input)
-	fmt.Println(answer1)
+	out.Part1(answer1)
 	answer2 := part2(input)
-	fmt.Println(answer2)
+	out.Part2(answer2)
 }
 
 var regex = regexp.MustCompile(`^(\d+)-(\d+) ([a-z]+): ([a-z]+)$`)
