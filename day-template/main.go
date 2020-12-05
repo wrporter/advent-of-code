@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 )
 
 func main() {
-	out.Day(2020, 4)
-	input, _ := file.ReadFile("./2020/day4/input.txt")
+	year, day := 2020, 5
+	out.Day(year, day)
+	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)
