@@ -47,7 +47,7 @@ func part2(input []string) interface{} {
 
 	previous := seatIDs[0] - 1
 	for _, seatID := range seatIDs {
-		if seatID-previous != 1 {
+		if (seatID - 1) != previous {
 			return seatID - 1
 		}
 		previous = seatID
