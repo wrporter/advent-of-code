@@ -29,3 +29,21 @@ func Reverse(s string) string {
 	}
 	return string(runes)
 }
+
+func Every(values []string, test func(string) bool) bool {
+	for _, value := range values {
+		if !test(value) {
+			return false
+		}
+	}
+	return true
+}
+
+func Some(values []string, test func(string) bool) bool {
+	for _, value := range values {
+		if test(value) {
+			return true
+		}
+	}
+	return false
+}
