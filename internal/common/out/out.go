@@ -10,9 +10,9 @@ func Day(year int, day int) {
 }
 
 func Part1(answer interface{}) {
-	fmt.Printf("🎄 %sPart1: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
+	fmt.Printf("⭐  %sPart1: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
 }
 
 func Part2(answer interface{}) {
-	fmt.Printf("🎄 %sPart2: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
+	fmt.Printf("⭐  %sPart2: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
 }
