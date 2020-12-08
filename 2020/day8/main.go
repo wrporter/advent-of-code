@@ -32,11 +32,11 @@ func part1(input []string) interface{} {
 		visited[index] = true
 
 		instruction := instructions[index]
-		if instruction.Operation == ACC {
+		if instruction.Operation == acc {
 			accumulator += instruction.Argument
-		} else if instruction.Operation == JMP {
+		} else if instruction.Operation == jmp {
 			index += instruction.Argument - 1
-		} else if instruction.Operation == NOP {
+		} else if instruction.Operation == nop {
 			// do nothing
 		}
 	}
@@ -49,7 +49,7 @@ func part2(input []string) interface{} {
 
 	var tmp Operation
 	for i, instruction := range instructions {
-		if instruction.Operation == NOP || instruction.Operation == JMP {
+		if instruction.Operation == nop || instruction.Operation == jmp {
 			tmp = instruction.Operation
 			instructions[i].Operation = opposite(instruction.Operation)
 
@@ -65,10 +65,10 @@ func part2(input []string) interface{} {
 }
 
 func opposite(operation Operation) Operation {
-	if operation == JMP {
-		return NOP
+	if operation == jmp {
+		return nop
 	}
-	return JMP
+	return jmp
 }
 
 func tryInstructionSet(instructions []Instruction) (int, bool) {
@@ -82,11 +82,11 @@ func tryInstructionSet(instructions []Instruction) (int, bool) {
 		visited[index] = true
 
 		instruction := instructions[index]
-		if instruction.Operation == ACC {
+		if instruction.Operation == acc {
 			accumulator += instruction.Argument
-		} else if instruction.Operation == JMP {
+		} else if instruction.Operation == jmp {
 			index += instruction.Argument - 1
-		} else if instruction.Operation == NOP {
+		} else if instruction.Operation == nop {
 			// do nothing
 		}
 	}
@@ -103,9 +103,9 @@ type (
 )
 
 const (
-	ACC Operation = "acc"
-	JMP Operation = "jmp"
-	NOP Operation = "nop"
+	acc Operation = "acc"
+	jmp Operation = "jmp"
+	nop Operation = "nop"
 )
 
 var regex = regexp.MustCompile(`^(nop|acc|jmp) (-|\+)(\d+)$`)
