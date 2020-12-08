@@ -22,25 +22,7 @@ func main() {
 
 func part1(input []string) interface{} {
 	instructions := parseInstructions(input)
-
-	visited := make(map[int]bool)
-	accumulator := 0
-	for index := 0; ; index++ {
-		if visited[index] {
-			break
-		}
-		visited[index] = true
-
-		instruction := instructions[index]
-		if instruction.Operation == acc {
-			accumulator += instruction.Argument
-		} else if instruction.Operation == jmp {
-			index += instruction.Argument - 1
-		} else if instruction.Operation == nop {
-			// do nothing
-		}
-	}
-
+	accumulator, _ := run(instructions)
 	return accumulator
 }
 
@@ -49,12 +31,13 @@ func part2(input []string) interface{} {
 
 	var tmp Operation
 	for i, instruction := range instructions {
-		if instruction.Operation == nop || instruction.Operation == jmp {
+		if instruction.Operation == Nop || instruction.Operation == Jmp {
 			tmp = instruction.Operation
 			instructions[i].Operation = opposite(instruction.Operation)
 
-			accumulator, terminated := tryInstructionSet(instructions)
+			accumulator, terminated := run(instructions)
 			instructions[i].Operation = tmp
+
 			if terminated {
 				return accumulator
 			}
@@ -65,29 +48,29 @@ func part2(input []string) interface{} {
 }
 
 func opposite(operation Operation) Operation {
-	if operation == jmp {
-		return nop
+	if operation == Jmp {
+		return Nop
 	}
-	return jmp
+	return Jmp
 }
 
-func tryInstructionSet(instructions []Instruction) (int, bool) {
+func run(instructions []Instruction) (accumulator int, terminated bool) {
 	visited := make(map[int]bool)
-	accumulator := 0
 
-	for index := 0; index < len(instructions); index++ {
+	for index := 0; index < len(instructions); {
 		if visited[index] {
 			return accumulator, false
 		}
 		visited[index] = true
 
 		instruction := instructions[index]
-		if instruction.Operation == acc {
+		if instruction.Operation == Acc {
 			accumulator += instruction.Argument
-		} else if instruction.Operation == jmp {
-			index += instruction.Argument - 1
-		} else if instruction.Operation == nop {
-			// do nothing
+			index++
+		} else if instruction.Operation == Jmp {
+			index += instruction.Argument
+		} else if instruction.Operation == Nop {
+			index++
 		}
 	}
 
@@ -103,25 +86,34 @@ type (
 )
 
 const (
-	acc Operation = "acc"
-	jmp Operation = "jmp"
-	nop Operation = "nop"
+	Acc Operation = "acc"
+	Jmp Operation = "jmp"
+	Nop Operation = "nop"
 )
 
-var regex = regexp.MustCompile(`^(nop|acc|jmp) (-|\+)(\d+)$`)
+var regex = regexp.MustCompile(`^(nop|acc|jmp) ([-+])(\d+)$`)
 
 func parseInstructions(input []string) []Instruction {
-	var instructions []Instruction
-	for _, line := range input {
-		match := regex.FindStringSubmatch(line)
-		operation := Operation(match[1])
-		sign := match[2]
-		argument := conversion.StringToInt(match[3])
-		if sign == "-" {
-			argument = -argument
-		}
-
-		instructions = append(instructions, Instruction{operation, argument})
+	instructions := make([]Instruction, len(input))
+	for i, line := range input {
+		instructions[i] = parseInstruction(line)
 	}
 	return instructions
+}
+
+func parseInstruction(line string) Instruction {
+	match := regex.FindStringSubmatch(line)
+	operation := Operation(match[1])
+	argument := parseArgument(match[2], match[3])
+
+	instruction := Instruction{operation, argument}
+	return instruction
+}
+
+func parseArgument(sign string, value string) int {
+	argument := conversion.StringToInt(value)
+	if sign == "-" {
+		return -argument
+	}
+	return argument
 }
