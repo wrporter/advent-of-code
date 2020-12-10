@@ -6,7 +6,7 @@ This one looked daunting at first. But I knew I could easily use a combination g
 
 For Part 2 I knew I just needed to compute the sum of ranges of values up until the current one. Then I sort the values and return the sum of the smallest and largest numbers.
 
-I was excited with how quickly I finished (Part 1 by `00:09:59` and Part 2 by `00:15:47`, but when I looked at the leaderboard, I was sorely disappointed that I came in 1441st place...
+I was excited with how quickly I finished (Part 1 by `00:09:59` and Part 2 by `00:15:47`, but when I looked at the leaderboard, I was sorely disappointed that I came in 1441st place... Definitely a trait of (1) not being a competitive coder, and (2) using a strongly typed language that also has limited tools, unlike Python.
 
 ## Puzzle
 
