@@ -22,79 +22,79 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	phases := 0
 	current := runes.Copy2D(conversion.ToRunes(input))
 
-	for ; ; phases++ {
+	for {
 		next := runes.Copy2D(current)
-		for row, line := range next {
-			for col, char := range line {
+
+		for y, line := range next {
+			for x, char := range line {
 				switch char {
-				case '.':
 				case 'L':
-					if numAdjacentOccupied(current, row, col) == 0 {
-						next[row][col] = '#'
+					if numAdjacentOccupied(current, y, x) == 0 {
+						next[y][x] = '#'
 					}
 				case '#':
-					if numAdjacentOccupied(current, row, col) >= 4 {
-						next[row][col] = 'L'
+					if numAdjacentOccupied(current, y, x) >= 4 {
+						next[y][x] = 'L'
 					}
 				}
 			}
 		}
 
-		if countOccupied(current) == countOccupied(next) {
-			return countOccupied(next)
+		if nextOccupied := numOccupied(next); nextOccupied == numOccupied(current) {
+			return nextOccupied
 		}
 		current = next
 	}
 }
 
 func part2(input []string) interface{} {
-	phases := 0
 	current := runes.Copy2D(conversion.ToRunes(input))
 
-	for ; ; phases++ {
+	for {
 		next := runes.Copy2D(current)
-		for row, line := range next {
-			for col, char := range line {
+
+		for y, line := range next {
+			for x, char := range line {
 				switch char {
-				case '.':
 				case 'L':
-					if numAdjacentOccupiedSeen(current, row, col) == 0 {
-						next[row][col] = '#'
+					if numSeenOccupied(current, y, x) == 0 {
+						next[y][x] = '#'
 					}
 				case '#':
-					if numAdjacentOccupiedSeen(current, row, col) >= 5 {
-						next[row][col] = 'L'
+					if numSeenOccupied(current, y, x) >= 5 {
+						next[y][x] = 'L'
 					}
 				}
 			}
 		}
 
-		//fmt.Println(runes.GridToString(next))
-
-		if countOccupied(current) == countOccupied(next) {
-			return countOccupied(next)
+		if nextOccupied := numOccupied(next); nextOccupied == numOccupied(current) {
+			return nextOccupied
 		}
 		current = next
 	}
 }
 
-func numAdjacentOccupiedSeen(input [][]rune, row int, col int) int {
+func numSeenOccupied(grid [][]rune, row int, col int) int {
 	count := 0
 	for _, direction := range geometry.AllDirections {
 		y := row + direction.Y
 		x := col + direction.X
 
-		for y >= 0 && y < len(input) &&
-			x >= 0 && x < len(input[y]) &&
-			input[y][x] != 'L' {
+		for y >= 0 && y < len(grid) &&
+			x >= 0 && x < len(grid[y]) {
 
-			if input[y][x] == '#' {
+			if grid[y][x] == 'L' {
+				break
+			}
+
+			if grid[y][x] == '#' {
 				count++
 				break
 			}
+
 			y += direction.Y
 			x += direction.X
 		}
@@ -102,22 +102,22 @@ func numAdjacentOccupiedSeen(input [][]rune, row int, col int) int {
 	return count
 }
 
-func numAdjacentOccupied(input [][]rune, row int, col int) int {
+func numAdjacentOccupied(grid [][]rune, row int, col int) int {
 	count := 0
 	for _, direction := range geometry.AllDirections {
 		y := row + direction.Y
 		x := col + direction.X
 
-		if y >= 0 && y < len(input) &&
-			x >= 0 && x < len(input[y]) &&
-			input[y][x] == '#' {
+		if y >= 0 && y < len(grid) &&
+			x >= 0 && x < len(grid[y]) &&
+			grid[y][x] == '#' {
 			count++
 		}
 	}
 	return count
 }
 
-func countOccupied(grid [][]rune) int {
+func numOccupied(grid [][]rune) int {
 	count := 0
 	for _, row := range grid {
 		for _, spot := range row {
