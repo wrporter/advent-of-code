@@ -20,78 +20,116 @@ func main() {
 }
 
 func part1(input []string) interface{} {
+	//player := Character{
+	//	HitPoints: 50,
+	//	Mana:      500,
+	//}
+	//boss := Character{
+	//	HitPoints: 71,
+	//	Damage:    10,
+	//}
+	//player := Character{
+	//	HitPoints: 10,
+	//	Mana:      250,
+	//}
+	//boss := Character{
+	//	HitPoints: 13,
+	//	Damage:    9,
+	//}
 	player := Character{
 		HitPoints: 10,
 		Mana:      250,
 	}
 	boss := Character{
-		HitPoints: 13,
+		HitPoints: 14,
 		Damage:    9,
 	}
 
-	min := ints.MaxInt
-	for _, spell := range spells {
-		won, mana := fight(copyCharacter(player), copyCharacter(boss), &spell)
-		if won {
-			min = ints.Min(min, mana)
-		}
-	}
-
-	return min
+	return winMinMana(player, boss)
 }
 
 func part2(input []string) interface{} {
 	return 0
 }
 
-func fight(player, boss *Character, spell *Spell) (bool, int) {
-	minMana := player.Mana
-	win := false
-	if player.HitPoints <= 0 || boss.HitPoints <= 0 /* OR cannot cast any spell */ {
-		return player.HitPoints > 0 /* AND can cast any spell */, player.Mana
-	}
+func winMinMana(startPlayer, startBoss Character) int {
+	queue := []State{{startPlayer, startBoss}}
+	var state State
+	minMana := ints.MaxInt
 
-	// Player Turn
-	applyEffects(player)
-	applyEffects(boss)
-	player.HitPoints += spell.Heal
-	player.Mana -= spell.ManaCost
-	boss.HitPoints -= spell.Damage
-	if spell.Effect != nil {
-		if spell.Effect.Self {
-			player.Effects = append(player.Effects, spell.Effect)
-		} else {
-			boss.Effects = append(boss.Effects, spell.Effect)
+	for len(queue) > 0 {
+		state, queue = queue[len(queue)-1], queue[:len(queue)-1]
+
+		if state.Player.HitPoints <= 0 {
+			continue
 		}
-	}
 
-	// Boss Turn
-	applyEffects(player)
-	applyEffects(boss)
-	if boss.HitPoints <= 0 {
-		return true, player.Mana
-	}
-	player.HitPoints -= boss.Damage
-
-	for _, spell := range spells {
-		if spell.ManaCost <= player.Mana {
-			playerCopy := copyCharacter(player)
-			bossCopy := copyCharacter(boss)
-
-			won, mana := fight(playerCopy, bossCopy, &spell)
-			minMana = ints.Min(minMana, mana)
-			if won {
-				return true, minMana
+		for _, spell := range spells {
+			if state.Player.Mana < spell.ManaCost || spellActive(state.Player, spell) || spellActive(state.Boss, spell) {
+				continue
 			}
-			win = won
+			nextState := copyState(state)
+			player, boss := &nextState.Player, &nextState.Boss
+
+			// Player Turn
+			applyEffects(player)
+			applyEffects(boss)
+			if !canCastSpell(*player) {
+				break
+			}
+			if boss.HitPoints <= 0 {
+				minMana = ints.Min(minMana, player.ManaSpent)
+				continue
+			}
+
+			player.HitPoints += spell.Heal
+			player.Mana -= spell.ManaCost
+			player.ManaSpent += spell.ManaCost
+			boss.HitPoints -= spell.Damage
+			if spell.Effect.NumTurns > 0 {
+				if spell.Effect.Self {
+					player.Effects = append(player.Effects, spell.Effect)
+				} else {
+					boss.Effects = append(boss.Effects, spell.Effect)
+				}
+			}
+
+			// Boss Turn
+			applyEffects(player)
+			applyEffects(boss)
+			if boss.HitPoints <= 0 {
+				minMana = ints.Min(minMana, player.ManaSpent)
+				continue
+			}
+			player.HitPoints -= boss.Damage - player.Armor
+
+			queue = append(queue, nextState)
 		}
 	}
 
-	return win, minMana
+	return minMana
+}
+
+func spellActive(char Character, spell Spell) bool {
+	for _, effect := range char.Effects {
+		if spell.Effect.Name == effect.Name && effect.NumTurns > 1 {
+			return true
+		}
+	}
+	return false
+}
+
+func canCastSpell(player Character) bool {
+	for _, spell := range spells {
+		if player.Mana >= spell.ManaCost {
+			return true
+		}
+	}
+	return false
 }
 
 func applyEffects(character *Character) {
-	var remainingEffects []*Effect
+	var remainingEffects []Effect
 	for _, effect := range character.Effects {
 		character.Armor = effect.ArmorIncrease
 		character.Mana += effect.AddMana
@@ -105,23 +143,33 @@ func applyEffects(character *Character) {
 	character.Effects = remainingEffects
 }
 
-func copyCharacter(char *Character) *Character {
-	return &Character{
-		HitPoints: char.HitPoints,
-		Damage:    char.Damage,
-		Mana:      char.Mana,
-		Armor:     char.Armor,
-		Effects:   char.Effects,
+func copyCharacter(char Character) Character {
+	newChar := char
+	newChar.Effects = make([]Effect, len(char.Effects))
+	copy(newChar.Effects, char.Effects)
+	return newChar
+}
+
+func copyState(state State) State {
+	return State{
+		Player: copyCharacter(state.Player),
+		Boss:   copyCharacter(state.Boss),
 	}
 }
 
 type (
+	State struct {
+		Player Character
+		Boss   Character
+	}
+
 	Character struct {
 		HitPoints int
 		Damage    int
 		Mana      int
 		Armor     int
-		Effects   []*Effect
+		Effects   []Effect
+		ManaSpent int
 	}
 
 	Spell struct {
@@ -129,10 +177,11 @@ type (
 		ManaCost int
 		Damage   int
 		Heal     int
-		Effect   *Effect
+		Effect   Effect
 	}
 
 	Effect struct {
+		Name          string
 		Self          bool
 		NumTurns      int
 		ArmorIncrease int
@@ -156,7 +205,8 @@ var spells = []Spell{
 	{
 		Name:     "Shield",
 		ManaCost: 113,
-		Effect: &Effect{
+		Effect: Effect{
+			Name:          "Shield",
 			Self:          true,
 			NumTurns:      6,
 			ArmorIncrease: 7,
@@ -165,7 +215,8 @@ var spells = []Spell{
 	{
 		Name:     "Poison",
 		ManaCost: 173,
-		Effect: &Effect{
+		Effect: Effect{
+			Name:     "Poison",
 			Self:     false,
 			NumTurns: 6,
 			Damage:   3,
@@ -174,10 +225,11 @@ var spells = []Spell{
 	{
 		Name:     "Recharge",
 		ManaCost: 229,
-		Effect: &Effect{
-			Self:          true,
-			NumTurns:      6,
-			ArmorIncrease: 7,
+		Effect: Effect{
+			Name:     "Recharge",
+			Self:     true,
+			NumTurns: 5,
+			AddMana:  101,
 		},
 	},
 }
