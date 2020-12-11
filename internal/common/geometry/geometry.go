@@ -10,6 +10,18 @@ const (
 )
 
 var Directions = []Direction{Up, Right, Down, Left}
+
+var AllDirections = []Point{
+	{-1, -1},
+	{0, -1},
+	{1, -1},
+	{-1, 0},
+	{1, 0},
+	{-1, 1},
+	{0, 1},
+	{1, 1},
+}
+
 var DirectionModifiers = []Point{
 	{0, -1},
 	{1, 0},

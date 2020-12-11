@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/runes"
 )
 
 func main() {
@@ -21,10 +23,10 @@ func main() {
 
 func part1(input []string) interface{} {
 	phases := 0
-	current := Copy2D(toGrid(input))
+	current := runes.Copy2D(conversion.ToRunes(input))
 
 	for ; ; phases++ {
-		next := Copy2D(current)
+		next := runes.Copy2D(current)
 		for row, line := range next {
 			for col, char := range line {
 				switch char {
@@ -50,10 +52,10 @@ func part1(input []string) interface{} {
 
 func part2(input []string) interface{} {
 	phases := 0
-	current := Copy2D(toGrid(input))
+	current := runes.Copy2D(conversion.ToRunes(input))
 
 	for ; ; phases++ {
-		next := Copy2D(current)
+		next := runes.Copy2D(current)
 		for row, line := range next {
 			for col, char := range line {
 				switch char {
@@ -70,7 +72,7 @@ func part2(input []string) interface{} {
 			}
 		}
 
-		//fmt.Println(renderGrid(next))
+		//fmt.Println(runes.GridToString(next))
 
 		if countOccupied(current) == countOccupied(next) {
 			return countOccupied(next)
@@ -79,33 +81,16 @@ func part2(input []string) interface{} {
 	}
 }
 
-var directions = []geometry.Point{
-	{-1, -1},
-	{0, -1},
-	{1, -1},
-	{-1, 0},
-	{1, 0},
-	{-1, 1},
-	{0, 1},
-	{1, 1},
-}
-
-func renderGrid(grid [][]rune) string {
-	result := ""
-	for _, row := range grid {
-		for _, spot := range row {
-			result += string(spot)
-		}
-		result += "\n"
-	}
-	return result
-}
-
 func numAdjacentOccupiedSeen(input [][]rune, row int, col int) int {
 	count := 0
-	for _, direction := range directions {
-		y, x := row+direction.Y, col+direction.X
-		for y >= 0 && y < len(input) && x >= 0 && x < len(input[y]) && input[y][x] != 'L' {
+	for _, direction := range geometry.AllDirections {
+		y := row + direction.Y
+		x := col + direction.X
+
+		for y >= 0 && y < len(input) &&
+			x >= 0 && x < len(input[y]) &&
+			input[y][x] != 'L' {
+
 			if input[y][x] == '#' {
 				count++
 				break
@@ -119,10 +104,13 @@ func numAdjacentOccupiedSeen(input [][]rune, row int, col int) int {
 
 func numAdjacentOccupied(input [][]rune, row int, col int) int {
 	count := 0
-	for _, direction := range directions {
+	for _, direction := range geometry.AllDirections {
 		y := row + direction.Y
 		x := col + direction.X
-		if y >= 0 && y < len(input) && x >= 0 && x < len(input[y]) && input[y][x] == '#' {
+
+		if y >= 0 && y < len(input) &&
+			x >= 0 && x < len(input[y]) &&
+			input[y][x] == '#' {
 			count++
 		}
 	}
@@ -132,39 +120,11 @@ func numAdjacentOccupied(input [][]rune, row int, col int) int {
 func countOccupied(grid [][]rune) int {
 	count := 0
 	for _, row := range grid {
-		for _, col := range row {
-			if col == '#' {
+		for _, spot := range row {
+			if spot == '#' {
 				count++
 			}
 		}
 	}
 	return count
-}
-
-func toGrid(lines []string) [][]rune {
-	grid := make([][]rune, len(lines))
-
-	for row, line := range lines {
-		grid[row] = make([]rune, len(line))
-
-		for col, char := range line {
-			grid[row][col] = char
-		}
-	}
-
-	return grid
-}
-
-func Copy(array []rune) []rune {
-	cpy := make([]rune, len(array))
-	copy(cpy, array)
-	return cpy
-}
-
-func Copy2D(grid [][]rune) [][]rune {
-	cpy := make([][]rune, len(grid))
-	for i := range grid {
-		cpy[i] = Copy(grid[i])
-	}
-	return cpy
 }

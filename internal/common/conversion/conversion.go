@@ -2,6 +2,20 @@ package conversion
 
 import "strconv"
 
+func ToRunes(lines []string) [][]rune {
+	grid := make([][]rune, len(lines))
+
+	for row, line := range lines {
+		grid[row] = make([]rune, len(line))
+
+		for col, char := range line {
+			grid[row][col] = char
+		}
+	}
+
+	return grid
+}
+
 func ToInts(values []string) (result []int, err error) {
 	for _, stringValue := range values {
 		value, err := strconv.ParseInt(stringValue, 10, 64)

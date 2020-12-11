@@ -9,3 +9,13 @@ func Min(array []int) int {
 	}
 	return min
 }
+
+func Max(array []int) int {
+	var max = array[0]
+	for _, value := range array {
+		if value > max {
+			max = value
+		}
+	}
+	return max
+}
