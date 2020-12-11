@@ -20,103 +20,193 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	//player := Character{
-	//	HitPoints: 50,
-	//	Mana:      500,
-	//}
-	//boss := Character{
-	//	HitPoints: 71,
-	//	Damage:    10,
-	//}
+	player := Character{
+		HitPoints: 50,
+		Mana:      500,
+	}
+	boss := Character{
+		HitPoints: 71,
+		Damage:    10,
+	}
 	//player := Character{
 	//	HitPoints: 10,
 	//	Mana:      250,
 	//}
 	//boss := Character{
 	//	HitPoints: 13,
-	//	Damage:    9,
+	//	Damage:    8,
 	//}
-	player := Character{
-		HitPoints: 10,
-		Mana:      250,
-	}
-	boss := Character{
-		HitPoints: 14,
-		Damage:    9,
-	}
+	//player := Character{
+	//	HitPoints: 10,
+	//	Mana:      250,
+	//}
+	//boss := Character{
+	//	HitPoints: 14,
+	//	Damage:    8,
+	//}
 
-	return winMinMana(player, boss)
+	minMana := ints.MaxInt
+	var minState *State
+	for _, spell := range spells {
+		mana, state := winMinMana(player, boss, spell)
+		if mana < minMana {
+			minMana = mana
+			minState = state
+		}
+	}
+	if minState != nil {
+		fmt.Println(minState.Path)
+	}
+	return minMana
 }
 
 func part2(input []string) interface{} {
 	return 0
 }
 
-func winMinMana(startPlayer, startBoss Character) int {
-	queue := []State{{startPlayer, startBoss}}
-	var state State
+func winMinMana(startPlayer, startBoss Character, startSpell Spell) (int, *State) {
+	//q := New()
+	//q.Insert(State{Player: startPlayer, Boss: startBoss, Spell: startSpell}, 0)
+
+	queue := []*State{{Player: startPlayer, Boss: startBoss, Spell: startSpell}}
+	var state *State
 	minMana := ints.MaxInt
+	var minState *State
 
 	for len(queue) > 0 {
 		state, queue = queue[len(queue)-1], queue[:len(queue)-1]
 
-		if state.Player.HitPoints <= 0 {
+		// Prune paths
+		if state.Player.ManaSpent >= minMana {
 			continue
 		}
 
+		state.Path += "-- Player turn--\n"
+		state.Path += renderState(state)
+		applyEffects(state)
+		//state.Path += renderEffects(state.Effects)
+		if state.Boss.HitPoints <= 0 {
+			state.Path += "The boss is dead, the player wins!\n"
+			if state.Player.ManaSpent < minMana {
+				minMana = ints.Min(minMana, state.Player.ManaSpent)
+				minState = state
+			}
+			continue
+		}
+		//if !canCastSpell(state.Player) {
+		//	continue
+		//}
+		if state.Player.Mana < state.Spell.ManaCost {
+			continue
+		}
+		state.Path += renderSpell(state.Spell)
+
+		state.Player.HitPoints += state.Spell.Heal
+		state.Player.Mana -= state.Spell.ManaCost
+		state.Player.ManaSpent += state.Spell.ManaCost
+		state.Boss.HitPoints -= state.Spell.Damage
+		if state.Spell.Effect.NumTurns > 0 {
+			state.Effects[state.Spell.Name] = state.Spell.Effect
+		}
+		if state.Boss.HitPoints <= 0 {
+			state.Path += "The boss is dead, the player wins!\n"
+			if state.Player.ManaSpent < minMana {
+				minMana = ints.Min(minMana, state.Player.ManaSpent)
+				minState = state
+			}
+			continue
+		}
+		state.Path += "\n"
+
+		// Boss Turn
+		state.Path += "-- Boss turn--\n"
+		state.Path += renderState(state)
+		applyEffects(state)
+		//state.Path += renderEffects(state.Effects)
+		if state.Boss.HitPoints <= 0 {
+			state.Path += "The boss is dead, the player wins!\n"
+			fmt.Println("WIN!")
+			if state.Player.ManaSpent < minMana {
+				minMana = state.Player.ManaSpent
+				minState = state
+			}
+			continue
+		}
+		state.Player.HitPoints -= state.Boss.Damage - state.Player.Armor
+		state.Path += fmt.Sprintf("Boss attacks for %d - %d = %d damage!", state.Boss.Damage, state.Player.Armor, state.Boss.Damage-state.Player.Armor)
+		if state.Player.HitPoints <= 0 {
+			//fmt.Println("=================================")
+			//fmt.Println(state.Path)
+			continue
+		}
+		state.Path += "\n\n"
+
 		for _, spell := range spells {
-			if state.Player.Mana < spell.ManaCost || spellActive(state.Player, spell) || spellActive(state.Boss, spell) {
-				continue
+			if !spellActive(state, spell) {
+				nextState := copyState(state)
+				nextState.Spell = spell
+				queue = append(queue, nextState)
 			}
-			nextState := copyState(state)
-			player, boss := &nextState.Player, &nextState.Boss
-
-			// Player Turn
-			applyEffects(player)
-			applyEffects(boss)
-			if !canCastSpell(*player) {
-				break
-			}
-			if boss.HitPoints <= 0 {
-				minMana = ints.Min(minMana, player.ManaSpent)
-				continue
-			}
-
-			player.HitPoints += spell.Heal
-			player.Mana -= spell.ManaCost
-			player.ManaSpent += spell.ManaCost
-			boss.HitPoints -= spell.Damage
-			if spell.Effect.NumTurns > 0 {
-				if spell.Effect.Self {
-					player.Effects = append(player.Effects, spell.Effect)
-				} else {
-					boss.Effects = append(boss.Effects, spell.Effect)
-				}
-			}
-
-			// Boss Turn
-			applyEffects(player)
-			applyEffects(boss)
-			if boss.HitPoints <= 0 {
-				minMana = ints.Min(minMana, player.ManaSpent)
-				continue
-			}
-			player.HitPoints -= boss.Damage - player.Armor
-
-			queue = append(queue, nextState)
 		}
 	}
 
-	return minMana
+	return minMana, minState
 }
 
-func spellActive(char Character, spell Spell) bool {
-	for _, effect := range char.Effects {
-		if spell.Effect.Name == effect.Name && effect.NumTurns > 1 {
-			return true
-		}
+//func renderPath(state *State) {
+//	for _, s := range state.Path {
+//		printState(s)
+//	}
+//	printState(state)
+//}
+
+func renderState(s *State) string {
+	result := ""
+	result += fmt.Sprintf("- Player has %d hit points, %d armor, %d mana\n", s.Player.HitPoints, s.Player.Armor, s.Player.Mana)
+	result += fmt.Sprintf("- Boss has %d hit points\n", s.Boss.HitPoints)
+	return result
+}
+
+func renderSpell(spell Spell) string {
+	result := fmt.Sprintf("Player casts %s", spell.Name)
+	switch spell.Name {
+	case "Magic Missile":
+		result += ", dealing 4 damage.\n"
+	case "Drain":
+		result += ", dealing 2 damage, and healing 2 hit points.\n"
+	case "Recharge":
+		result += ".\n"
+	case "Shield":
+		result += ", increasing armor by 7.\n"
+	case "Poison":
+		result += ".\n"
 	}
-	return false
+	return result
+}
+
+func renderEffects(effects map[string]Effect) string {
+	result := ""
+	for _, effect := range effects {
+		result += renderEffect(effect)
+	}
+	return result
+}
+
+func renderEffect(effect Effect) string {
+	switch effect.Name {
+	case "Recharge":
+		return fmt.Sprintf("Recharge provides 101 mana; its timer is now %d.\n", effect.NumTurns)
+	case "Shield":
+		return fmt.Sprintf("Shield's timer is now %d.\n", effect.NumTurns)
+	case "Poison":
+		return fmt.Sprintf("Poison deals 3 damage; its timer is now %d.\n", effect.NumTurns)
+	}
+	return ""
+}
+
+func spellActive(state *State, spell Spell) bool {
+	_, ok := state.Effects[spell.Name]
+	return ok
 }
 
 func canCastSpell(player Character) bool {
@@ -128,39 +218,48 @@ func canCastSpell(player Character) bool {
 	return false
 }
 
-func applyEffects(character *Character) {
-	var remainingEffects []Effect
-	for _, effect := range character.Effects {
-		character.Armor = effect.ArmorIncrease
-		character.Mana += effect.AddMana
-		character.HitPoints -= effect.Damage
+func applyEffects(state *State) {
+	remainingEffects := make(map[string]Effect)
 
+	for _, effect := range state.Effects {
 		effect.NumTurns--
+		effect.Apply(effect, state)
+
 		if effect.NumTurns != 0 {
-			remainingEffects = append(remainingEffects, effect)
+			remainingEffects[effect.Name] = effect
+		} else {
+			effect.Expire(effect, state)
 		}
 	}
-	character.Effects = remainingEffects
+
+	state.Effects = remainingEffects
 }
 
-func copyCharacter(char Character) Character {
-	newChar := char
-	newChar.Effects = make([]Effect, len(char.Effects))
-	copy(newChar.Effects, char.Effects)
-	return newChar
+func copyEffects(effects map[string]Effect) map[string]Effect {
+	newEffects := make(map[string]Effect)
+	for name, effect := range effects {
+		newEffects[name] = effect
+	}
+	return newEffects
 }
 
-func copyState(state State) State {
-	return State{
-		Player: copyCharacter(state.Player),
-		Boss:   copyCharacter(state.Boss),
+func copyState(state *State) *State {
+	return &State{
+		Player:  state.Player,
+		Boss:    state.Boss,
+		Effects: copyEffects(state.Effects),
+		Path:    state.Path,
+		Spell:   state.Spell,
 	}
 }
 
 type (
 	State struct {
-		Player Character
-		Boss   Character
+		Player  Character
+		Boss    Character
+		Effects map[string]Effect
+		Spell   Spell
+		Path    string
 	}
 
 	Character struct {
@@ -168,7 +267,6 @@ type (
 		Damage    int
 		Mana      int
 		Armor     int
-		Effects   []Effect
 		ManaSpent int
 	}
 
@@ -181,12 +279,11 @@ type (
 	}
 
 	Effect struct {
-		Name          string
-		Self          bool
-		NumTurns      int
-		ArmorIncrease int
-		Damage        int
-		AddMana       int
+		Name     string
+		Self     bool
+		NumTurns int
+		Apply    func(effect Effect, state *State)
+		Expire   func(effect Effect, state *State)
 	}
 )
 
@@ -206,10 +303,17 @@ var spells = []Spell{
 		Name:     "Shield",
 		ManaCost: 113,
 		Effect: Effect{
-			Name:          "Shield",
-			Self:          true,
-			NumTurns:      6,
-			ArmorIncrease: 7,
+			Name:     "Shield",
+			Self:     true,
+			NumTurns: 6,
+			Apply: func(effect Effect, state *State) {
+				state.Player.Armor = 7
+				state.Path += fmt.Sprintf("Shield's timer is now %d.\n", effect.NumTurns)
+			},
+			Expire: func(effect Effect, state *State) {
+				state.Player.Armor = 0
+				state.Path += "Shield wears off, decreasing armor by 7.\n"
+			},
 		},
 	},
 	{
@@ -219,7 +323,13 @@ var spells = []Spell{
 			Name:     "Poison",
 			Self:     false,
 			NumTurns: 6,
-			Damage:   3,
+			Apply: func(effect Effect, state *State) {
+				state.Boss.HitPoints -= 3
+				state.Path += fmt.Sprintf("Poison deals 3 damage; its timer is now %d.\n", effect.NumTurns)
+			},
+			Expire: func(effect Effect, state *State) {
+				state.Path += "Poison wears off.\n"
+			},
 		},
 	},
 	{
@@ -229,7 +339,13 @@ var spells = []Spell{
 			Name:     "Recharge",
 			Self:     true,
 			NumTurns: 5,
-			AddMana:  101,
+			Apply: func(effect Effect, state *State) {
+				state.Player.Mana += 101
+				state.Path += fmt.Sprintf("Recharge provides 101 mana; its timer is now %d.\n", effect.NumTurns)
+			},
+			Expire: func(effect Effect, state *State) {
+				state.Path += "Recharge wears off.\n"
+			},
 		},
 	},
 }
