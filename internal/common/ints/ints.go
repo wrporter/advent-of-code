@@ -121,6 +121,14 @@ func Sum(array []int) int {
 	return sum
 }
 
+func Product(array []int) int {
+	product := array[0]
+	for i := 1; i < len(array); i++ {
+		product *= array[i]
+	}
+	return product
+}
+
 func GetDivisors(num int) []int {
 	var divisors []int
 	var lastOnes []int
