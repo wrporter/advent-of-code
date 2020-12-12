@@ -20,6 +20,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
+	//defer timeit.Track(time.Now(), "part 1")
 	player := Character{
 		HitPoints: 50,
 		Mana:      500,
@@ -47,13 +48,7 @@ func part1(input []string) interface{} {
 
 	//minMana := ints.MaxInt
 	//var minState *State
-	//for _, spell := range spells {
-	minMana, _ := winMinMana(player, boss)
-	//if mana < minMana {
-	//	minMana = mana
-	//	minState = state
-	//}
-	//}
+	minMana, _ := winMinMana(player, boss, "easy")
 	//if minState != nil {
 	//	fmt.Println(minState.Path)
 	//}
@@ -61,7 +56,17 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	return 0
+	player := Character{
+		HitPoints: 50,
+		Mana:      500,
+	}
+	boss := Character{
+		HitPoints: 71,
+		Damage:    10,
+	}
+
+	minMana, _ := winMinMana(player, boss, "hard")
+	return minMana
 }
 
 //boss = { hp: 71, damage: 10 }
@@ -75,24 +80,18 @@ func part2(input []string) interface{} {
 //* Poison -> Recharge -> Shield -> Poison -> Recharge -> Shield -> Poison -> Recharge -> Shield -> Poison -> Magic Missile -> Magic Missile
 //* Recharge -> Poison -> Shield -> Recharge -> Poison -> Shield -> Recharge -> Poison -> Shield -> Magic Missile -> Poison -> Magic Missile
 
-func winMinMana(startPlayer, startBoss Character) (int, *State) {
-	queue := New()
+func winMinMana(startPlayer, startBoss Character, difficulty string) (int, *State) {
+	var queue []*State
 	var state *State
 	minMana := ints.MaxInt
 	var minState *State
 
 	for _, spell := range spells {
-		queue.Insert(&State{Player: startPlayer, Boss: startBoss, Spell: spell}, 0)
+		queue = append(queue, &State{Player: startPlayer, Boss: startBoss, Spell: spell})
 	}
 
-	//Poison -> Recharge -> Shield -> Poison -> Recharge -> Shield -> Poison -> Recharge -> Shield -> Magic Missile -> Poison -> Magic Missile
-	//winningSpells := []int{3, 4, 2, 3, 4, 2, 3, 4, 2, 0, 3, 0}
-	//nextWinningSpell := 1
-	//queue.Insert(&State{Player: startPlayer, Boss: startBoss, Spell: spells[3]}, 0)
-
-	for queue.Len() > 0 {
-		next, _ := queue.Pop()
-		state = next.(*State)
+	for len(queue) > 0 {
+		state, queue = queue[len(queue)-1], queue[:len(queue)-1]
 
 		// Prune paths
 		if state.Player.ManaSpent >= minMana {
@@ -101,6 +100,12 @@ func winMinMana(startPlayer, startBoss Character) (int, *State) {
 
 		//state.Path += "-- Player turn--\n"
 		//state.Path += renderState(state)
+		if difficulty == "hard" {
+			state.Player.HitPoints -= 1
+		}
+		if state.Player.HitPoints <= 0 {
+			continue
+		}
 		applyEffects(state)
 		//state.Path += renderEffects(state.Effects)
 		if state.Boss.HitPoints <= 0 {
@@ -111,9 +116,6 @@ func winMinMana(startPlayer, startBoss Character) (int, *State) {
 			}
 			continue
 		}
-		//if !canCastSpell(state.Player) {
-		//	continue
-		//}
 		if state.Player.Mana < state.Spell.ManaCost {
 			continue
 		}
@@ -157,14 +159,9 @@ func winMinMana(startPlayer, startBoss Character) (int, *State) {
 
 		for _, spell := range spells {
 			if !spellActive(state, spell) {
-				//spell := spells[winningSpells[nextWinningSpell]]
-				//nextWinningSpell++
-				//	if spellActive(state, spell) {
-				//		fmt.Println("=================================== EEK!!!")
-				//	}
 				nextState := copyState(state)
 				nextState.Spell = spell
-				queue.Insert(nextState, float64(nextState.Player.ManaSpent))
+				queue = append(queue, nextState)
 			}
 		}
 	}
