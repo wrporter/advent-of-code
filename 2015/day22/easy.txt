@@ -1,0 +1,182 @@
+-- Player turn--
+- Player has 50 hit points, 0 armor, 500 mana
+- Boss has 71 hit points
+Player casts Recharge.
+
+-- Boss turn--
+- Player has 50 hit points, 0 armor, 271 mana
+- Boss has 71 hit points
+Recharge provides 101 mana; its timer is now 4.
+Boss attacks for 10 - 0 = 10 damage!
+
+-- Player turn--
+- Player has 40 hit points, 0 armor, 372 mana
+- Boss has 71 hit points
+Recharge provides 101 mana; its timer is now 3.
+Player casts Poison.
+
+-- Boss turn--
+- Player has 40 hit points, 0 armor, 300 mana
+- Boss has 71 hit points
+Recharge provides 101 mana; its timer is now 2.
+Poison deals 3 damage; its timer is now 5.
+Boss attacks for 10 - 0 = 10 damage!
+
+-- Player turn--
+- Player has 30 hit points, 0 armor, 401 mana
+- Boss has 68 hit points
+Poison deals 3 damage; its timer is now 4.
+Recharge provides 101 mana; its timer is now 1.
+Player casts Shield, increasing armor by 7.
+
+-- Boss turn--
+- Player has 30 hit points, 0 armor, 389 mana
+- Boss has 65 hit points
+Poison deals 3 damage; its timer is now 3.
+Recharge provides 101 mana; its timer is now 0.
+Recharge wears off.
+Shield's timer is now 5.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 27 hit points, 7 armor, 490 mana
+- Boss has 62 hit points
+Poison deals 3 damage; its timer is now 2.
+Shield's timer is now 4.
+Player casts Recharge.
+
+-- Boss turn--
+- Player has 27 hit points, 7 armor, 261 mana
+- Boss has 59 hit points
+Poison deals 3 damage; its timer is now 1.
+Shield's timer is now 3.
+Recharge provides 101 mana; its timer is now 4.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 24 hit points, 7 armor, 362 mana
+- Boss has 56 hit points
+Poison deals 3 damage; its timer is now 0.
+Poison wears off.
+Shield's timer is now 2.
+Recharge provides 101 mana; its timer is now 3.
+Player casts Poison.
+
+-- Boss turn--
+- Player has 24 hit points, 7 armor, 290 mana
+- Boss has 53 hit points
+Shield's timer is now 1.
+Recharge provides 101 mana; its timer is now 2.
+Poison deals 3 damage; its timer is now 5.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 21 hit points, 7 armor, 391 mana
+- Boss has 50 hit points
+Recharge provides 101 mana; its timer is now 1.
+Poison deals 3 damage; its timer is now 4.
+Shield's timer is now 0.
+Shield wears off, decreasing armor by 7.
+Player casts Shield, increasing armor by 7.
+
+-- Boss turn--
+- Player has 21 hit points, 0 armor, 379 mana
+- Boss has 47 hit points
+Recharge provides 101 mana; its timer is now 0.
+Recharge wears off.
+Poison deals 3 damage; its timer is now 3.
+Shield's timer is now 5.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 18 hit points, 7 armor, 480 mana
+- Boss has 44 hit points
+Poison deals 3 damage; its timer is now 2.
+Shield's timer is now 4.
+Player casts Recharge.
+
+-- Boss turn--
+- Player has 18 hit points, 7 armor, 251 mana
+- Boss has 41 hit points
+Poison deals 3 damage; its timer is now 1.
+Shield's timer is now 3.
+Recharge provides 101 mana; its timer is now 4.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 15 hit points, 7 armor, 352 mana
+- Boss has 38 hit points
+Poison deals 3 damage; its timer is now 0.
+Poison wears off.
+Shield's timer is now 2.
+Recharge provides 101 mana; its timer is now 3.
+Player casts Poison.
+
+-- Boss turn--
+- Player has 15 hit points, 7 armor, 280 mana
+- Boss has 35 hit points
+Shield's timer is now 1.
+Recharge provides 101 mana; its timer is now 2.
+Poison deals 3 damage; its timer is now 5.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 12 hit points, 7 armor, 381 mana
+- Boss has 32 hit points
+Shield's timer is now 0.
+Shield wears off, decreasing armor by 7.
+Recharge provides 101 mana; its timer is now 1.
+Poison deals 3 damage; its timer is now 4.
+Player casts Shield, increasing armor by 7.
+
+-- Boss turn--
+- Player has 12 hit points, 0 armor, 369 mana
+- Boss has 29 hit points
+Poison deals 3 damage; its timer is now 3.
+Shield's timer is now 5.
+Recharge provides 101 mana; its timer is now 0.
+Recharge wears off.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 9 hit points, 7 armor, 470 mana
+- Boss has 26 hit points
+Shield's timer is now 4.
+Poison deals 3 damage; its timer is now 2.
+Player casts Magic Missile, dealing 4 damage.
+
+-- Boss turn--
+- Player has 9 hit points, 7 armor, 417 mana
+- Boss has 19 hit points
+Shield's timer is now 3.
+Poison deals 3 damage; its timer is now 1.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 6 hit points, 7 armor, 417 mana
+- Boss has 16 hit points
+Poison deals 3 damage; its timer is now 0.
+Poison wears off.
+Shield's timer is now 2.
+Player casts Poison.
+
+-- Boss turn--
+- Player has 6 hit points, 7 armor, 244 mana
+- Boss has 13 hit points
+Shield's timer is now 1.
+Poison deals 3 damage; its timer is now 5.
+Boss attacks for 10 - 7 = 3 damage!
+
+-- Player turn--
+- Player has 3 hit points, 7 armor, 244 mana
+- Boss has 10 hit points
+Shield's timer is now 0.
+Shield wears off, decreasing armor by 7.
+Poison deals 3 damage; its timer is now 4.
+Player casts Magic Missile, dealing 4 damage.
+
+-- Boss turn--
+- Player has 3 hit points, 0 armor, 191 mana
+- Boss has 3 hit points
+Poison deals 3 damage; its timer is now 3.
+The boss is dead, the player wins!
