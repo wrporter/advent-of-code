@@ -1,5 +1,7 @@
 package geometry
 
+import "github.com/wrporter/advent-of-code/internal/common/ints"
+
 type Direction int
 
 const (
@@ -29,6 +31,17 @@ var DirectionModifiers = []Point{
 	{-1, 0},
 }
 
+var DirectionModifiers2 = []Point{
+	{0, 1},
+	{1, 0},
+	{0, -1},
+	{-1, 0},
+}
+
+func (d Direction) Rotate(degrees int) Direction {
+	return Directions[ints.WrapMod((int(d)-1)+(degrees*4/360), 4)]
+}
+
 type Point struct {
 	X int
 	Y int
@@ -42,6 +55,28 @@ func (p Point) Add(direction Direction) Point {
 	x := p.X + DirectionModifiers[direction-1].X
 	y := p.Y + DirectionModifiers[direction-1].Y
 	return Point{x, y}
+}
+
+func (p Point) AddAmount(direction Direction, amount int) Point {
+	x := p.X + (DirectionModifiers2[direction-1].X * amount)
+	y := p.Y + (DirectionModifiers2[direction-1].Y * amount)
+	return Point{x, y}
+}
+
+func (p Point) Rotate(degrees int) Point {
+	degrees = ints.WrapMod(degrees, 360)
+	if degrees == 90 {
+		return Point{p.Y, -p.X}
+	} else if degrees == 180 {
+		return Point{-p.X, -p.Y}
+	} else if degrees == 270 {
+		return Point{-p.Y, p.X}
+	}
+	return Point{p.X, p.Y}
+}
+
+func (p Point) GetManhattanDistance() int {
+	return ints.Abs(p.X) + ints.Abs(p.Y)
 }
 
 func (p Point) Up() Point {
