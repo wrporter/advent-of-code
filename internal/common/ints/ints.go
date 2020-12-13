@@ -1,6 +1,10 @@
 package ints
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"math/big"
+)
 
 const MaxUint = ^uint(0)
 const MinUint = 0
@@ -153,4 +157,36 @@ func TakeLast(values []int, count int) []int {
 		start = 0
 	}
 	return values[start:]
+}
+
+func ChineseRemainderTheorem(a, n []int) int {
+	aBig := make([]*big.Int, len(a))
+	nBig := make([]*big.Int, len(n))
+	for i, value := range a {
+		aBig[i] = big.NewInt(int64(value))
+	}
+	for i, value := range n {
+		nBig[i] = big.NewInt(int64(value))
+	}
+	result, _ := ChineseRemainderTheoremBig(aBig, nBig)
+	return int(result.Int64())
+}
+
+var one = big.NewInt(1)
+
+func ChineseRemainderTheoremBig(a, n []*big.Int) (*big.Int, error) {
+	p := new(big.Int).Set(n[0])
+	for _, n1 := range n[1:] {
+		p.Mul(p, n1)
+	}
+	var x, q, s, z big.Int
+	for i, n1 := range n {
+		q.Div(p, n1)
+		z.GCD(nil, &s, n1, &q)
+		if z.Cmp(one) != 0 {
+			return nil, fmt.Errorf("%d not coprime", n1)
+		}
+		x.Add(&x, s.Mul(a[i], s.Mul(&s, &q)))
+	}
+	return x.Mod(&x, p), nil
 }

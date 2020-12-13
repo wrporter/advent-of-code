@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	year, day := 2020, 25
+	year, day := 2015, 25
 	out.Day(year, day)
 	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
