@@ -72,10 +72,10 @@ func part2(input []string) interface{} {
 			address := conversion.StringToInt(match[1])
 			value := conversion.StringToInt(match[2])
 
-			numXCombos := getMaxXValue(mask)
+			numXPermutations := getNumXPermutations(mask)
 			newAddress := address
 
-			for x := 0; x < numXCombos; x++ {
+			for x := 0; x < numXPermutations; x++ {
 				newMask := getMask(mask, x)
 
 				for i, bit := range mask {
@@ -103,7 +103,7 @@ func part2(input []string) interface{} {
 	return sum
 }
 
-func getMaxXValue(mask string) int {
+func getNumXPermutations(mask string) int {
 	numXs := strings.Count(mask, "X")
 	value := 1
 	for i := 0; i < numXs; i++ {
