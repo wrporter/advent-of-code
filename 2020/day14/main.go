@@ -32,10 +32,10 @@ func part1(input []string) interface{} {
 	memory := make(map[int]int)
 	var mask string
 	for _, line := range input {
-		if strings.Contains(line, "mask") {
+		if strings.HasPrefix(line, "mask") {
 			match := maskRegex.FindStringSubmatch(line)
 			mask = match[1]
-		} else if strings.Contains(line, "mem") {
+		} else if strings.HasPrefix(line, "mem") {
 			match := memRegex.FindStringSubmatch(line)
 			address := conversion.StringToInt(match[1])
 			value := conversion.StringToInt(match[2])
@@ -64,10 +64,10 @@ func part2(input []string) interface{} {
 	memory := make(map[int]int)
 	var mask string
 	for _, line := range input {
-		if strings.Contains(line, "mask") {
+		if strings.HasPrefix(line, "mask") {
 			match := maskRegex.FindStringSubmatch(line)
 			mask = match[1]
-		} else if strings.Contains(line, "mem") {
+		} else if strings.HasPrefix(line, "mem") {
 			match := memRegex.FindStringSubmatch(line)
 			address := conversion.StringToInt(match[1])
 			value := conversion.StringToInt(match[2])
