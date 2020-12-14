@@ -104,3 +104,21 @@ func comboStrings(values []string, output func([]string), i int) {
 		values[i], values[j] = values[j], values[i]
 	}
 }
+
+func NPR(n, r int) int {
+	return Factorial(n) / Factorial(n-r)
+}
+
+func NCR(n, r int) int {
+	return Factorial(n) / (Factorial(r) * Factorial(n-r))
+}
+
+func Factorial(n int) int {
+	fact := 1
+	i := 1
+	for i <= n {
+		fact *= i
+		i++
+	}
+	return fact
+}
