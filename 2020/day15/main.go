@@ -5,7 +5,9 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -52,29 +54,50 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	numbers := parseNumbers(input)
+	defer timeit.Track(time.Now(), "Part 2")
+	startNumbers := parseNumbers(input)
 	target := 30000000
 
-	said := make(map[int][]int)
-	for i, number := range numbers {
-		said[number] = []int{i}
+	numbers := make([]int, target)
+	said := make(map[int]*State)
+	for i, number := range startNumbers {
+		numbers[i] = number
+		said[number] = &State{
+			Last:       i,
+			BeforeLast: -1,
+		}
 	}
 
-	start := len(numbers)
+	start := len(startNumbers)
 	for turn := start; turn < target; turn++ {
 		prev := numbers[turn-1]
+
 		var current int
-		if len(said[prev]) == 1 {
+		if state, ok := said[prev]; ok && state.BeforeLast == -1 {
 			current = 0
 		} else {
-			last := said[prev][len(said[prev])-2]
-			current = turn - (last + 1)
+			current = state.Last - state.BeforeLast
 		}
-		numbers = append(numbers, current)
-		said[current] = append(said[current], turn)
+
+		if state, ok := said[current]; ok {
+			state.BeforeLast = state.Last
+			state.Last = turn
+		} else {
+			said[current] = &State{
+				Last:       turn,
+				BeforeLast: -1,
+			}
+		}
+
+		numbers[turn] = current
 	}
 
 	return numbers[target-1]
+}
+
+type State struct {
+	Last       int
+	BeforeLast int
 }
 
 func parseNumbers(input []string) []int {
