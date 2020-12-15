@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"math"
 	"regexp"
 	"strings"
 )
@@ -24,8 +26,28 @@ var regex = regexp.MustCompile(`a ([a-z]+)(?:-compatible)? (generator|microchip)
 
 func part1(input []string) interface{} {
 	floors := parseFloors(input)
+	queue := []State{{}}
+	var state State
 
-	queue := []State
+	maxMoves := 0
+
+	for len(queue) > 0 {
+		state, queue = queue[0], queue[1:]
+
+		maxMoves = ints.Max(maxMoves, state.NumMoves)
+
+		bestPositive := 0
+		bestNegative := -math.MaxFloat64
+
+		var clearedFloor int
+		for i, floor := range state.Floors {
+			if len(floor) == 0 {
+				clearedFloor = i
+			}
+		}
+
+		fmt.Println(bestPositive, bestNegative)
+	}
 
 	return 0
 }
@@ -36,15 +58,29 @@ func part2(input []string) interface{} {
 
 type (
 	State struct {
-		NumMoves      int
-		Floors        []map[Item]bool
-		ElevatorFloor int
+		NumMoves int
+		Floors   []map[Item]bool
+		Elevator int
 	}
 	Item struct {
 		Element string
 		Type    string
 	}
 )
+
+func (s []State) Moves(elevator int) {
+	state := s[elevator]
+
+	var chips []Item
+	var generators []Item
+	for item := range state. {
+		if item.Type == "generator" {
+
+		}
+	}
+
+
+}
 
 func parseFloors(input []string) []map[Item]bool {
 	floors := make([]map[Item]bool, len(input))
