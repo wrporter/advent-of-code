@@ -5,9 +5,7 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
-	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -23,81 +21,40 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	numbers := parseNumbers(input)
-	target := 2020
-
-	said := make(map[int]int)
-	for _, number := range numbers {
-		said[number] = 1
-	}
-
-	start := len(numbers)
-	for i := start; i < target; i++ {
-		prev := numbers[i-1]
-		var current int
-		if said[prev] == 1 {
-			current = 0
-		} else {
-			last := -1
-			for j := i - 2; j >= 0 && last == -1; j-- {
-				if numbers[j] == prev {
-					last = j
-				}
-			}
-			current = i - (last + 1)
-		}
-		numbers = append(numbers, current)
-		said[current]++
-	}
-
-	return numbers[target-1]
+	startNumbers := parseNumbers(input)
+	return playMemoryGame(startNumbers, 2020)
 }
 
 func part2(input []string) interface{} {
-	defer timeit.Track(time.Now(), "Part 2")
 	startNumbers := parseNumbers(input)
-	target := 30000000
-
-	numbers := make([]int, target)
-	said := make(map[int]*State)
-	for i, number := range startNumbers {
-		numbers[i] = number
-		said[number] = &State{
-			Last:       i,
-			BeforeLast: -1,
-		}
-	}
-
-	start := len(startNumbers)
-	for turn := start; turn < target; turn++ {
-		prev := numbers[turn-1]
-
-		var current int
-		if state, ok := said[prev]; ok && state.BeforeLast == -1 {
-			current = 0
-		} else {
-			current = state.Last - state.BeforeLast
-		}
-
-		if state, ok := said[current]; ok {
-			state.BeforeLast = state.Last
-			state.Last = turn
-		} else {
-			said[current] = &State{
-				Last:       turn,
-				BeforeLast: -1,
-			}
-		}
-
-		numbers[turn] = current
-	}
-
-	return numbers[target-1]
+	return playMemoryGame(startNumbers, 30000000)
 }
 
-type State struct {
-	Last       int
-	BeforeLast int
+func playMemoryGame(startNumbers []int, numTurns int) interface{} {
+	numbers := make([]int, numTurns)
+	said := make(map[int]int)
+	for i, number := range startNumbers {
+		numbers[i] = number
+		if i != len(startNumbers)-1 {
+			said[number] = i
+		}
+	}
+
+	for turn := len(startNumbers); turn < numTurns; turn++ {
+		prev := numbers[turn-1]
+
+		var next int
+		if beforeLast, ok := said[prev]; !ok {
+			next = 0
+		} else {
+			next = turn - 1 - beforeLast
+		}
+
+		said[prev] = turn - 1
+		numbers[turn] = next
+	}
+
+	return numbers[numTurns-1]
 }
 
 func parseNumbers(input []string) []int {
