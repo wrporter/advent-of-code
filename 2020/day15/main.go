@@ -30,7 +30,7 @@ func part2(input []string) interface{} {
 	return playMemoryGame(startNumbers, 30000000)
 }
 
-func playMemoryGame(startNumbers []int, numTurns int) interface{} {
+func playMemoryGame(startNumbers []int, numTurns int) int {
 	numbers := make([]int, numTurns)
 	said := make(map[int]int)
 	for i, number := range startNumbers {

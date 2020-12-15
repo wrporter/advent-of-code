@@ -8,6 +8,8 @@ For Part 1, I looped through the previous numbers until I got to the one that wa
 
 For Part 2, I definitely needed to come up with a more efficient solution, so I stored the turn numbers in a list and just looked up the last occurrence. It can probably still be greatly optimized, but I don't think I'll do that tonight. Time for bed!
 
+Alright, the next day I was able to get this to a pretty decent optimization and a lot of code cleanup. We already know when a number was said last: on the previous turn! So all we have to store in a map is the turn it was said before the last time. This gets Part 2 down to about 2.4 seconds.
+
 ## Puzzle
 
 --- Day 15: Rambunctious Recitation ---
