@@ -21,60 +21,40 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	numbers := parseNumbers(input)
-	target := 2020
-
-	said := make(map[int]int)
-	for _, number := range numbers {
-		said[number] = 1
-	}
-
-	start := len(numbers)
-	for i := start; i < target; i++ {
-		prev := numbers[i-1]
-		var current int
-		if said[prev] == 1 {
-			current = 0
-		} else {
-			last := -1
-			for j := i - 2; j >= 0 && last == -1; j-- {
-				if numbers[j] == prev {
-					last = j
-				}
-			}
-			current = i - (last + 1)
-		}
-		numbers = append(numbers, current)
-		said[current]++
-	}
-
-	return numbers[target-1]
+	startNumbers := parseNumbers(input)
+	return playMemoryGame(startNumbers, 2020)
 }
 
 func part2(input []string) interface{} {
-	numbers := parseNumbers(input)
-	target := 30000000
+	startNumbers := parseNumbers(input)
+	return playMemoryGame(startNumbers, 30000000)
+}
 
-	said := make(map[int][]int)
-	for i, number := range numbers {
-		said[number] = []int{i}
-	}
-
-	start := len(numbers)
-	for turn := start; turn < target; turn++ {
-		prev := numbers[turn-1]
-		var current int
-		if len(said[prev]) == 1 {
-			current = 0
-		} else {
-			last := said[prev][len(said[prev])-2]
-			current = turn - (last + 1)
+func playMemoryGame(startNumbers []int, numTurns int) int {
+	numbers := make([]int, numTurns)
+	said := make(map[int]int)
+	for i, number := range startNumbers {
+		numbers[i] = number
+		if i != len(startNumbers)-1 {
+			said[number] = i
 		}
-		numbers = append(numbers, current)
-		said[current] = append(said[current], turn)
 	}
 
-	return numbers[target-1]
+	for turn := len(startNumbers); turn < numTurns; turn++ {
+		prev := numbers[turn-1]
+
+		var next int
+		if beforeLast, ok := said[prev]; !ok {
+			next = 0
+		} else {
+			next = turn - 1 - beforeLast
+		}
+
+		said[prev] = turn - 1
+		numbers[turn] = next
+	}
+
+	return numbers[numTurns-1]
 }
 
 func parseNumbers(input []string) []int {
