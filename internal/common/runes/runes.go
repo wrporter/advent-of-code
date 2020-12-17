@@ -24,3 +24,17 @@ func GridToString(grid [][]rune) string {
 	}
 	return result
 }
+
+func StringToGrid(lines []string) [][]rune {
+	grid := make([][]rune, len(lines))
+
+	for row, line := range lines {
+		grid[row] = make([]rune, len(line))
+
+		for col, char := range line {
+			grid[row][col] = char
+		}
+	}
+
+	return grid
+}
