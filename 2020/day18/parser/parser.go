@@ -55,24 +55,28 @@ func (p *Parser) eat(tokenType Token) {
 
 func (p *Parser) factor() Expr {
 	token := p.currentToken
-	if token.Type == INT {
+
+	switch token.Type {
+	case INT:
 		p.eat(INT)
 		return NewNum(token)
-	} else if token.Type == LPAREN {
+	case LPAREN:
 		p.eat(LPAREN)
 		node := p.expr()
 		p.eat(RPAREN)
 		return node
 	}
+
 	return nil
 }
 
-func (p *Parser) term() Expr {
+func (p *Parser) expr() Expr {
 	node := p.factor()
 
-	for operators[p.currentToken.Type] {
+	for p.currentToken.Type.IsOperator() {
 		token := p.currentToken
 		p.eat(p.currentToken.Type)
+
 		node = BinaryExpr{
 			Left:  node,
 			Op:    token,
@@ -81,10 +85,6 @@ func (p *Parser) term() Expr {
 	}
 
 	return node
-}
-
-func (p *Parser) expr() Expr {
-	return p.term()
 }
 
 func (p *Parser) Parse() Expr {

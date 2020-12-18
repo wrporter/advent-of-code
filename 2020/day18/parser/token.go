@@ -20,6 +20,11 @@ const (
 	RPAREN
 )
 
+const (
+	OperatorBegin = 2
+	OperatorEnd   = 5
+)
+
 var tokens = map[Token]string{
 	EOF: "EOF",
 
@@ -43,6 +48,10 @@ func (t Token) String() string {
 		s = "token(" + strconv.Itoa(int(t)) + ")"
 	}
 	return s
+}
+
+func (t Token) IsOperator() bool {
+	return t >= OperatorBegin && t <= OperatorEnd
 }
 
 const (
