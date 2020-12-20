@@ -22,7 +22,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	current := runes.Copy2D(conversion.ToRunes(input))
+	current := runes.Copy2D(conversion.ToRuneGrid(input))
 
 	for {
 		next := runes.Copy2D(current)
@@ -50,7 +50,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	current := runes.Copy2D(conversion.ToRunes(input))
+	current := runes.Copy2D(conversion.ToRuneGrid(input))
 
 	for {
 		next := runes.Copy2D(current)

@@ -2,7 +2,7 @@ package conversion
 
 import "strconv"
 
-func ToRunes(lines []string) [][]rune {
+func ToRuneGrid(lines []string) [][]rune {
 	grid := make([][]rune, len(lines))
 
 	for row, line := range lines {
@@ -14,6 +14,16 @@ func ToRunes(lines []string) [][]rune {
 	}
 
 	return grid
+}
+
+func ToRunes(line string) []rune {
+	row := make([]rune, len(line))
+
+	for col, char := range line {
+		row[col] = char
+	}
+
+	return row
 }
 
 func ToInts(values []string) (result []int, err error) {

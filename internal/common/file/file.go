@@ -23,7 +23,7 @@ func ReadFile(path string) (result []string, err error) {
 		result = append(result, scanner.Text())
 	}
 
-	if err := scanner.Err(); err != nil {
+	if err = scanner.Err(); err != nil {
 		return result, err
 	}
 

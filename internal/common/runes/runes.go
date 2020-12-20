@@ -38,3 +38,23 @@ func StringToGrid(lines []string) [][]rune {
 
 	return grid
 }
+
+func Equal(a, b []rune) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func Reverse(arr []rune) []rune {
+	result := Copy(arr)
+	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
+		result[i], result[j] = result[j], result[i]
+	}
+	return result
+}
