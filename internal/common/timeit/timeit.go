@@ -13,5 +13,5 @@ func Track(start time.Time, name string) {
 
 func Report(start time.Time) {
 	elapsed := time.Since(start)
-	fmt.Printf("🕒 %s%s%s", color.Blue, elapsed, color.Reset)
+	fmt.Printf("🕒 %s%s%s\n", color.Blue, elapsed, color.Reset)
 }
