@@ -12,6 +12,8 @@
 // A way to simulate whether or not certain strings follow the rules of a
 // language is by constructing a Push-Down Automaton (PDA). A PDA is a machine
 // that can process input and match it to the given grammar rules.
+//
+// This package implements an LL parser.
 package pda
 
 import (
