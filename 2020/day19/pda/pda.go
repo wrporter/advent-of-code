@@ -10,7 +10,7 @@ const endSymbol = "$"
 type (
 	PDA struct {
 		startSymbol string
-		transitions []transition
+		transitions map[string][]transition
 	}
 
 	transition struct {
@@ -22,6 +22,7 @@ type (
 func NewPDA(startSymbol string) *PDA {
 	return &PDA{
 		startSymbol: startSymbol,
+		transitions: make(map[string][]transition),
 	}
 }
 
@@ -37,7 +38,7 @@ func (p *PDA) AddRules(rules []string) {
 }
 
 func (p *PDA) AddRule(symbol string, derivation []string) {
-	p.transitions = append(p.transitions, transition{
+	p.transitions[symbol] = append(p.transitions[symbol], transition{
 		symbol:     symbol,
 		derivation: derivation,
 	})
@@ -46,7 +47,6 @@ func (p *PDA) AddRule(symbol string, derivation []string) {
 func (p *PDA) Match(input string) bool {
 	stack := []string{p.startSymbol, endSymbol}
 	return p.match(strings.Split(input, ""), stack)
-
 }
 
 func (p *PDA) match(input []string, stack []string) bool {
@@ -55,22 +55,19 @@ func (p *PDA) match(input []string, stack []string) bool {
 		return true
 	}
 
-	for _, trans := range p.transitions {
-		if stack[0] == "!" {
-			return p.match(input, stack[1:])
-		}
+	if stack[0] == "!" {
+		return p.match(input, stack[1:])
+	}
 
-		if len(input) != 0 && input[0] == stack[0] {
-			return p.match(input[1:], stack[1:])
-		}
+	if len(input) != 0 && input[0] == stack[0] {
+		return p.match(input[1:], stack[1:])
+	}
 
-		// transition on a variable
-		if stack[0] == trans.symbol {
-			// pop symbol from stack and push
-			nextStack := append(trans.derivation, stack[1:]...)
-			if p.match(input, nextStack) {
-				return true
-			}
+	for _, trans := range p.transitions[stack[0]] {
+		// pop symbol from stack and push
+		nextStack := append(trans.derivation, stack[1:]...)
+		if p.match(input, nextStack) {
+			return true
 		}
 	}
 
@@ -79,8 +76,10 @@ func (p *PDA) match(input []string, stack []string) bool {
 }
 
 func (p *PDA) PrintTransitions() {
-	for _, trans := range p.transitions {
-		fmt.Println(trans.String())
+	for _, symbolTransitions := range p.transitions {
+		for _, trans := range symbolTransitions {
+			fmt.Println(trans.String())
+		}
 	}
 }
 
