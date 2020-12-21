@@ -5,7 +5,10 @@ import (
 	"strings"
 )
 
-const endSymbol = "$"
+const (
+	endSymbol   = "$"
+	emptySymbol = "!"
+)
 
 type (
 	PDA struct {
@@ -32,7 +35,8 @@ func (p *PDA) AddRules(rules []string) {
 		symbol := parts[0]
 
 		for _, sequence := range strings.Split(parts[1], " | ") {
-			p.AddRule(symbol, strings.Split(sequence, " "))
+			derivation := strings.Split(sequence, " ")
+			p.AddRule(symbol, derivation)
 		}
 	}
 }
@@ -50,12 +54,11 @@ func (p *PDA) Match(input string) bool {
 }
 
 func (p *PDA) match(input []string, stack []string) bool {
-	if (stack[0] == endSymbol && len(input) == 0) ||
-		(stack[0] == endSymbol && input[0] == "!") {
+	if stack[0] == endSymbol && len(input) == 0 {
 		return true
 	}
 
-	if stack[0] == "!" {
+	if stack[0] == emptySymbol {
 		return p.match(input, stack[1:])
 	}
 
@@ -64,14 +67,12 @@ func (p *PDA) match(input []string, stack []string) bool {
 	}
 
 	for _, trans := range p.transitions[stack[0]] {
-		// pop symbol from stack and push
-		nextStack := append(trans.derivation, stack[1:]...)
-		if p.match(input, nextStack) {
+		expand := append(trans.derivation, stack[1:]...)
+		if p.match(input, expand) {
 			return true
 		}
 	}
 
-	// no transition could be made, and the input didn't match the grammar
 	return false
 }
 

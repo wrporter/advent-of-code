@@ -24,7 +24,6 @@ func TestPDA_Match(t *testing.T) {
 			inputResults: []inputResults{
 				{input: "ab", want: true},
 				{input: "aabb", want: true},
-				{input: "!", want: true},
 				{input: "aaaabbbb", want: true},
 				{input: "ababa", want: false},
 				{input: "bbaaa", want: false},
