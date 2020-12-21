@@ -5,11 +5,14 @@ import (
 	"github.com/wrporter/advent-of-code/2020/day19/pda"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
+	"time"
 )
 
 func main() {
 	year, day := 2020, 19
+	defer timeit.Report(time.Now())
 	out.Day(year, day)
 	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
@@ -28,8 +31,8 @@ func part1(input []string) interface{} {
 func part2(input []string) interface{} {
 	messages, rules := parse(input)
 
-	rules["8"] = "42 | 42 8 | !"
-	rules["11"] = "42 31 | 42 11 31 | !"
+	rules["8"] = "42 | 42 8"
+	rules["11"] = "42 31 | 42 11 31"
 
 	return countValidMessages(rules, messages)
 }

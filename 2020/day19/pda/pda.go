@@ -5,10 +5,11 @@ import (
 	"strings"
 )
 
+const endSymbol = "$"
+
 type (
 	PDA struct {
 		startSymbol string
-		startRule   string
 		transitions []transition
 	}
 
@@ -18,10 +19,20 @@ type (
 	}
 )
 
-func NewPDA(startRule string) *PDA {
+func NewPDA(startSymbol string) *PDA {
 	return &PDA{
-		startSymbol: "$",
-		startRule:   startRule,
+		startSymbol: startSymbol,
+	}
+}
+
+func (p *PDA) AddRules(rules []string) {
+	for _, rule := range rules {
+		parts := strings.Split(rule, ": ")
+		symbol := parts[0]
+
+		for _, sequence := range strings.Split(parts[1], " | ") {
+			p.AddRule(symbol, strings.Split(sequence, " "))
+		}
 	}
 }
 
@@ -33,50 +44,31 @@ func (p *PDA) AddRule(symbol string, derivation []string) {
 }
 
 func (p *PDA) Match(input string) bool {
-	stack := []string{p.startRule, p.startSymbol}
-	return p.match(strings.Split(input, ""), stack, 0, nil, 0)
+	stack := []string{p.startSymbol, endSymbol}
+	return p.match(strings.Split(input, ""), stack)
 
 }
 
-func (p *PDA) match(input []string, stack []string, depth int, rec [][]string, count int) bool {
-	if depth > 200 {
-		return false
-	}
-
-	if (stack[0] == p.startSymbol && len(input) == 0) ||
-		(stack[0] == p.startSymbol && input[0] == "!") {
+func (p *PDA) match(input []string, stack []string) bool {
+	if (stack[0] == endSymbol && len(input) == 0) ||
+		(stack[0] == endSymbol && input[0] == "!") {
 		return true
 	}
 
 	for _, trans := range p.transitions {
+		if stack[0] == "!" {
+			return p.match(input, stack[1:])
+		}
+
 		if len(input) != 0 && input[0] == stack[0] {
-			return p.match(input[1:], stack[1:], depth+1, rec, count)
-		}
-
-		// if the recursive-checking-list is not empty, let's analyze it to see if we have a recursion issue
-		if len(rec) != 0 {
-			var tmp []string
-			for i := 1; i < len(rec); i++ {
-				tmp = rec[i-1]
-				if strings.Join(tmp, "") == strings.Join(rec[i], "") {
-					count++
-				}
-			}
-		}
-
-		// if a rule recurses 50 or more times, let's skip it
-		if count >= 50 {
-			rec = nil
-			count = 0
-			continue
+			return p.match(input[1:], stack[1:])
 		}
 
 		// transition on a variable
 		if stack[0] == trans.symbol {
-			rec = append(rec, trans.derivation)
-
 			// pop symbol from stack and push
-			if p.match(input, append(trans.derivation, stack[1:]...), depth+1, rec, count) {
+			nextStack := append(trans.derivation, stack[1:]...)
+			if p.match(input, nextStack) {
 				return true
 			}
 		}
