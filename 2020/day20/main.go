@@ -128,14 +128,10 @@ func findCorrectOrientation(image [][]*Tile, row int, col int, tiles map[int]*Ti
 		}
 
 		for _, candidate := range tile.Arrangements {
-			good := true
-			if row > 0 {
-				good = good && stringgrid.Top(candidate) == stringgrid.Bottom(image[row-1][col].Grid)
-			}
-			if col > 0 {
-				good = good && stringgrid.Left(candidate) == stringgrid.Right(image[row][col-1].Grid)
-			}
-			if good {
+			if row == 0 && col == 0 ||
+				(row > 0 && stringgrid.Top(candidate) == stringgrid.Bottom(image[row-1][col].Grid)) ||
+				(col > 0 && stringgrid.Left(candidate) == stringgrid.Right(image[row][col-1].Grid)) {
+
 				image[row][col] = NewTile(tileID, candidate)
 				used[tileID] = true
 
