@@ -3,12 +3,16 @@ package main
 import (
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	defer timeit.Report(time.Now())
+
 	out.Day(2020, 4)
 	input, _ := file.ReadFile("./2020/day4/input.txt")
 

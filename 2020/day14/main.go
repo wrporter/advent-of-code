@@ -6,12 +6,16 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	defer timeit.Report(time.Now())
+
 	year, day := 2020, 14
 	out.Day(year, day)
 	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))

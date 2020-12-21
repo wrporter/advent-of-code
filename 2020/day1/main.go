@@ -5,9 +5,13 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/probability"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
+	"time"
 )
 
 func main() {
+	defer timeit.Report(time.Now())
+
 	out.Day(2020, 1)
 	input, _ := file.ReadFile("./2020/day1/input.txt")
 	entries, _ := conversion.ToInts(input)

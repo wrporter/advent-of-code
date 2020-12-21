@@ -4,10 +4,14 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
+	"time"
 )
 
 func main() {
+	defer timeit.Report(time.Now())
+
 	out.Day(2020, 2)
 	input, _ := file.ReadFile("./2020/day2/input.txt")
 	answer1 := part1(input)

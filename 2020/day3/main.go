@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/timeit"
+	"time"
 )
 
 type Slope struct {
@@ -11,6 +13,8 @@ type Slope struct {
 }
 
 func main() {
+	defer timeit.Report(time.Now())
+
 	out.Day(2020, 3)
 	input, _ := file.ReadFile("./2020/day3/input.txt")
 	answer1 := part1(input, 3, 1)
