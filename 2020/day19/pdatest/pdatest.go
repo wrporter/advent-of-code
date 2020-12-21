@@ -36,8 +36,6 @@ func main() {
 		}
 	}
 
-	p.PrintTransitions()
-
 	count := 0
 	for _, message := range messages {
 		match := p.Match(message)

@@ -1382,7 +1382,7 @@ func TestPDA_Match(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
 			p := NewPDA(tt.startSymbol)
-			p.AddRules(tt.rules)
+			p.AddBNFRules(tt.rules)
 
 			for _, inputResult := range tt.inputResults {
 				if got := p.Match(inputResult.input); got != inputResult.want {
