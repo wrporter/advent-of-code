@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
@@ -9,12 +8,12 @@ import (
 	"strings"
 )
 
-var debugFlag = true
+var debugFlag = false
 
 func main() {
 	year, day := 2020, 22
 	out.Day(year, day)
-	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/sample-input.txt", year, day))
+	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)
@@ -37,13 +36,12 @@ func part2(input []string) interface{} {
 
 type Player struct {
 	ID   int
-	Deck *list.List
+	Deck []int
 }
 
 func NewPlayer(id int) Player {
 	return Player{
-		ID:   id,
-		Deck: list.New(),
+		ID: id,
 	}
 }
 
@@ -62,18 +60,30 @@ func debug(str string) {
 // of the round is determined by playing a new game of Recursive Combat (see below).
 //- Otherwise, at least one player must not have enough cards left in their deck to recurse; the winner of the round is
 // the player with the higher-value card.
-func playRecursive(player1 Player, player2 Player, game int) Player {
-	debug(fmt.Sprintf("=== Game %d ===", game))
+func playRecursive(player1 Player, player2 Player, gameDepth int) Player {
+	debug(fmt.Sprintf("=== Game %d ===", gameDepth))
 	seen := make(map[string]bool)
+	var card1, card2 int
 
 	for round := 1; ; round++ {
-		debug(fmt.Sprintf("\n-- Round %d (Game %d) --", round, game))
+		debug(fmt.Sprintf("\n-- Round %d (Game %d) --", round, gameDepth))
 		debug(player1.Render())
 		debug(player2.Render())
 
+		if len(player1.Deck) == 0 {
+			debug(fmt.Sprintf("The winner of gameDepth %d is player 2!", gameDepth))
+			return player2
+		}
+		if len(player2.Deck) == 0 {
+			debug(fmt.Sprintf("The winner of gameDepth %d is player 1!", gameDepth))
+			return player1
+		}
+
 		if seen[player1.String()] || seen[player2.String()] {
-			player1.Deck.PushBack(player1.Deck.Remove(player1.Deck.Front()))
-			player1.Deck.PushBack(player2.Deck.Remove(player2.Deck.Front()))
+			card1, player1.Deck = player1.Deck[0], player1.Deck[1:]
+			card2, player2.Deck = player2.Deck[0], player2.Deck[1:]
+			player1.Deck = append(player1.Deck, card1)
+			player1.Deck = append(player1.Deck, card2)
 			seen[player1.String()] = true
 			seen[player2.String()] = true
 			continue
@@ -82,56 +92,39 @@ func playRecursive(player1 Player, player2 Player, game int) Player {
 		seen[player1.String()] = true
 		seen[player2.String()] = true
 
-		player1Card := player1.Deck.Remove(player1.Deck.Front())
-		player2Card := player2.Deck.Remove(player2.Deck.Front())
+		card1, player1.Deck = player1.Deck[0], player1.Deck[1:]
+		card2, player2.Deck = player2.Deck[0], player2.Deck[1:]
 
-		debug(fmt.Sprintf("Player 1 plays: %d", player1Card))
-		debug(fmt.Sprintf("Player 2 plays: %d", player2Card))
+		debug(fmt.Sprintf("Player 1 plays: %d", card1))
+		debug(fmt.Sprintf("Player 2 plays: %d", card2))
 
-		if player1Card.(int) <= player1.Deck.Len() && player2Card.(int) <= player2.Deck.Len() {
-			debug("Playing a sub-game to determine the winner...\n")
-			player1Copy := player1.Copy()
-			player2Copy := player2.Copy()
-			winner := playRecursive(player1Copy, player2Copy, game+1)
-			debug(fmt.Sprintf("\n...anyway, back to game %d.", game))
+		if card1 <= len(player1.Deck) && card2 <= len(player2.Deck) {
+			debug("Playing a sub-gameDepth to determine the winner...\n")
+			player1Copy := player1.Copy(card1)
+			player2Copy := player2.Copy(card2)
+			winner := playRecursive(player1Copy, player2Copy, gameDepth+1)
+			debug(fmt.Sprintf("\n...anyway, back to gameDepth %d.", gameDepth))
 			if winner.ID == player1.ID {
-				debug(fmt.Sprintf("Player 1 wins round %d of game %d!", round, game))
-				player1.Deck.PushBack(player1Card)
-				player1.Deck.PushBack(player2Card)
+				debug(fmt.Sprintf("Player 1 wins round %d of gameDepth %d!", round, gameDepth))
+				player1.Deck = append(player1.Deck, card1)
+				player1.Deck = append(player1.Deck, card2)
 			} else {
-				debug(fmt.Sprintf("Player 2 wins round %d of game %d!", round, game))
-				player2.Deck.PushBack(player2Card)
-				player2.Deck.PushBack(player1Card)
+				debug(fmt.Sprintf("Player 2 wins round %d of gameDepth %d!", round, gameDepth))
+				player2.Deck = append(player2.Deck, card2)
+				player2.Deck = append(player2.Deck, card1)
 			}
 		} else {
-			if player1Card.(int) > player2Card.(int) {
-				debug(fmt.Sprintf("Player 1 wins round %d of game %d!", round, game))
-				player1.Deck.PushBack(player1Card)
-				player1.Deck.PushBack(player2Card)
+			if card1 > card2 {
+				debug(fmt.Sprintf("Player 1 wins round %d of gameDepth %d!", round, gameDepth))
+				player1.Deck = append(player1.Deck, card1)
+				player1.Deck = append(player1.Deck, card2)
 			} else {
-				debug(fmt.Sprintf("Player 2 wins round %d of game %d!", round, game))
-				player2.Deck.PushBack(player2Card)
-				player2.Deck.PushBack(player1Card)
+				debug(fmt.Sprintf("Player 2 wins round %d of gameDepth %d!", round, gameDepth))
+				player2.Deck = append(player2.Deck, card2)
+				player2.Deck = append(player2.Deck, card1)
 			}
 		}
-
-		if player1.Deck.Len() == 0 {
-			debug(fmt.Sprintf("The winner of game %d is player 2!", game))
-			return player2
-		}
-		if player2.Deck.Len() == 0 {
-			debug(fmt.Sprintf("The winner of game %d is player 1!", game))
-			return player1
-		}
 	}
-}
-
-func copyDeck(deck *list.List) *list.List {
-	result := list.New()
-	for node := deck.Front(); node != nil; node = node.Next() {
-		result.PushBack(node.Value)
-	}
-	return result
 }
 
 func (p Player) Render() string {
@@ -139,9 +132,9 @@ func (p Player) Render() string {
 	delimiter := ", "
 	sb.WriteString(fmt.Sprintf("Player %d's deck: ", p.ID))
 
-	for card := p.Deck.Front(); card != nil; card = card.Next() {
-		sb.WriteString(fmt.Sprintf("%d", card.Value))
-		if card.Next() != nil {
+	for i, card := range p.Deck {
+		sb.WriteString(fmt.Sprintf("%d", card))
+		if i < len(p.Deck)-1 {
 			sb.WriteString(delimiter)
 		}
 	}
@@ -154,9 +147,9 @@ func (p Player) String() string {
 	delimiter := ','
 	sb.WriteString(fmt.Sprintf("%d: ", p.ID))
 
-	for card := p.Deck.Front(); card != nil; card = card.Next() {
-		sb.WriteString(fmt.Sprintf("%d", card.Value))
-		if card.Next() != nil {
+	for i, card := range p.Deck {
+		sb.WriteString(fmt.Sprintf("%d", card))
+		if i < len(p.Deck)-1 {
 			sb.WriteRune(delimiter)
 		}
 	}
@@ -164,41 +157,45 @@ func (p Player) String() string {
 	return sb.String()
 }
 
-func (p Player) Copy() Player {
+func (p Player) Copy(size int) Player {
 	result := NewPlayer(p.ID)
-	result.Deck = copyDeck(p.Deck)
+	result.Deck = make([]int, size)
+	for i := 0; i < size; i++ {
+		result.Deck[i] = p.Deck[i]
+	}
 	return result
 }
 
 func score(winner Player) int {
 	result := 0
 
-	multiplier := 1
-	for node := winner.Deck.Back(); node != nil; node = node.Prev() {
-		result += node.Value.(int) * multiplier
-		multiplier++
+	multiplier := len(winner.Deck)
+	for _, card := range winner.Deck {
+		result += card * multiplier
+		multiplier--
 	}
 
 	return result
 }
 
 func play(player1 Player, player2 Player) Player {
+	var card1, card2 int
 	for {
-		if player1.Deck.Len() == 0 {
+		if len(player1.Deck) == 0 {
 			return player2
-		} else if player2.Deck.Len() == 0 {
+		} else if len(player2.Deck) == 0 {
 			return player1
 		}
 
-		player1Card := player1.Deck.Remove(player1.Deck.Front())
-		player2Card := player2.Deck.Remove(player2.Deck.Front())
+		card1, player1.Deck = player1.Deck[0], player1.Deck[1:]
+		card2, player2.Deck = player2.Deck[0], player2.Deck[1:]
 
-		if player1Card.(int) > player2Card.(int) {
-			player1.Deck.PushBack(player1Card)
-			player1.Deck.PushBack(player2Card)
+		if card1 > card2 {
+			player1.Deck = append(player1.Deck, card1)
+			player1.Deck = append(player1.Deck, card2)
 		} else {
-			player2.Deck.PushBack(player2Card)
-			player2.Deck.PushBack(player1Card)
+			player2.Deck = append(player2.Deck, card2)
+			player2.Deck = append(player2.Deck, card1)
 		}
 	}
 }
@@ -219,9 +216,9 @@ func parse(input []string) (Player, Player) {
 		}
 
 		if section == 0 {
-			player1.Deck.PushBack(conversion.StringToInt(line))
+			player1.Deck = append(player1.Deck, conversion.StringToInt(line))
 		} else {
-			player2.Deck.PushBack(conversion.StringToInt(line))
+			player2.Deck = append(player2.Deck, conversion.StringToInt(line))
 		}
 	}
 	return player1, player2
