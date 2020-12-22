@@ -190,3 +190,16 @@ func ChineseRemainderTheoremBig(a, n []*big.Int) (*big.Int, error) {
 	}
 	return x.Mod(&x, p), nil
 }
+
+func HashCode(a []int) int {
+	if len(a) == 0 {
+		return 0
+	}
+
+	result := 1
+	for _, element := range a {
+		result = 31*result + element
+	}
+
+	return result
+}

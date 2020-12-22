@@ -6,7 +6,7 @@ Once I heard about space cards, I wondered if this puzzle was going to be simila
 
 Part 1 was super simple. Check which card is larger and put them under the winner's deck. Then when someone has no more cards left, we have a winner!
 
-Part 2 is more involved, but still not too bad. There were just a lot of special rules to make sure to get right.
+Part 2 is more involved, but still not too bad. There were just a lot of special rules to make sure to get right. There's also an optimization with hashing that can be made. If we just use a string representation of the decks, the hash size increases far faster than if we were to use integers. I stole the hash code algorithm from the Java Arrays class and my solution went from 3.5 seconds down to 300 milliseconds.
 
 ## Puzzle
 

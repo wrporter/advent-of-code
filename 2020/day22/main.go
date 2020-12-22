@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
@@ -37,7 +38,7 @@ func part2(input []string) interface{} {
 }
 
 func playRecursive(deck1 []int, deck2 []int) (int, []int) {
-	seen := make(map[string]bool)
+	seen := make(map[int]bool)
 	var card1, card2, winner int
 
 	for round := 1; ; round++ {
@@ -48,12 +49,14 @@ func playRecursive(deck1 []int, deck2 []int) (int, []int) {
 			return 1, deck1
 		}
 
-		key := fmt.Sprintf("%v, %v", deck1, deck2)
-		if seen[key] {
+		key1 := ints.HashCode(deck1)
+		key2 := ints.HashCode(deck2)
+		if seen[key1] && seen[key2] {
 			return 1, deck1
 		}
 
-		seen[key] = true
+		seen[key1] = true
+		seen[key2] = true
 		card1, deck1 = deck1[0], deck1[1:]
 		card2, deck2 = deck2[0], deck2[1:]
 
