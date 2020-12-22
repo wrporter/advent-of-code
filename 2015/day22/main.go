@@ -98,7 +98,7 @@ func winMinMana(startPlayer, startBoss Character, difficulty string) (int, *Stat
 			continue
 		}
 
-		//state.Path += "-- Player turn--\n"
+		//state.Path += "-- PlayerID turn--\n"
 		//state.Path += renderState(state)
 		if difficulty == "hard" {
 			state.Player.HitPoints -= 1
@@ -151,7 +151,7 @@ func winMinMana(startPlayer, startBoss Character, difficulty string) (int, *Stat
 			continue
 		}
 		state.Player.HitPoints -= state.Boss.Damage - state.Player.Armor
-		//state.Path += fmt.Sprintf("Boss attacks for %d - %d = %d damage!", state.Boss.Damage, state.Player.Armor, state.Boss.Damage-state.Player.Armor)
+		//state.Path += fmt.Sprintf("Boss attacks for %d - %d = %d damage!", state.Boss.Damage, state.PlayerID.Armor, state.Boss.Damage-state.PlayerID.Armor)
 		if state.Player.HitPoints <= 0 {
 			continue
 		}
@@ -178,13 +178,13 @@ func winMinMana(startPlayer, startBoss Character, difficulty string) (int, *Stat
 
 func renderState(s *State) string {
 	result := ""
-	result += fmt.Sprintf("- Player has %d hit points, %d armor, %d mana\n", s.Player.HitPoints, s.Player.Armor, s.Player.Mana)
+	result += fmt.Sprintf("- PlayerID has %d hit points, %d armor, %d mana\n", s.Player.HitPoints, s.Player.Armor, s.Player.Mana)
 	result += fmt.Sprintf("- Boss has %d hit points\n", s.Boss.HitPoints)
 	return result
 }
 
 func renderSpell(spell Spell) string {
-	result := fmt.Sprintf("Player casts %s", spell.Name)
+	result := fmt.Sprintf("PlayerID casts %s", spell.Name)
 	switch spell.Name {
 	case "Magic Missile":
 		result += ", dealing 4 damage.\n"
