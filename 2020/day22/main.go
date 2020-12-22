@@ -32,91 +32,64 @@ func part1(input []string) interface{} {
 
 func part2(input []string) interface{} {
 	player1, player2 := parse(input)
-	winner := playRecursive(player1, player2, 1)
-	return score(winner)
+	_, deck := playRecursive(player1, player2)
+	return score(deck)
 }
 
-type Player struct {
-	ID   int
-	Deck []int
-}
-
-func NewPlayer(id int) Player {
-	return Player{
-		ID: id,
-	}
-}
-
-func playRecursive(player1 Player, player2 Player, gameDepth int) Player {
+func playRecursive(deck1 []int, deck2 []int) (int, []int) {
 	seen := make(map[string]bool)
-	var card1, card2, winnerID int
+	var card1, card2, winner int
 
 	for round := 1; ; round++ {
-		if len(player1.Deck) == 0 {
-			return player2
+		if len(deck1) == 0 {
+			return 2, deck2
 		}
-		if len(player2.Deck) == 0 {
-			return player1
+		if len(deck2) == 0 {
+			return 1, deck1
 		}
 
-		alreadySeen := seen[player1.String()] || seen[player2.String()]
-		seen[player1.String()] = true
-		seen[player2.String()] = true
+		key := fmt.Sprintf("%v, %v", deck1, deck2)
+		if seen[key] {
+			return 1, deck1
+		}
 
-		card1, player1.Deck = player1.Deck[0], player1.Deck[1:]
-		card2, player2.Deck = player2.Deck[0], player2.Deck[1:]
+		seen[key] = true
+		card1, deck1 = deck1[0], deck1[1:]
+		card2, deck2 = deck2[0], deck2[1:]
 
-		if alreadySeen {
-			winnerID = player1.ID
-		} else if card1 <= len(player1.Deck) && card2 <= len(player2.Deck) {
-			player1Copy := player1.Copy(card1)
-			player2Copy := player2.Copy(card2)
-			winnerID = playRecursive(player1Copy, player2Copy, gameDepth+1).ID
+		if card1 <= len(deck1) && card2 <= len(deck2) {
+			player1Copy := copySize(deck1, card1)
+			player2Copy := copySize(deck2, card2)
+			winner, _ = playRecursive(player1Copy, player2Copy)
 		} else if card1 > card2 {
-			winnerID = player1.ID
+			winner = 1
 		} else {
-			winnerID = player2.ID
+			winner = 2
 		}
 
-		if winnerID == player1.ID {
-			player1.Deck = append(player1.Deck, card1)
-			player1.Deck = append(player1.Deck, card2)
+		if winner == 1 {
+			deck1 = append(deck1, card1)
+			deck1 = append(deck1, card2)
 		} else {
-			player2.Deck = append(player2.Deck, card2)
-			player2.Deck = append(player2.Deck, card1)
+			deck2 = append(deck2, card2)
+			deck2 = append(deck2, card1)
 		}
 	}
 }
 
-func (p Player) String() string {
-	var sb strings.Builder
-	delimiter := ','
-	sb.WriteString(fmt.Sprintf("%d: ", p.ID))
-
-	for i, card := range p.Deck {
-		sb.WriteString(fmt.Sprintf("%d", card))
-		if i < len(p.Deck)-1 {
-			sb.WriteRune(delimiter)
-		}
-	}
-
-	return sb.String()
-}
-
-func (p Player) Copy(size int) Player {
-	result := NewPlayer(p.ID)
-	result.Deck = make([]int, size)
+func copySize(array []int, size int) []int {
+	result := make([]int, size)
 	for i := 0; i < size; i++ {
-		result.Deck[i] = p.Deck[i]
+		result[i] = array[i]
 	}
 	return result
 }
 
-func score(winner Player) int {
+func score(deck []int) int {
 	result := 0
 
-	multiplier := len(winner.Deck)
-	for _, card := range winner.Deck {
+	multiplier := len(deck)
+	for _, card := range deck {
 		result += card * multiplier
 		multiplier--
 	}
@@ -124,31 +97,30 @@ func score(winner Player) int {
 	return result
 }
 
-func play(player1 Player, player2 Player) Player {
+func play(deck1 []int, deck2 []int) []int {
 	var card1, card2 int
 	for {
-		if len(player1.Deck) == 0 {
-			return player2
-		} else if len(player2.Deck) == 0 {
-			return player1
+		if len(deck1) == 0 {
+			return deck2
+		} else if len(deck2) == 0 {
+			return deck1
 		}
 
-		card1, player1.Deck = player1.Deck[0], player1.Deck[1:]
-		card2, player2.Deck = player2.Deck[0], player2.Deck[1:]
+		card1, deck1 = deck1[0], deck1[1:]
+		card2, deck2 = deck2[0], deck2[1:]
 
 		if card1 > card2 {
-			player1.Deck = append(player1.Deck, card1)
-			player1.Deck = append(player1.Deck, card2)
+			deck1 = append(deck1, card1)
+			deck1 = append(deck1, card2)
 		} else {
-			player2.Deck = append(player2.Deck, card2)
-			player2.Deck = append(player2.Deck, card1)
+			deck2 = append(deck2, card2)
+			deck2 = append(deck2, card1)
 		}
 	}
 }
 
-func parse(input []string) (Player, Player) {
-	player1 := NewPlayer(1)
-	player2 := NewPlayer(2)
+func parse(input []string) ([]int, []int) {
+	var deck1, deck2 []int
 
 	section := 0
 	for _, line := range input {
@@ -162,10 +134,10 @@ func parse(input []string) (Player, Player) {
 		}
 
 		if section == 0 {
-			player1.Deck = append(player1.Deck, conversion.StringToInt(line))
+			deck1 = append(deck1, conversion.StringToInt(line))
 		} else {
-			player2.Deck = append(player2.Deck, conversion.StringToInt(line))
+			deck2 = append(deck2, conversion.StringToInt(line))
 		}
 	}
-	return player1, player2
+	return deck1, deck2
 }
