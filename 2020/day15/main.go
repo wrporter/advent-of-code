@@ -35,37 +35,30 @@ func part2(input []string) interface{} {
 }
 
 func playMemoryGame(startNumbers []int, numTurns int) int {
-	numbers := make([]int, numTurns)
-	said := make(map[int]int)
-	for i, number := range startNumbers {
-		numbers[i] = number
-		if i != len(startNumbers)-1 {
-			said[number] = i
-		}
+	history := make([]int, numTurns)
+	last := startNumbers[0]
+
+	for turn := range startNumbers {
+		history[last] = turn
+		last = startNumbers[turn]
 	}
 
 	for turn := len(startNumbers); turn < numTurns; turn++ {
-		prev := numbers[turn-1]
+		previous := history[last]
+		history[last] = turn
 
-		var next int
-		if beforeLast, ok := said[prev]; !ok {
-			next = 0
+		if previous == 0 {
+			last = 0
 		} else {
-			next = turn - 1 - beforeLast
+			last = turn - previous
 		}
-
-		said[prev] = turn - 1
-		numbers[turn] = next
 	}
 
-	return numbers[numTurns-1]
+	return last
 }
 
 func parseNumbers(input []string) []int {
 	values := strings.Split(input[0], ",")
-	numbers := make([]int, len(values))
-	for i, value := range values {
-		numbers[i] = conversion.StringToInt(value)
-	}
+	numbers, _ := conversion.ToInts(values)
 	return numbers
 }
