@@ -54,7 +54,7 @@ func play(input string, moves int, size int, take int) []int {
 		}
 	}
 
-	pickup := make([]int, 3, 3)
+	var pickup [3]int
 	current := start[0]
 
 	for move := 1; move <= moves; move++ {
@@ -78,9 +78,12 @@ func play(input string, moves int, size int, take int) []int {
 	return result
 }
 
-func getDestination(pickup []int, current int, size int) int {
+func getDestination(pickup [3]int, current int, size int) int {
 	destination := 0
-	for next := current - 1; ints.Contains(pickup, destination) || destination == 0; next-- {
+	for next := current - 1; pickup[0] == destination ||
+		pickup[1] == destination ||
+		pickup[2] == destination ||
+		destination == 0; next-- {
 		destination = ints.WrapMod(next, size)
 	}
 	return destination
