@@ -32,6 +32,11 @@ func part1(input []string) interface{} {
 	return labelsAfter1(cups)
 }
 
+func part2(input []string) interface{} {
+	// need to just keep track of the highest and lowest values so we don't have to traverse the list every time
+	return 0
+}
+
 func labelsAfter1(cups *list.List) string {
 	var sb strings.Builder
 	initial := get(cups, 1)
@@ -169,10 +174,6 @@ func render(cups *list.List, current *list.Element) string {
 	}
 
 	return sb.String()
-}
-
-func part2(input []string) interface{} {
-	return 0
 }
 
 func parse(input []string) *list.List {
