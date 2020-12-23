@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
@@ -27,161 +26,62 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	cups := parse(input)
-	cups = play(cups, 100)
-	return labelsAfter1(cups)
+	result := play(input[0], 100, 9, 8)
+	return ints.Join(result, "")
 }
 
 func part2(input []string) interface{} {
-	// need to just keep track of the highest and lowest values so we don't have to traverse the list every time
-	return 0
+	result := play(input[0], 10_000_000, 1_000_000, 2)
+	return ints.Product(result)
 }
 
-func labelsAfter1(cups *list.List) string {
-	var sb strings.Builder
-	initial := get(cups, 1)
-
-	for e := initial.Next(); e != initial; e = e.Next() {
-		if e == nil {
-			e = cups.Front()
-		}
-		_, _ = fmt.Fprintf(&sb, "%d", e.Value)
+func play(input string, moves int, size int, take int) []int {
+	start, _ := conversion.ToInts(strings.Split(input, ""))
+	ring := make([]int, size+1)
+	for i := range ring {
+		ring[i] = i + 1
 	}
 
-	return sb.String()
-}
+	ring[len(ring)-1] = start[0]
 
-func play(cups *list.List, moves int) *list.List {
-	current := cups.Front()
+	for i, num := range start {
+		if i < len(start)-1 {
+			ring[num] = start[i+1]
+		} else if len(start) < len(ring)-1 {
+			ring[num] = len(start) + 1
+		} else {
+			ring[num] = start[0]
+		}
+	}
+
+	pickup := make([]int, 3, 3)
+	current := start[0]
 
 	for move := 1; move <= moves; move++ {
-		//fmt.Printf("-- move %d --\n", move)
-		//fmt.Printf("cups: %s\n", render(cups, current))
+		pickup[0] = ring[current]
+		pickup[1] = ring[pickup[0]]
+		pickup[2] = ring[pickup[1]]
+		ring[current] = ring[pickup[2]]
 
-		pickup := list.New()
-		for pick := 0; pick < 3; pick++ {
-			remove := current.Next()
-			if remove == nil {
-				remove = cups.Front()
-			}
-			pickup.PushBack(cups.Remove(remove))
-		}
-		//fmt.Printf("pickup: %s\n", renderList(pickup))
+		destination := getDestination(pickup, current, size+1)
+		end := ring[destination]
+		ring[destination] = pickup[0]
+		ring[pickup[2]] = end
 
-		destination := current
-		destinationCup := getDestinationCup(cups, pickup, current)
-		for destination == nil || destination.Value != destinationCup {
-			if destination == nil {
-				destination = cups.Front()
-			} else {
-				destination = destination.Next()
-			}
-		}
-		//fmt.Printf("destination: %d\n\n", destination.Value)
-
-		for cup := pickup.Back(); cup != nil; cup = cup.Prev() {
-			cups.InsertAfter(cup.Value, destination)
-		}
-
-		current = current.Next()
-		if current == nil {
-			current = cups.Front()
-		}
+		current = ring[current]
 	}
 
-	//fmt.Printf("-- final --\n")
-	//fmt.Printf("cups: %s\n", render(cups, current))
-
-	return cups
+	result := []int{ring[1]}
+	for taken := 1; taken < take; taken++ {
+		result = append(result, ring[result[len(result)-1]])
+	}
+	return result
 }
 
-func getDestinationCup(cups *list.List, pickup *list.List, current *list.Element) int {
-	high := highest(cups)
-	low := lowest(cups)
-	destination := current.Value.(int) - 1
-
-	for contains(pickup, destination) || !contains(cups, destination) {
-		destination--
-		if destination < low {
-			return high
-		}
+func getDestination(pickup []int, current int, size int) int {
+	destination := 0
+	for next := current - 1; ints.Contains(pickup, destination) || destination == 0; next-- {
+		destination = ints.WrapMod(next, size)
 	}
-
 	return destination
-}
-
-func contains(l *list.List, value int) bool {
-	for e := l.Front(); e != nil; e = e.Next() {
-		if e.Value == value {
-			return true
-		}
-	}
-	return false
-}
-
-func get(l *list.List, value int) *list.Element {
-	for e := l.Front(); e != nil; e = e.Next() {
-		if e.Value == value {
-			return e
-		}
-	}
-	return nil
-}
-
-func highest(cups *list.List) int {
-	max := 0
-	for e := cups.Front(); e != nil; e = e.Next() {
-		max = ints.Max(max, e.Value.(int))
-	}
-	return max
-}
-
-func lowest(cups *list.List) int {
-	min := ints.MaxInt
-	for e := cups.Front(); e != nil; e = e.Next() {
-		min = ints.Min(min, e.Value.(int))
-	}
-	return min
-}
-
-func renderList(l *list.List) interface{} {
-	var sb strings.Builder
-	delimiter := ' '
-
-	for e := l.Front(); e != nil; e = e.Next() {
-		sb.WriteString(fmt.Sprintf("%d", e.Value))
-		if e != l.Back() {
-			sb.WriteRune(delimiter)
-		}
-	}
-
-	return sb.String()
-}
-
-func render(cups *list.List, current *list.Element) string {
-	var sb strings.Builder
-	delimiter := ' '
-
-	for cup := cups.Front(); cup != nil; cup = cup.Next() {
-		if cup == current {
-			sb.WriteString(fmt.Sprintf("(%d)", cup.Value))
-		} else {
-			sb.WriteString(fmt.Sprintf("%d", cup.Value))
-		}
-		if cup != cups.Back() {
-			sb.WriteRune(delimiter)
-		}
-	}
-
-	return sb.String()
-}
-
-func parse(input []string) *list.List {
-	labels := strings.Split(input[0], "")
-	values, _ := conversion.ToInts(labels)
-	cups := list.New()
-	for _, value := range values {
-		cups.PushBack(value)
-	}
-	return cups
 }

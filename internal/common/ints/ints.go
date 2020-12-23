@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"strings"
 )
 
 const MaxUint = ^uint(0)
@@ -81,7 +82,7 @@ func LCM(a, b int, integers ...int) int {
 
 func WrapMod(value, modulus int) int {
 	var res = value % modulus
-	if (res < 0 && modulus > 0) || (res > 0 && modulus < 0) {
+	if res < 0 {
 		return res + modulus
 	}
 	return res
@@ -202,4 +203,35 @@ func HashCode(a []int) int {
 	}
 
 	return result
+}
+
+func Join(elems []int, sep string) string {
+	switch len(elems) {
+	case 0:
+		return ""
+	case 1:
+		return fmt.Sprintf("%d", elems[0])
+	}
+	n := len(sep) * (len(elems) - 1)
+	for i := 0; i < len(elems); i++ {
+		n += len(fmt.Sprintf("%d", elems[i]))
+	}
+
+	var b strings.Builder
+	b.Grow(n)
+	_, _ = fmt.Fprintf(&b, "%d", elems[0])
+	for _, elem := range elems[1:] {
+		b.WriteString(sep)
+		_, _ = fmt.Fprintf(&b, "%d", elem)
+	}
+	return b.String()
+}
+
+func Contains(values []int, value int) bool {
+	for _, v := range values {
+		if v == value {
+			return true
+		}
+	}
+	return false
 }
