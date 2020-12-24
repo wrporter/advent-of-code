@@ -12,6 +12,8 @@ For Part 1 we walk through each line and flip the last tile. I had to re-read th
 
 For Part 2 I kept getting tripped up by the coordinate system and found several websites that talked about how to manage hexagonal coordinates, the best being a simple image on [Wikipedia](https://en.wikipedia.org/wiki/Hexagonal_Efficient_Coordinate_System#/media/File:HECS_Nearest_Neighbors.jpg.png). Once I got that down, my algorithm worked just fine. Keep track of only the black (living) tiles. Traverse the black tiles and their neighbors and determine if any should be flipped to black. Do this 100 times to get your result!
 
+![Hex Coordinate System](./hex-coordinates.png)
+
 ## Puzzle
 
 --- Day 24: Lobby Layout ---
