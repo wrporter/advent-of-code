@@ -6,7 +6,7 @@ Oh, poor soul. Barely makes it to the room then has to run off on another missio
 
 This puzzle was one of the easiest, I just had to read the instructions 20 times to fully understand them 😄.
 
-Advent of Code was really fun! I enjoyed most of the puzzles and had some competitive fun with coworkers on the leaderboards (for a time, at least, until I could no longer stay up so late 😅). I miss having a problem that we could build on over time like the IntCode computer in 2019 Better luck next year. Merry Christmas!
+Advent of Code was really fun! I enjoyed most of the puzzles and had some competitive fun with coworkers on the leaderboards (for a time, at least, until I could no longer stay up so late 😅). I miss having a problem that we could build on over time like the IntCode computer in 2019. Better luck next year. Merry Christmas!
 
 ## Puzzle
 
