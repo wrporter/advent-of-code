@@ -23,9 +23,6 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	for _, line := range input {
-
-	}
 	return 0
 }
 
