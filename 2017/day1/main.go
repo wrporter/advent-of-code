@@ -30,7 +30,7 @@ func part1(input []string) interface{} {
 
 	for i := 0; i < len(line); i++ {
 		digit := line[i]
-		if (i == len(line)-1 && line[0] == digit) || (i < len(line)-1 && line[i+1] == digit) {
+		if digit == line[(i+1)%len(line)] {
 			sum += conversion.RuneToInt(digit)
 		}
 	}
