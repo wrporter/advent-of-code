@@ -11,7 +11,7 @@ import (
 func main() {
 	defer timeit.Report(time.Now())
 
-	year, day := 2020, 5
+	year, day := 2021, 1
 	out.Day(year, day)
 	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
