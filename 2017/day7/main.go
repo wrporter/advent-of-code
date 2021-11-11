@@ -28,92 +28,124 @@ func main() {
 var nodeRegex = regexp.MustCompile(`^([a-z]+)\s\((\d+)\).*$`)
 
 type Node struct {
-	Name        string
+	ID          string
+	Parent      *Node
+	Children    []*Node
 	Weight      int
-	Children    map[string]bool
 	TotalWeight int
 }
 
-func part1(input []string) interface{} {
-	_, root := constructTree(input)
-	return root.Name
+type NodeDef struct {
+	ID       string
+	Weight   int
+	Children []string
 }
 
-func constructTree(input []string) (tree map[string]Node, root Node) {
-	tree = make(map[string]Node)
+func part1(input []string) interface{} {
+	root := constructTree(input)
+	return root.ID
+}
+
+func constructTree(input []string) *Node {
+	// Parse input into node definitions
+	nodeDefs := make(map[string]*NodeDef)
 	for _, line := range input {
 		match := nodeRegex.FindStringSubmatch(line)
-		name := match[1]
+		id := match[1]
 		weight := conversion.StringToInt(match[2])
-		node := Node{Name: name, Weight: weight}
+		nodeDef := &NodeDef{ID: id, Weight: weight}
 
 		if strings.Contains(line, "->") {
-			node.Children = make(map[string]bool)
 			childrenStr := line[strings.Index(line, "-> ")+3:]
 			children := strings.Split(childrenStr, ", ")
 			for _, child := range children {
-				node.Children[child] = true
+				nodeDef.Children = append(nodeDef.Children, child)
 			}
 		}
-		tree[name] = node
+
+		nodeDefs[id] = nodeDef
 	}
 
-	for _, node := range tree {
-		isRoot := true
-
-		for _, node2 := range tree {
-			if node2.Children[node.Name] {
-				isRoot = false
-				break
-			}
+	// Populate nodes
+	nodes := make(map[string]*Node)
+	for _, nodeDef := range nodeDefs {
+		nodes[nodeDef.ID] = &Node{
+			ID:     nodeDef.ID,
+			Weight: nodeDef.Weight,
 		}
+	}
 
-		if isRoot {
+	// Set parent and child relationships
+	for _, node := range nodes {
+		for _, childId := range nodeDefs[node.ID].Children {
+			node.Children = append(node.Children, nodes[childId])
+			nodes[childId].Parent = node
+		}
+	}
+
+	// Find the root node, the only node without a parent
+	var root *Node
+	for _, node := range nodes {
+		if node.Parent == nil {
 			root = node
 		}
 	}
 
-	return tree, root
+	return root
 }
 
-func sumWeights(tree map[string]Node, node Node) int {
-	sum := node.Weight
+func setTotalWeights(node *Node) int {
+	totalWeight := node.Weight
 
-	for child := range tree[node.Name].Children {
-		sum += sumWeights(tree, tree[child])
+	for _, child := range node.Children {
+		totalWeight += setTotalWeights(child)
 	}
 
-	node.TotalWeight = sum
-	tree[node.Name] = node
+	node.TotalWeight = totalWeight
 
-	return sum
+	return totalWeight
 }
 
-func part2(input []string) interface{} {
-	tree, root := constructTree(input)
-
-	for child := range tree[root.Name].Children {
-		sumWeights(tree, tree[child])
+func findUnbalancedNode(node *Node) *Node {
+	weights := make(map[int][]*Node)
+	for _, child := range node.Children {
+		weights[child.TotalWeight] = append(weights[child.TotalWeight], child)
 	}
 
-	balance := make(map[int][]string)
-	for child := range tree[root.Name].Children {
-		weight := tree[child].TotalWeight
-		balance[weight] = append(balance[weight], child)
-	}
-
-	desiredWeight := 0
-	badWeight := 0
-	for weight, children := range balance {
-		if len(children) == 1 {
-			badWeight = weight
-			fmt.Println(children[0])
-		} else {
-			desiredWeight = weight
+	for _, nodes := range weights {
+		if len(nodes) == 1 {
+			return findUnbalancedNode(nodes[0])
 		}
 	}
 
-	fmt.Println(desiredWeight, badWeight)
+	return node
+}
 
-	return (desiredWeight - badWeight) + badWeight
+func calculateBalancedWeight(unbalancedNode *Node) int {
+	weights := make(map[int][]*Node)
+	for _, sibling := range unbalancedNode.Parent.Children {
+		weights[sibling.TotalWeight] = append(weights[sibling.TotalWeight], sibling)
+	}
+
+	var desiredTotalWeight, badWeight, programWeight int
+	for weight, nodes := range weights {
+		if len(nodes) == 1 {
+			badWeight = weight
+			programWeight = nodes[0].Weight
+		} else {
+			desiredTotalWeight = weight
+		}
+	}
+	desiredProgramWeight := (desiredTotalWeight - badWeight) + programWeight
+
+	return desiredProgramWeight
+}
+
+func part2(input []string) interface{} {
+	root := constructTree(input)
+	setTotalWeights(root)
+	unbalancedNode := findUnbalancedNode(root)
+	balancedWeight := calculateBalancedWeight(unbalancedNode)
+
+	return balancedWeight
 }
