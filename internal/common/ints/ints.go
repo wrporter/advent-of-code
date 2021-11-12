@@ -32,11 +32,14 @@ func Abs(x int) int {
 	return x
 }
 
-func Max(x int, y int) int {
-	if x > y {
-		return x
+func Max(values ...int) int {
+	max := 0
+	for _, value := range values {
+		if value > max {
+			max = value
+		}
 	}
-	return y
+	return max
 }
 
 func Min(x int, y int) int {
