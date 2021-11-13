@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
@@ -44,31 +45,32 @@ func part1(input []string) interface{} {
 
 func part2(input []string) interface{} {
 	pipes := parseInput(input)
-	groups := make(map[int]map[int]bool)
 
-	for targetGroupId := range pipes {
-		for programId := range pipes {
+	grouped := make(map[int]bool)
+	numGroups := 0
+	var currentProgramId int
 
-			if !isAlreadyInAGroup(groups, programId) && isInGroup(pipes, make(map[int]bool), programId, targetGroupId) {
-				if groups[targetGroupId] == nil {
-					groups[targetGroupId] = make(map[int]bool)
+	for groupId := range pipes {
+		if grouped[groupId] {
+			continue
+		}
+
+		numGroups++
+		queue := []int{groupId}
+
+		for len(queue) > 0 {
+			currentProgramId, queue = ints.Pop(queue)
+
+			for nextProgramId := range pipes[currentProgramId] {
+				if !grouped[nextProgramId] {
+					grouped[nextProgramId] = true
+					queue = append(queue, nextProgramId)
 				}
-				groups[targetGroupId][programId] = true
 			}
 		}
 	}
 
-	return len(groups)
-}
-
-func isAlreadyInAGroup(groups map[int]map[int]bool, programId int) bool {
-	isAlreadyInAGroup := false
-	for _, group := range groups {
-		if group[programId] {
-			isAlreadyInAGroup = true
-		}
-	}
-	return isAlreadyInAGroup
+	return numGroups
 }
 
 func parseInput(input []string) map[int]map[int]bool {
