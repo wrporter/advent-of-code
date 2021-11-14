@@ -26,7 +26,7 @@ func main() {
 
 const factorA = 16807
 const factorB = 48271
-const modulo = 2147483647
+const modulus = 2147483647
 const first16Bits = 0xffff
 
 func part1(input []string) interface{} {
@@ -36,8 +36,8 @@ func part1(input []string) interface{} {
 	numEqual := 0
 
 	for i := 0; i < iterations; i++ {
-		generatorA = (generatorA * factorA) % modulo
-		generatorB = (generatorB * factorB) % modulo
+		generatorA = (generatorA * factorA) % modulus
+		generatorB = (generatorB * factorB) % modulus
 
 		if first16BitsAreEqual(generatorA, generatorB) {
 			numEqual++
@@ -53,37 +53,27 @@ func part2(input []string) interface{} {
 	iterations := 5_000_000
 	numEqual := 0
 
-	abortA := make(chan int)
-	generatorA := &Generator{
-		Name:        "A",
-		StartValue:  startValueA,
-		Factor:      factorA,
-		Denominator: 4,
-		Abort:       abortA,
-	}
-	abortB := make(chan int)
-	generatorB := &Generator{
-		Name:        "B",
-		StartValue:  startValueB,
-		Factor:      factorB,
-		Denominator: 8,
-		Abort:       abortB,
-	}
-
-	channelA := generatorA.Generate()
-	channelB := generatorB.Generate()
+	a, b := startValueA, startValueB
 
 	for i := 0; i < iterations; i++ {
-		generatorAValue := <-channelA
-		generatorBValue := <-channelB
+		for {
+			a = (a * factorA) % modulus
+			if a%4 == 0 {
+				break
+			}
+		}
 
-		if first16BitsAreEqual(generatorAValue, generatorBValue) {
+		for {
+			b = (b * factorB) % modulus
+			if b%8 == 0 {
+				break
+			}
+		}
+
+		if first16BitsAreEqual(a, b) {
 			numEqual++
 		}
 	}
-
-	close(abortA)
-	close(abortB)
 
 	return numEqual
 }
@@ -92,36 +82,6 @@ func first16BitsAreEqual(generatorA int, generatorB int) bool {
 	valueA := generatorA & first16Bits
 	valueB := generatorB & first16Bits
 	return valueA == valueB
-}
-
-type Generator struct {
-	Name        string
-	StartValue  int
-	Factor      int
-	Denominator int
-	Abort       <-chan int
-}
-
-func (g *Generator) Generate() <-chan int {
-	channel := make(chan int)
-	value := g.StartValue
-
-	go func() {
-		defer close(channel)
-		for i := 0; ; i++ {
-			select {
-			case <-g.Abort:
-				return
-			default:
-				value = (value * g.Factor) % modulo
-				if (value % g.Denominator) == 0 {
-					channel <- value
-				}
-			}
-		}
-	}()
-
-	return channel
 }
 
 func parseInput(input []string) (int, int) {
