@@ -54,17 +54,6 @@ func isCaught(depth int, delay int, layerRange int) bool {
 	return (depth+delay)%(2*(layerRange-1)) == 0
 }
 
-func canGetCaught(maxDepth int, scanners map[int]int, layers map[int]int, delay int) bool {
-	for depth := 0; depth <= maxDepth; depth++ {
-		if scannerPosition, ok := scanners[depth]; ok && scannerPosition == 0 {
-			return true
-		}
-
-		setScannerPositions(scanners, layers, delay+depth+1)
-	}
-	return false
-}
-
 func getSeverityOfTravel(maxDepth int, scanners map[int]int, layers map[int]int) (severity int) {
 	for depth := 0; depth <= maxDepth; depth++ {
 		if scannerPosition, ok := scanners[depth]; ok && scannerPosition == 0 {
