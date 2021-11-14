@@ -31,17 +31,27 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	maxDepth, layers, scanners := parseInput(input)
+	_, layers, _ := parseInput(input)
 
-	for delay := 0; delay < 1_000_000_000; delay++ {
-		if !canGetCaught(maxDepth, scanners, layers, delay) {
-			return delay
+	for delay := 0; delay <= 1_000_000_000; delay++ {
+		caught := false
+		for depth, layerRange := range layers {
+			if isCaught(depth, delay, layerRange) {
+				caught = true
+				break
+			}
 		}
 
-		setScannerPositions(scanners, layers, delay+1)
+		if !caught {
+			return delay
+		}
 	}
 
 	return -1
+}
+
+func isCaught(depth int, delay int, layerRange int) bool {
+	return (depth+delay)%(2*(layerRange-1)) == 0
 }
 
 func canGetCaught(maxDepth int, scanners map[int]int, layers map[int]int, delay int) bool {
