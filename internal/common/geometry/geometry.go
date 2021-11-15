@@ -42,6 +42,11 @@ func (d Direction) Rotate(degrees int) Direction {
 	return Directions[ints.WrapMod((int(d)-1)+(degrees*4/360), 4)]
 }
 
+type Vector struct {
+	Point
+	Direction
+}
+
 type Point struct {
 	X int
 	Y int
