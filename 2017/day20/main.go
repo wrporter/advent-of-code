@@ -8,7 +8,6 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
-	"sort"
 	"time"
 )
 
@@ -30,32 +29,65 @@ var regex = regexp.MustCompile(`^p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+)
 
 func part1(input []string) interface{} {
 	particles := parseInput(input)
-
-	sort.SliceStable(particles, func(i, j int) bool {
-		a, b := particles[i], particles[j]
-
-		if a.ManhattanAcceleration() == b.ManhattanAcceleration() {
-			if a.ManhattanVelocity() == b.ManhattanVelocity() {
-				return a.ManhattanDistance() < b.ManhattanDistance()
+	var closestParticle *Particle
+	for i := 0; i < 500; i++ {
+		minDistance := ints.MaxInt
+		for _, particle := range particles {
+			particle.Step()
+			if particle.ManhattanDistance() < minDistance {
+				minDistance = particle.ManhattanDistance()
+				closestParticle = particle
 			}
-			return a.ManhattanVelocity() < b.ManhattanVelocity()
 		}
-		return a.ManhattanAcceleration() < b.ManhattanAcceleration()
-	})
+	}
+	return closestParticle.ID
 
-	return particles[0].ID
+	//sort.SliceStable(particles, func(i, j int) bool {
+	//	a, b := particles[i], particles[j]
+	//
+	//	if a.ManhattanAcceleration() == b.ManhattanAcceleration() {
+	//		if a.ManhattanVelocity() == b.ManhattanVelocity() {
+	//			return a.ManhattanDistance() < b.ManhattanDistance()
+	//		}
+	//		return a.ManhattanVelocity() < b.ManhattanVelocity()
+	//	}
+	//	return a.ManhattanAcceleration() < b.ManhattanAcceleration()
+	//})
+	//
+	//return particles[0].ID
 }
 
 func part2(input []string) interface{} {
-	return 0
+	particles := parseInput(input)
+
+	for i := 0; i < 500; i++ {
+		positions := make(map[Point3D][]int)
+		for _, particle := range particles {
+			positions[particle.Position] = append(positions[particle.Position], particle.ID)
+		}
+
+		for _, ids := range positions {
+			if len(ids) > 1 {
+				for _, id := range ids {
+					delete(particles, id)
+				}
+			}
+		}
+
+		for _, particle := range particles {
+			particle.Step()
+		}
+	}
+
+	return len(particles)
 }
 
-func parseInput(input []string) []*Particle {
-	var particles []*Particle
-	for i, line := range input {
+func parseInput(input []string) map[int]*Particle {
+	particles := make(map[int]*Particle)
+	for id, line := range input {
 		match := regex.FindStringSubmatch(line)
 		particle := &Particle{
-			ID: i,
+			ID: id,
 			Position: Point3D{
 				X: conversion.StringToInt(match[1]),
 				Y: conversion.StringToInt(match[2]),
@@ -72,7 +104,7 @@ func parseInput(input []string) []*Particle {
 				Z: conversion.StringToInt(match[9]),
 			},
 		}
-		particles = append(particles, particle)
+		particles[id] = particle
 	}
 	return particles
 }
@@ -91,6 +123,12 @@ type (
 		Z int
 	}
 )
+
+func (p *Particle) Collides(p2 *Particle) bool {
+	return p.Position.X == p2.Position.X &&
+		p.Position.Y == p2.Position.Y &&
+		p.Position.Z == p2.Position.Z
+}
 
 func (p *Particle) Step() {
 	p.Velocity.X += p.Acceleration.X
