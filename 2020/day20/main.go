@@ -188,7 +188,7 @@ func getArrangements(grid []string) [][]string {
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))
-	a = append(a, stringgrid.Flip(grid))
+	a = append(a, stringgrid.FlipLR(grid))
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))
 	a = append(a, stringgrid.Rotate90Clockwise(a[len(a)-1]))

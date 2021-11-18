@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func Flip(array []string) []string {
+// FlipLR flips the grid up/down.
+func FlipLR(array []string) []string {
 	result := make([]string, len(array))
 	for i, str := range array {
 		result[i] = mystrings.Reverse(str)
