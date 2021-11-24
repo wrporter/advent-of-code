@@ -31,6 +31,19 @@ var regex = regexp.MustCompile(`a ([a-z]+)(?:-compatible)? (generator|microchip)
 
 func part1(input []string) interface{} {
 	floors := parseFloors(input)
+	return getMinNumMoves(floors)
+}
+
+func part2(input []string) interface{} {
+	floors := parseFloors(input)
+	floors[0] = append(floors[0], Item{Element: "elerium", Type: Generator})
+	floors[0] = append(floors[0], Item{Element: "elerium", Type: Microchip})
+	floors[0] = append(floors[0], Item{Element: "dilithium", Type: Generator})
+	floors[0] = append(floors[0], Item{Element: "dilithium", Type: Microchip})
+	return getMinNumMoves(floors)
+}
+
+func getMinNumMoves(floors [][]Item) int {
 	state := State{
 		NumMoves: 0,
 		Floors:   floors,
@@ -55,10 +68,6 @@ func part1(input []string) interface{} {
 	}
 
 	return -1
-}
-
-func part2(input []string) interface{} {
-	return 0
 }
 
 func (s State) allItemsAreOnTheFourthFloor() bool {
