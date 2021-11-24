@@ -16,7 +16,7 @@ func main() {
 
 	year, day := 2016, 14
 	out.Day(year, day)
-	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/sample-input.txt", year, day))
+	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)
@@ -31,50 +31,50 @@ func part1(input []string) interface{} {
 	return getIndexFor64thKey(hashFunc, salt)
 }
 
-// 35364 is too high
-// 20219 is too high
-// 20218 is too high
-// 20217 not correct
 func part2(input []string) interface{} {
 	salt := input[0]
-	hashFunc := getHash2017
+	hashFunc := getStretchedHash
 	return getIndexFor64thKey(hashFunc, salt)
 }
 
 func getIndexFor64thKey(hash func(salt string, index int) string, salt string) interface{} {
 	var history []potentialKey
 	targetNumKeys := 64
-	index := 0
 	numKeys := 0
-	counted := make(map[string]bool)
+	var key potentialKey
 
-	for ; ; index++ {
+	for index := 0; numKeys < targetNumKeys; index++ {
 		stream := hash(salt, index)
-		quintKey := potentialKey{
-			stream:       stream,
-			firstTriplet: getFirstTriplet(stream),
-			quints:       getQuints(stream),
+		next := potentialKey{
+			stream: stream,
+			triple: getFirstTriple(stream),
+			quints: getQuints(stream),
+			index:  index,
 		}
-		history = append(history, quintKey)
+		history = append(history, next)
 
-		start := index - 1001
-		if start < 0 {
-			start = 0
+		if index < 1000 {
+			continue
 		}
-		for i := start; i < index; i++ {
-			tripleKey := history[i]
-			if tripleKey.firstTriplet != "" &&
-				!counted[tripleKey.stream] &&
-				quintKey.quints[strings.Repeat(string(tripleKey.firstTriplet[0]), 5)] {
-				counted[tripleKey.stream] = true
+
+		// look back and grab potential key
+		key = history[index-1000]
+		if key.triple == "" {
+			continue
+		}
+		targetQuint := strings.Repeat(string(key.triple[0]), 5)
+
+		// evaluate potential key against next 1000 hashes
+		for i := index - 1000 + 1; i <= index; i++ {
+			quint := history[i]
+			if quint.quints[targetQuint] {
 				numKeys++
-			}
-
-			if numKeys == targetNumKeys {
-				return i
+				break
 			}
 		}
 	}
+
+	return key.index
 }
 
 func getHash(salt string, index int) string {
@@ -83,7 +83,7 @@ func getHash(salt string, index int) string {
 	return stream
 }
 
-func getHash2017(salt string, index int) string {
+func getStretchedHash(salt string, index int) string {
 	hash := md5.Sum([]byte(fmt.Sprintf("%s%d", salt, index)))
 	stream := hex.EncodeToString(hash[:])
 	for i := 0; i < 2016; i++ {
@@ -112,7 +112,7 @@ func getQuints(stream string) map[string]bool {
 	return quints
 }
 
-func getFirstTriplet(stream string) string {
+func getFirstTriple(stream string) string {
 	count := 1
 	var prev int32
 	for _, char := range stream {
@@ -130,7 +130,8 @@ func getFirstTriplet(stream string) string {
 }
 
 type potentialKey struct {
-	stream       string
-	firstTriplet string
-	quints       map[string]bool
+	stream string
+	triple string
+	quints map[string]bool
+	index  int
 }
