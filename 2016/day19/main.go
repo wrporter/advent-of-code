@@ -28,32 +28,39 @@ func part1(input []string) interface{} {
 	numElves := conversion.StringToInt(input[0])
 	elves := ring.New(numElves)
 	for i := 1; i <= numElves; i++ {
-		elves.Value = &elf{i, 1}
+		elves.Value = i
 		elves = elves.Next()
 	}
 
-	for e := elves; e.Value != numElves; e = e.Next() {
-		if e.Value.(*elf).presents == 0 {
-			continue
-		}
-
-		numPresents := e.Value.(*elf).presents + e.Next().Value.(*elf).presents
-		e.Value.(*elf).presents = numPresents
-		e.Unlink(1)
-
-		if numPresents == numElves {
-			return e.Value.(*elf).id
-		}
+	for i := 0; i <= numElves; i++ {
+		elves.Unlink(1)
+		elves = elves.Next()
 	}
 
-	return 0
+	return elves.Value
 }
 
 func part2(input []string) interface{} {
-	return 0
-}
+	numElves := conversion.StringToInt(input[0])
+	steal := ring.New(numElves)
+	var give *ring.Ring
+	for i := 1; i <= numElves; i++ {
+		if i == (numElves/2)+1 {
+			give = steal
+		}
+		steal.Value = i
+		steal = steal.Next()
+	}
 
-type elf struct {
-	id       int
-	presents int
+	for i := 0; i < numElves; i++ {
+		give = give.Prev()
+		give.Unlink(1)
+		give = give.Next()
+		if i%2 == 0 {
+			give = give.Next()
+		}
+		steal = steal.Next()
+	}
+
+	return steal.Value
 }
