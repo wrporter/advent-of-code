@@ -1,5 +1,7 @@
 package runes
 
+import "github.com/wrporter/advent-of-code/internal/common/ints"
+
 func Copy(array []rune) []rune {
 	cpy := make([]rune, len(array))
 	copy(cpy, array)
@@ -57,4 +59,41 @@ func Reverse(arr []rune) []rune {
 		result[i], result[j] = result[j], result[i]
 	}
 	return result
+}
+
+func Rotate(values []rune, amount int) []rune {
+	if len(values) == 0 {
+		return values
+	}
+
+	rotation := len(values) - ints.WrapMod(amount, len(values))
+	values = append(values[rotation:], values[:rotation]...)
+
+	return values
+}
+
+func Concat(slices [][]rune) []rune {
+	var totalLen int
+	for _, s := range slices {
+		totalLen += len(s)
+	}
+	tmp := make([]rune, totalLen)
+	var i int
+	for _, s := range slices {
+		i += copy(tmp[i:], s)
+	}
+	return tmp
+}
+
+func Remove(slice []rune, index int) []rune {
+	return append(slice[:index], slice[index+1:]...)
+}
+
+func Insert(a []rune, index int, value rune) []rune {
+	if len(a) == index {
+		return append(a, value)
+	}
+	a = append(a[:index+1], a[index:]...)
+	a[index] = value
+	return a
 }
