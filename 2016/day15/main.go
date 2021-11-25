@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
@@ -37,7 +38,12 @@ func part2(input []string) interface{} {
 		time:      0,
 		position:  0,
 	})
-	return findTimeForCapsuleToComeOut(discs)
+	residues, moduli := make([]int, len(discs)), make([]int, len(discs))
+	for i, d := range discs {
+		residues[i] = (d.positions - d.position - d.id) % d.positions
+		moduli[i] = d.positions
+	}
+	return ints.ChineseRemainderTheorem(residues, moduli)
 }
 
 func findTimeForCapsuleToComeOut(discs []*Disc) int {
