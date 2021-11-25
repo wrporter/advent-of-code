@@ -41,7 +41,7 @@ func solveKeypadCombo(input []string, keypad [][]rune) string {
 				direction = geometry.Up
 			}
 
-			nextPosition := position.Add(direction)
+			nextPosition := position.Move(direction)
 			if nextPosition.X >= 0 && nextPosition.X < len(keypad[0]) &&
 				nextPosition.Y >= 0 && nextPosition.Y < len(keypad) &&
 				keypad[nextPosition.Y][nextPosition.X] != '0' {

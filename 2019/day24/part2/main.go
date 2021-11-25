@@ -117,7 +117,7 @@ func next(state map[int][][]byte, depth int, point geometry.Point) bool {
 	numAdjacentBugs := 0
 
 	for _, direction := range geometry.Directions {
-		p := point.Add(direction)
+		p := point.Move(direction)
 		if p == Middle {
 			if direction == geometry.Left {
 				numAdjacentBugs += bugsInCol(below, Width-1)

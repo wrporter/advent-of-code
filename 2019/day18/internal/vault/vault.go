@@ -150,7 +150,7 @@ func computeDistances(maze map[geometry.Point]byte, startKeys map[byte]geometry.
 			current, queue = queue[0], queue[1:]
 
 			for _, direction := range geometry.Directions {
-				nextPoint := current.point.Add(direction)
+				nextPoint := current.point.Move(direction)
 				if _, ok := distance[nextPoint]; ok {
 					continue
 				}
@@ -221,7 +221,7 @@ func isDeadEnd(maze map[geometry.Point]byte, point geometry.Point) (bool, geomet
 	walls := 0
 	var next geometry.Point
 	for _, direction := range geometry.Directions {
-		p := point.Add(direction)
+		p := point.Move(direction)
 		if _, ok := maze[p]; !ok {
 			walls++
 		} else {

@@ -36,7 +36,7 @@ var OpCodeNumParameters = map[OpCode]int{
 func (o OpCode) String() string {
 	switch o {
 	case Add:
-		return "Add"
+		return "Move"
 	case Multiply:
 		return "Multiply"
 	case Input:

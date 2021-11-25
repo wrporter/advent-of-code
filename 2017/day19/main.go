@@ -60,7 +60,7 @@ func routePacket(input []string) (string, int) {
 
 		if char == '+' {
 			for _, direction := range geometry.Directions {
-				next := current.Point.Add(direction)
+				next := current.Point.Move(direction)
 				if !visited[next] &&
 					next.Y >= 0 && next.Y < len(grid) &&
 					next.X >= 0 && next.X < len(grid[next.Y]) &&
@@ -72,7 +72,7 @@ func routePacket(input []string) (string, int) {
 				}
 			}
 		} else {
-			next := current.Add(current.Direction)
+			next := current.Move(current.Direction)
 			if grid[next.Y][next.X] != ' ' {
 				queue = append(queue, geometry.Vector{
 					Point:     next,

@@ -77,7 +77,7 @@ func part2(input []string) interface{} {
 func getNeighbors(point geometry.Point, favorite int) []geometry.Point {
 	var neighbors []geometry.Point
 	for _, direction := range geometry.Directions {
-		neighbor := point.Add(direction)
+		neighbor := point.Move(direction)
 		if neighbor.X >= 0 && neighbor.Y >= 0 && isOpenSpace(neighbor, favorite) {
 			neighbors = append(neighbors, neighbor)
 		}

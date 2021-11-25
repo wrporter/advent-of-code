@@ -90,7 +90,7 @@ func (b *BugSensor) next(point geometry.Point) bool {
 	numAdjacentBugs := 0
 
 	for _, direction := range geometry.Directions {
-		p := point.Add(direction)
+		p := point.Move(direction)
 		if b.inBounds(p) && b.state[p.Y][p.X] == Bug {
 			numAdjacentBugs++
 		}

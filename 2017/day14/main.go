@@ -69,7 +69,7 @@ func countRegions(grid []string) interface{} {
 					visited[node] = true
 
 					for _, direction := range geometry.Directions {
-						next := node.Add(direction)
+						next := node.Move(direction)
 						if !visited[next] &&
 							next.Y >= 0 && next.Y < len(grid) &&
 							next.X >= 0 && next.X < len(grid[next.Y]) &&

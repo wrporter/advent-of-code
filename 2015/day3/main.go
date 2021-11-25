@@ -26,7 +26,7 @@ func deliver(directions string) int {
 	houses := map[geometry.Point]int{location: 1}
 
 	for _, arrow := range directions {
-		location = location.Add(toDir(arrow))
+		location = location.Move(toDir(arrow))
 		houses[location]++
 	}
 
@@ -41,10 +41,10 @@ func deliverWithRobo(directions string) int {
 	santaMove := true
 	for _, arrow := range directions {
 		if santaMove {
-			santa = santa.Add(toDir(arrow))
+			santa = santa.Move(toDir(arrow))
 			houses[santa]++
 		} else {
-			roboSanta = roboSanta.Add(toDir(arrow))
+			roboSanta = roboSanta.Move(toDir(arrow))
 			houses[roboSanta]++
 		}
 		santaMove = !santaMove

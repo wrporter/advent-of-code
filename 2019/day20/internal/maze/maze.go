@@ -136,7 +136,7 @@ func (m *DonutMaze) getNeighbors(cur node, visited map[Neighbor]bool, recursive 
 		neighbors = append(neighbors, Neighbor{portal.to, level})
 	}
 	for _, direction := range geometry.Directions {
-		p := cur.point.Add(direction)
+		p := cur.point.Move(direction)
 		if m.maze[p] == OpenPassage {
 			neighbors = append(neighbors, Neighbor{p, cur.level})
 		}

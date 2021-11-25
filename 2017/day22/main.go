@@ -41,7 +41,7 @@ func part1(input []string) interface{} {
 			grid[carrier.Point] = Infected
 			numBurstsCausedAnInfection++
 		}
-		carrier.Point = carrier.Add(carrier.Direction)
+		carrier.Point = carrier.Move(carrier.Direction)
 		//visualize(grid)
 	}
 
@@ -67,7 +67,7 @@ func part2(input []string) interface{} {
 			carrier.Direction = carrier.Direction.Rotate(180)
 			delete(grid, carrier.Point)
 		}
-		carrier.Point = carrier.Add(carrier.Direction)
+		carrier.Point = carrier.Move(carrier.Direction)
 	}
 
 	return numBurstsCausedAnInfection

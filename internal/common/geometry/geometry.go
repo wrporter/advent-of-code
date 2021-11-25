@@ -56,9 +56,15 @@ func NewPoint(x, y int) Point {
 	return Point{x, y}
 }
 
-func (p Point) Add(direction Direction) Point {
+func (p Point) Move(direction Direction) Point {
 	x := p.X + DirectionModifiers[direction-1].X
 	y := p.Y + DirectionModifiers[direction-1].Y
+	return Point{x, y}
+}
+
+func (p Point) Add(point Point) Point {
+	x := p.X + point.X
+	y := p.Y + point.Y
 	return Point{x, y}
 }
 
