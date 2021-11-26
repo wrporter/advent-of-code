@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/conversion"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/internal/common/mystrings"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/runes"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -66,6 +67,57 @@ func part1(input []string) interface{} {
 	return password
 }
 
+func part2(input []string) interface{} {
+	password := "fbgdceah"
+	p := []rune(password)
+	answers, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/answers.txt", 2016, 21))
+	input = mystrings.ReverseList(input)
+
+	for a, line := range input {
+		op := parseOperation(line)
+		args := op.args
+		prev := password
+		switch op.command {
+		case swapPosition:
+			x := conversion.StringToInt(args[0])
+			y := conversion.StringToInt(args[1])
+			p[x], p[y] = p[y], p[x]
+		case swapLetter:
+			i := indexOf(p, rune(args[0][0]))
+			j := indexOf(p, rune(args[1][0]))
+			p[i], p[j] = p[j], p[i]
+		case rotateDirection:
+			// reversed by negating x
+			x := conversion.StringToInt(args[0])
+			p = runes.Rotate(p, -x)
+		case rotatePosition:
+			// reversed by negating the pattern
+			// definitely the most challenging part to reverse
+			i := indexOf(p, rune(args[0][0]))
+			if i != 0 && i%2 == 0 {
+				i += len(p)
+			}
+			i = (i/2 + 1) % len(p)
+			p = runes.Rotate(p, -i)
+		case Reverse:
+			i := conversion.StringToInt(args[0])
+			j := conversion.StringToInt(args[1])
+			p = reverse(p, i, j)
+		case Move:
+			// reversed by swapping x and y
+			x := conversion.StringToInt(args[0])
+			y := conversion.StringToInt(args[1])
+			p = move(p, y, x)
+		}
+		password = string(p)
+		if answers[a] != password {
+			fmt.Printf("%3d: [%s] %s -> %s | %s\n", a+1, prev, password, answers[a], line)
+		}
+	}
+
+	return password
+}
+
 func move(values []rune, from int, to int) []rune {
 	tmp := values[from]
 	result := values[:]
@@ -81,10 +133,6 @@ func reverse(values []rune, start int, end int) []rune {
 		values[end+1:],
 	})
 	return values
-}
-
-func part2(input []string) interface{} {
-	return 0
 }
 
 var (
