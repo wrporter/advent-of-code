@@ -9,7 +9,7 @@ type (
 	Computer struct {
 		Registers    map[string]int
 		Address      int
-		Instructions []Instruction
+		Instructions []*Instruction
 		Operations   map[string]func(args []string) (jumped bool)
 	}
 	Instruction struct {
@@ -43,11 +43,11 @@ func (c *Computer) GetValue(arg string) int {
 	return c.Registers[arg]
 }
 
-func parseInstructions(code []string) []Instruction {
-	var instructions []Instruction
+func parseInstructions(code []string) []*Instruction {
+	var instructions []*Instruction
 	for _, line := range code {
 		parts := strings.Fields(line)
-		instructions = append(instructions, Instruction{
+		instructions = append(instructions, &Instruction{
 			Command: parts[0],
 			Args:    parts[1:],
 		})
