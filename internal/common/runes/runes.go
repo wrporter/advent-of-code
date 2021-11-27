@@ -97,3 +97,7 @@ func Insert(a []rune, index int, value rune) []rune {
 	a[index] = value
 	return a
 }
+
+func ToInt(r rune) int {
+	return int(r - '0')
+}
