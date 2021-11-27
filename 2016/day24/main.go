@@ -82,13 +82,13 @@ func getMinStepsBetweenNumbers(input []string, numbers map[int]geometry.Point) m
 	minStepsBetweenNumbers := make(map[int]map[int]int)
 	for from := range numbers {
 		minStepsBetweenNumbers[from] = make(map[int]int)
-		minSteps := getMinSteps(input, from, numbers, minStepsBetweenNumbers)
+		minSteps := getMinSteps(input, from, numbers)
 		minStepsBetweenNumbers[from] = minSteps
 	}
 	return minStepsBetweenNumbers
 }
 
-func getMinSteps(grid []string, from int, numbers map[int]geometry.Point, minStepsToOtherNumbers map[int]map[int]int) map[int]int {
+func getMinSteps(grid []string, from int, numbers map[int]geometry.Point) map[int]int {
 	minSteps := make(map[int]int)
 	queue := []node{{
 		Point: numbers[from],
