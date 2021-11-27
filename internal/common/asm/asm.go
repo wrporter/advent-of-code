@@ -11,6 +11,7 @@ type (
 		Address      int
 		Instructions []*Instruction
 		Operations   map[string]func(args []string) (jumped bool)
+		Output       []interface{}
 	}
 	Instruction struct {
 		Command string
@@ -32,6 +33,9 @@ func (c *Computer) Run() {
 		jumped := c.Operations[instruction.Command](instruction.Args)
 		if !jumped {
 			c.Address += 1
+		}
+		if len(c.Output) >= 32 {
+			break
 		}
 	}
 }
