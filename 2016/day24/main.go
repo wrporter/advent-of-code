@@ -88,6 +88,9 @@ func getMinStepsBetweenNumbers(input []string, numbers map[int]geometry.Point) m
 	return minStepsBetweenNumbers
 }
 
+// TODO: 2 slight optimizations:
+//     1. Stop the BFS once all numbers have been visited.
+//     2. Don't bother calculating the distance twice between numbers.
 func getMinSteps(grid []string, from int, numbers map[int]geometry.Point) map[int]int {
 	minSteps := make(map[int]int)
 	queue := []node{{
