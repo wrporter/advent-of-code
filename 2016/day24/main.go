@@ -29,9 +29,9 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	numbers := getNumberPositions(input)
-	minSteps := getMinStepsBetweenNumbers(input, numbers)
-	digits := getKeys(numbers)
+	numberPositions := getNumberPositions(input)
+	minSteps := getMinStepsBetweenNumbers(input, numberPositions)
+	digits := getNumbers(numberPositions)
 
 	min := ints.MaxInt
 	probability.Combo(digits, func(nums []int) {
@@ -50,7 +50,7 @@ func part1(input []string) interface{} {
 func part2(input []string) interface{} {
 	numbers := getNumberPositions(input)
 	minSteps := getMinStepsBetweenNumbers(input, numbers)
-	digits := getKeys(numbers)
+	digits := getNumbers(numbers)
 
 	min := ints.MaxInt
 	probability.Combo(digits, func(nums []int) {
@@ -60,63 +60,59 @@ func part2(input []string) interface{} {
 			steps += minSteps[current][next]
 			current = next
 		}
+
+		// go back to 0
 		steps += minSteps[current][0]
+
 		min = ints.Min(min, steps)
 	})
 
 	return min
 }
 
-func getKeys(numbers map[int]geometry.Point) []int {
-	var digits []int
-	for number := range numbers {
+func getNumbers(numberPositions map[int]geometry.Point) []int {
+	var numbers []int
+	for number := range numberPositions {
 		if number == 0 {
 			continue
 		}
-		digits = append(digits, number)
+		numbers = append(numbers, number)
 	}
-	return digits
+	return numbers
 }
 
-func getMinStepsBetweenNumbers(input []string, numbers map[int]geometry.Point) map[int]map[int]int {
-	minStepsBetweenNumbers := make(map[int]map[int]int)
+func getMinStepsBetweenNumbers(grid []string, numbers map[int]geometry.Point) map[int]map[int]int {
+	minSteps := make(map[int]map[int]int)
 	for from := range numbers {
-		minStepsBetweenNumbers[from] = make(map[int]int)
-		minSteps := getMinSteps(input, from, numbers)
-		minStepsBetweenNumbers[from] = minSteps
+		minSteps[from] = make(map[int]int)
 	}
-	return minStepsBetweenNumbers
-}
 
-// TODO: 2 slight optimizations:
-//     1. Stop the BFS once all numbers have been visited.
-//     2. Don't bother calculating the distance twice between numbers.
-func getMinSteps(grid []string, from int, numbers map[int]geometry.Point) map[int]int {
-	minSteps := make(map[int]int)
-	queue := []node{{
-		Point: numbers[from],
-		from:  from,
-		steps: 0,
-	}}
-	seen := map[geometry.Point]bool{numbers[from]: true}
-	var current node
+	for from := range numbers {
+		queue := []node{{
+			Point: numbers[from],
+			steps: 0,
+		}}
+		visited := map[geometry.Point]bool{numbers[from]: true}
+		var current node
 
-	for len(queue) > 0 {
-		current, queue = queue[0], queue[1:]
-		char := grid[current.Y][current.X]
-		if bytes.IsDigit(char) {
-			minSteps[bytes.ToInt(char)] = current.steps
-		}
+		for len(queue) > 0 && len(minSteps[from]) != len(numbers) {
+			current, queue = queue[0], queue[1:]
+			char := grid[current.Y][current.X]
+			if bytes.IsDigit(char) {
+				to := bytes.ToInt(char)
+				minSteps[from][to] = current.steps
+				minSteps[to][from] = current.steps
+			}
 
-		for _, dir := range geometry.Directions {
-			p := current.Point.Move(dir)
-			if !seen[p] && grid[p.Y][p.X] != '#' {
-				seen[p] = true
-				queue = append(queue, node{
-					Point: p,
-					from:  current.from,
-					steps: current.steps + 1,
-				})
+			for _, dir := range geometry.Directions {
+				p := current.Point.Move(dir)
+				if !visited[p] && grid[p.Y][p.X] != '#' {
+					visited[p] = true
+					queue = append(queue, node{
+						Point: p,
+						steps: current.steps + 1,
+					})
+				}
 			}
 		}
 	}
@@ -140,6 +136,5 @@ func getNumberPositions(input []string) map[int]geometry.Point {
 
 type node struct {
 	geometry.Point
-	from  int
 	steps int
 }
