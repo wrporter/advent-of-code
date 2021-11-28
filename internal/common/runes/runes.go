@@ -2,6 +2,15 @@ package runes
 
 import "github.com/wrporter/advent-of-code/internal/common/ints"
 
+func Contains(arr []rune, value rune) bool {
+	for _, v := range arr {
+		if value == v {
+			return true
+		}
+	}
+	return false
+}
+
 func Copy(array []rune) []rune {
 	cpy := make([]rune, len(array))
 	copy(cpy, array)
