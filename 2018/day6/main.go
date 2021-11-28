@@ -28,14 +28,14 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	points, dim := parseInput(input)
+	coordinates, dim := parseInput(input)
 	areas := make(map[coordinate]map[geometry.Point]bool)
 
 	// calculate area for each coordinate
 	for y := dim.top; y <= dim.bottom; y++ {
 		for x := dim.left; x <= dim.right; x++ {
 			point := geometry.NewPoint(x, y)
-			closest := getClosest(points, point)
+			closest := getClosest(coordinates, point)
 
 			if closest != nil {
 				if areas[*closest] == nil {
@@ -71,6 +71,33 @@ func part1(input []string) interface{} {
 	}
 
 	return maxArea
+}
+
+func part2(input []string) interface{} {
+	coordinates, dim := parseInput(input)
+	safe := make(map[geometry.Point]bool)
+	total := 10_000
+	dim.expand(100)
+
+	for y := dim.top; y <= dim.bottom; y++ {
+		for x := dim.left; x <= dim.right; x++ {
+			point := geometry.NewPoint(x, y)
+			distance := getTotalDistance(coordinates, point)
+			if distance < total {
+				safe[point] = true
+			}
+		}
+	}
+
+	return len(safe)
+}
+
+func getTotalDistance(coordinates map[coordinate]bool, point geometry.Point) int {
+	total := 0
+	for coord := range coordinates {
+		total += coord.ManhattanDistance(point)
+	}
+	return total
 }
 
 func getClosest(coords map[coordinate]bool, point geometry.Point) (closest *coordinate) {
@@ -118,10 +145,6 @@ func parseInput(input []string) (points map[coordinate]bool, dim *dimension) {
 	}
 	dim.expand(1)
 	return points, dim
-}
-
-func part2(input []string) interface{} {
-	return 0
 }
 
 type dimension struct {
