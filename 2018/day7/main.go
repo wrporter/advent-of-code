@@ -36,7 +36,7 @@ func part1(input []string) interface{} {
 	done := make(map[rune]bool)
 	order := make([]rune, len(remaining))
 	for len(remaining) > 0 {
-		next := getNextStep(remaining, dependencies, done)
+		next := getNextSteps(remaining, dependencies, done)[0]
 		order = append(order, next)
 		done[next] = true
 		delete(remaining, next)
@@ -56,31 +56,25 @@ func part2(input []string) interface{} {
 
 	done := make(map[rune]bool)
 	workers := newWorkers(numWorkers)
-	inProgress := make(map[rune]bool)
 	totalTime := -1
-	for len(remaining) > 0 {
-		nextWorker := getNextWorker(workers)
-		if nextWorker != nil {
-			next := getNextStepForWorker(remaining, dependencies, done, inProgress)
-			if next != 0 && !inProgress[next] {
-				nextWorker.step = next
-				nextWorker.time = baseTime + int(next-'A') + 1
-				inProgress[next] = true
-			}
-		}
+	for len(remaining) > 0 || isWorkInProgress(workers) {
 		for _, w := range workers {
-			if w.step != 0 {
-				w.time--
-				if w.time == 0 {
+			w.time--
+
+			if w.time <= 0 {
+				if w.step != 0 {
 					done[w.step] = true
-					inProgress[w.step] = true
-					delete(remaining, w.step)
 					w.step = 0
 				}
+
+				nextSteps := getNextSteps(remaining, dependencies, done)
+				if len(nextSteps) > 0 {
+					step := nextSteps[0]
+					w.time = timeToComplete(baseTime, step)
+					w.step = step
+					delete(remaining, step)
+				}
 			}
-		}
-		if len(remaining) == 0 {
-			break
 		}
 		totalTime++
 	}
@@ -88,27 +82,17 @@ func part2(input []string) interface{} {
 	return totalTime
 }
 
-func getNextStepForWorker(remaining map[rune]bool, dependencies map[rune]map[rune]bool, done map[rune]bool, inProgress map[rune]bool) rune {
-	var nextSteps []rune
-	for step := range remaining {
-		if available(dependencies, done, step) && !inProgress[step] {
-			nextSteps = append(nextSteps, step)
+func isWorkInProgress(workers []*worker) bool {
+	for _, w := range workers {
+		if w.time > 0 {
+			return true
 		}
 	}
-	runes.Sort(nextSteps)
-	if len(nextSteps) == 0 {
-		return 0
-	}
-	return nextSteps[0]
+	return false
 }
 
-func getNextWorker(workers []*worker) *worker {
-	for _, w := range workers {
-		if w.time == 0 {
-			return w
-		}
-	}
-	return nil
+func timeToComplete(baseTime int, step rune) int {
+	return baseTime + int(step-'A') + 1
 }
 
 func newWorkers(numWorkers int) []*worker {
@@ -124,7 +108,7 @@ type worker struct {
 	time int
 }
 
-func getNextStep(remaining map[rune]bool, dependencies map[rune]map[rune]bool, done map[rune]bool) rune {
+func getNextSteps(remaining map[rune]bool, dependencies map[rune]map[rune]bool, done map[rune]bool) []rune {
 	var nextSteps []rune
 	for step := range remaining {
 		if available(dependencies, done, step) {
@@ -132,8 +116,7 @@ func getNextStep(remaining map[rune]bool, dependencies map[rune]map[rune]bool, d
 		}
 	}
 	runes.Sort(nextSteps)
-	next := nextSteps[0]
-	return next
+	return nextSteps
 }
 
 func available(dependencies map[rune]map[rune]bool, done map[rune]bool, step rune) bool {
