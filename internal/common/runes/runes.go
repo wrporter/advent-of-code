@@ -1,6 +1,9 @@
 package runes
 
-import "github.com/wrporter/advent-of-code/internal/common/ints"
+import (
+	"github.com/wrporter/advent-of-code/internal/common/ints"
+	"sort"
+)
 
 func Contains(arr []rune, value rune) bool {
 	for _, v := range arr {
@@ -109,4 +112,23 @@ func Insert(a []rune, index int, value rune) []rune {
 
 func ToInt(r rune) int {
 	return int(r - '0')
+}
+
+type sortRunes []rune
+
+func (s sortRunes) Less(i, j int) bool {
+	return s[i] < s[j]
+}
+
+func (s sortRunes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s sortRunes) Len() int {
+	return len(s)
+}
+
+func Sort(runes []rune) string {
+	sort.Sort(sortRunes(runes))
+	return string(runes)
 }

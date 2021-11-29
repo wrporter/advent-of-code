@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/runes"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
-	"sort"
 	"time"
 )
 
@@ -27,53 +27,65 @@ func main() {
 var regex = regexp.MustCompile(`^Step ([A-Z]) must be finished before step ([A-Z]) can begin\.$`)
 
 func part1(input []string) interface{} {
-	dependencies := make(map[rune]map[rune]bool)
-	for _, line := range input {
-		match := regex.FindStringSubmatch(line)
-		step := rune(match[1][0])
-		before := rune(match[2][0])
-		if dependencies[step] == nil {
-			dependencies[step] = map[rune]bool{before: true}
-		} else {
-			dependencies[step][before] = true
-		}
-		if dependencies[before] == nil {
-			dependencies[before] = make(map[rune]bool)
-		}
+	dependencies := parseInput(input)
+	remaining := make(map[rune]bool)
+	for step := range dependencies {
+		remaining[step] = true
 	}
 
-	var instructions []rune
-	for ins := range dependencies {
-		instructions = append(instructions, ins)
+	done := make(map[rune]bool)
+	order := make([]rune, len(remaining))
+	for len(remaining) > 0 {
+		next := getNextStep(remaining, dependencies, done)
+		order = append(order, next)
+		done[next] = true
+		delete(remaining, next)
 	}
-	sort.SliceStable(instructions, func(i, j int) bool {
-		return less(dependencies, instructions[i], instructions[j])
-	})
-	return string(instructions)
+
+	return string(order)
 }
 
 func part2(input []string) interface{} {
 	return 0
 }
 
-func less(m map[rune]map[rune]bool, step1 rune, step2 rune) bool {
-	step1IsBeforeStep2 := isBefore(m, step1, step2)
-	step2IsBeforeStep1 := isBefore(m, step2, step1)
-	if !step1IsBeforeStep2 && !step2IsBeforeStep1 {
-		return step1 < step2
-	}
-
-	if step2IsBeforeStep1 {
-		return false
-	}
-	return step1IsBeforeStep2
-}
-
-func isBefore(m map[rune]map[rune]bool, step1 rune, step2 rune) bool {
-	for before := range m[step1] {
-		if before == step2 || isBefore(m, before, step2) {
-			return true
+func getNextStep(remaining map[rune]bool, dependencies map[rune]map[rune]bool, done map[rune]bool) rune {
+	var nextSteps []rune
+	for step := range remaining {
+		if available(dependencies, done, step) {
+			nextSteps = append(nextSteps, step)
 		}
 	}
-	return false
+	runes.Sort(nextSteps)
+	next := nextSteps[0]
+	return next
+}
+
+func available(dependencies map[rune]map[rune]bool, done map[rune]bool, step rune) bool {
+	for dependency := range dependencies[step] {
+		if !done[dependency] {
+			return false
+		}
+	}
+	return true
+}
+
+func parseInput(input []string) map[rune]map[rune]bool {
+	dependencies := make(map[rune]map[rune]bool)
+	for _, line := range input {
+		match := regex.FindStringSubmatch(line)
+		dependency := rune(match[1][0])
+		step := rune(match[2][0])
+
+		if dependencies[step] == nil {
+			dependencies[step] = map[rune]bool{dependency: true}
+		} else {
+			dependencies[step][dependency] = true
+		}
+
+		if dependencies[dependency] == nil {
+			dependencies[dependency] = make(map[rune]bool)
+		}
+	}
+	return dependencies
 }
