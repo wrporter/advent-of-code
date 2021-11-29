@@ -7,6 +7,7 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/runes"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
+	"sort"
 	"time"
 )
 
@@ -58,11 +59,16 @@ func part2(input []string) interface{} {
 	workers := newWorkers(numWorkers)
 	totalTime := -1
 	for len(remaining) > 0 || isWorkInProgress(workers) {
+		// make sure we always look at working workers first, so we don't skip over others when a step is completed
+		sort.SliceStable(workers, func(i, j int) bool {
+			return workers[i].step != 0
+		})
 		for _, w := range workers {
 			w.time--
 
 			if w.time <= 0 {
 				if w.step != 0 {
+					//fmt.Printf("DONE >> %v [%d]\n", w, totalTime)
 					done[w.step] = true
 					w.step = 0
 				}
@@ -73,6 +79,7 @@ func part2(input []string) interface{} {
 					w.time = timeToComplete(baseTime, step)
 					w.step = step
 					delete(remaining, step)
+					//fmt.Printf("START >> %v [%d]\n", w, totalTime)
 				}
 			}
 		}
@@ -98,14 +105,19 @@ func timeToComplete(baseTime int, step rune) int {
 func newWorkers(numWorkers int) []*worker {
 	var workers []*worker
 	for i := 0; i < numWorkers; i++ {
-		workers = append(workers, &worker{})
+		workers = append(workers, &worker{id: i})
 	}
 	return workers
 }
 
 type worker struct {
+	id   int
 	step rune
 	time int
+}
+
+func (w *worker) String() string {
+	return fmt.Sprintf("(%d) %c - %d", w.id, w.step, w.time)
 }
 
 func getNextSteps(remaining map[rune]bool, dependencies map[rune]map[rune]bool, done map[rune]bool) []rune {
