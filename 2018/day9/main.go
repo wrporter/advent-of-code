@@ -50,10 +50,11 @@ func playMarbles(numPlayers int, lastMarble int) int {
 
 	for marble := 1; marble <= lastMarble; marble++ {
 		if marble%23 == 0 {
-			circle = circle.Move(-6)
-			marbleSevenPrev := circle.Move(-2).Link(circle)
+			circle = circle.Move(-8)
+			removedMarble := circle.Unlink(1).Value.(int)
+			circle = circle.Next()
 			player := marble % numPlayers
-			scores[player] += marble + marbleSevenPrev.Value.(int)
+			scores[player] += marble + removedMarble
 			maxScore = ints.Max(maxScore, scores[player])
 		} else {
 			circle = circle.Next()
