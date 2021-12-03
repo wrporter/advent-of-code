@@ -41,12 +41,12 @@ func part2(input []string) interface{} {
 	return binaryToInt(oxygenRating) * binaryToInt(co2Rating)
 }
 
-func getRatingValue(report []string, i int, desiredEqualBit byte) string {
+func getRatingValue(report []string, i int, desiredBit byte) string {
 	if len(report) == 1 {
 		return report[0]
 	}
 
-	mostCommonBit := getDesiredBit(report, i, desiredEqualBit)
+	mostCommonBit := getDesiredBit(report, i, desiredBit)
 
 	var numbersToKeep []string
 	for _, number := range report {
@@ -55,7 +55,7 @@ func getRatingValue(report []string, i int, desiredEqualBit byte) string {
 		}
 	}
 
-	return getRatingValue(numbersToKeep, i+1, desiredEqualBit)
+	return getRatingValue(numbersToKeep, i+1, desiredBit)
 }
 
 func getDesiredBit(report []string, i int, desiredBit byte) byte {
