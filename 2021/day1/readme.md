@@ -8,6 +8,11 @@ I decided it wasn't worth it for me to stay up until 10:00pm (when AoC opens in 
 
 I timed myself on this one and finished Part 1 in 2:02. I discovered that I could have made the official leaderboard! Then for Part 2, I got tripped up on my logic for the sliding window sums (it might be the sinus infection and headache) and had a delta of 9:26, so not as pretty.
 
+### Time
+
+- Part 1: 2:02
+- Part 2: 9:26
+
 ### Solution
 
 For Part 1, as long as we are not looking at the first depth, because there is nothing to compare against, we just check against the last depth and if the current one is greater, increment a counter.

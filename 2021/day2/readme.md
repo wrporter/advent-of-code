@@ -13,7 +13,7 @@ Overall, a fast and fun little puzzle.
 ### Time
 
 - Part 1: 4:01
-- Part 2: 1:36 
+- Part 2: 1:36
 
 ### Solution
 
