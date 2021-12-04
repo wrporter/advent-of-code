@@ -56,7 +56,7 @@ func parseInput(input []string) ([]int, map[int]*board) {
 	numbers, _ := convert.ToInts(strings.Split(input[0], ","))
 
 	boards := make(map[int]*board)
-	grid := make([][]int, 0)
+	var grid [][]int
 	boardInput := input[2:]
 
 	for i, line := range boardInput {
