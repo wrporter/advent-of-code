@@ -32,7 +32,7 @@ func part1(input []string) interface{} {
 	return fmt.Sprintf("%d,%d", topLeftCorner.X, topLeftCorner.Y)
 }
 
-// TODO: optimize via memoization
+// TODO: optimize via memoization or other, e.g. https://en.wikipedia.org/wiki/Summed-area_table
 func part2(input []string) interface{} {
 	grid := newFuelCellGrid(1723)
 
