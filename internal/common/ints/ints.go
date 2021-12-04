@@ -246,3 +246,22 @@ func Reverse(values []int) []int {
 	}
 	return result
 }
+
+func GetWindow(values [][]int, x, y, size int) [][]int {
+	window := make([][]int, size)
+	for row := 0; row < size; row++ {
+		window[row] = make([]int, size)
+		for col := 0; col < size; col++ {
+			window[row][col] = values[row+y][col+x]
+		}
+	}
+	return window
+}
+
+func SumGrid(values [][]int) int {
+	sum := 0
+	for _, row := range values {
+		sum += Sum(row)
+	}
+	return sum
+}

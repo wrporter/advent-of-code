@@ -53,37 +53,37 @@ type Point struct {
 }
 
 func NewPoint(x, y int) Point {
-	return Point{x, y}
+	return Point{X: x, Y: y}
 }
 
 func (p Point) Move(direction Direction) Point {
 	x := p.X + DirectionModifiers[direction-1].X
 	y := p.Y + DirectionModifiers[direction-1].Y
-	return Point{x, y}
+	return Point{X: x, Y: y}
 }
 
 func (p Point) Add(point Point) Point {
 	x := p.X + point.X
 	y := p.Y + point.Y
-	return Point{x, y}
+	return Point{X: x, Y: y}
 }
 
 func (p Point) AddAmount(direction Direction, amount int) Point {
 	x := p.X + (DirectionModifiers2[direction-1].X * amount)
 	y := p.Y + (DirectionModifiers2[direction-1].Y * amount)
-	return Point{x, y}
+	return Point{X: x, Y: y}
 }
 
 func (p Point) Rotate(degrees int) Point {
 	degrees = ints.WrapMod(degrees, 360)
 	if degrees == 90 {
-		return Point{p.Y, -p.X}
+		return Point{X: p.Y, Y: -p.X}
 	} else if degrees == 180 {
-		return Point{-p.X, -p.Y}
+		return Point{X: -p.X, Y: -p.Y}
 	} else if degrees == 270 {
-		return Point{-p.Y, p.X}
+		return Point{X: -p.Y, Y: p.X}
 	}
-	return Point{p.X, p.Y}
+	return Point{X: p.X, Y: p.Y}
 }
 
 func (p Point) GetManhattanDistance() int {
@@ -95,17 +95,17 @@ func (p Point) ManhattanDistance(p2 Point) int {
 }
 
 func (p Point) Up() Point {
-	return Point{p.X, p.Y - 1}
+	return Point{X: p.X, Y: p.Y - 1}
 }
 
 func (p Point) Down() Point {
-	return Point{p.X, p.Y + 1}
+	return Point{X: p.X, Y: p.Y + 1}
 }
 
 func (p Point) Left() Point {
-	return Point{p.X - 1, p.Y}
+	return Point{X: p.X - 1, Y: p.Y}
 }
 
 func (p Point) Right() Point {
-	return Point{p.X + 1, p.Y}
+	return Point{X: p.X + 1, Y: p.Y}
 }
