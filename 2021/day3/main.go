@@ -24,46 +24,29 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	gamma := ""
-	epsilon := ""
+	var gamma, epsilon string
 
 	for i := 0; i < len(input[0]); i++ {
-		numOnes := 0
-		for _, number := range input {
-			if number[i] == '1' {
-				numOnes++
-			}
-		}
-		if numOnes > len(input)/2 {
-			gamma += "1"
-			epsilon += "0"
-		} else {
-			gamma += "0"
-			epsilon += "1"
-		}
+		gamma += string(getDesiredBit(input, i, '0'))
+		epsilon += string(getDesiredBit(input, i, '1'))
 	}
 
-	g, _ := strconv.ParseInt(gamma, 2, 32)
-	e, _ := strconv.ParseInt(epsilon, 2, 32)
-	return g * e
+	return binaryToInt(gamma) * binaryToInt(epsilon)
 }
 
 func part2(input []string) interface{} {
 	oxygenRating := getRatingValue(input, 0, '1')
 	co2Rating := getRatingValue(input, 0, '0')
 
-	o, _ := strconv.ParseInt(oxygenRating, 2, 32)
-	c, _ := strconv.ParseInt(co2Rating, 2, 32)
-
-	return o * c
+	return binaryToInt(oxygenRating) * binaryToInt(co2Rating)
 }
 
-func getRatingValue(report []string, i int, desiredEqualBit byte) string {
+func getRatingValue(report []string, i int, desiredBit byte) string {
 	if len(report) == 1 {
 		return report[0]
 	}
 
-	mostCommonBit := getDesiredBit(report, i, desiredEqualBit)
+	mostCommonBit := getDesiredBit(report, i, desiredBit)
 
 	var numbersToKeep []string
 	for _, number := range report {
@@ -72,7 +55,7 @@ func getRatingValue(report []string, i int, desiredEqualBit byte) string {
 		}
 	}
 
-	return getRatingValue(numbersToKeep, i+1, desiredEqualBit)
+	return getRatingValue(numbersToKeep, i+1, desiredBit)
 }
 
 func getDesiredBit(report []string, i int, desiredBit byte) byte {
@@ -97,4 +80,9 @@ func getDesiredBit(report []string, i int, desiredBit byte) byte {
 	} else {
 		return '0'
 	}
+}
+
+func binaryToInt(gamma string) int64 {
+	g, _ := strconv.ParseInt(gamma, 2, 32)
+	return g
 }
