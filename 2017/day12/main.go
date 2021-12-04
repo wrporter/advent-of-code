@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -78,8 +78,8 @@ func parseInput(input []string) map[int]map[int]bool {
 
 	for _, line := range input {
 		match := regex.FindStringSubmatch(line)
-		fromId := conversion.StringToInt(match[1])
-		toIds, _ := conversion.ToInts(strings.Split(match[2], ", "))
+		fromId := convert.StringToInt(match[1])
+		toIds, _ := convert.ToInts(strings.Split(match[2], ", "))
 
 		toIdsMap := make(map[int]bool)
 		for _, id := range toIds {

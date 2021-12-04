@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -86,11 +86,11 @@ func parseClaims(input []string) map[int]Claim {
 	claims := make(map[int]Claim)
 	for _, line := range input {
 		match := regex.FindStringSubmatch(line)
-		claims[conversion.StringToInt(match[1])] = Claim{
-			StartX: conversion.StringToInt(match[2]),
-			StartY: conversion.StringToInt(match[3]),
-			Width:  conversion.StringToInt(match[4]),
-			Height: conversion.StringToInt(match[5]),
+		claims[convert.StringToInt(match[1])] = Claim{
+			StartX: convert.StringToInt(match[2]),
+			StartY: convert.StringToInt(match[3]),
+			Width:  convert.StringToInt(match[4]),
+			Height: convert.StringToInt(match[5]),
 		}
 	}
 	return claims

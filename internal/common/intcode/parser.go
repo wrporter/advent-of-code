@@ -1,7 +1,7 @@
 package intcode
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"strconv"
 )
 
@@ -16,13 +16,13 @@ func parseIntcode(intcode int) Intcode {
 	intcodeString := strconv.Itoa(intcode)
 
 	opCodeSpace := getOpCodeSpace(intcodeString)
-	opCode := OpCode(conversion.StringToInt(intcodeString[opCodeSpace:]))
+	opCode := OpCode(convert.StringToInt(intcodeString[opCodeSpace:]))
 	numParameters := OpCodeNumParameters[opCode]
 
-	parameterModeCodes := conversion.Reverse(intcodeString[:opCodeSpace])
+	parameterModeCodes := convert.Reverse(intcodeString[:opCodeSpace])
 	parameterModes := make([]ParameterMode, numParameters)
 	for i := 0; i < len(parameterModeCodes); i++ {
-		parameterModes[i] = ParameterMode(conversion.RuneToInt(parameterModeCodes[i]))
+		parameterModes[i] = ParameterMode(convert.RuneToInt(parameterModeCodes[i]))
 	}
 
 	return Intcode{opCode, numParameters, parameterModes}

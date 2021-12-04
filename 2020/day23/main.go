@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -36,7 +36,7 @@ func part2(input []string) interface{} {
 }
 
 func play(input string, moves int, size int, take int) []int {
-	start, _ := conversion.ToInts(strings.Split(input, ""))
+	start, _ := convert.ToInts(strings.Split(input, ""))
 	ring := make([]int, size+1)
 	for i := range ring {
 		ring[i] = i + 1

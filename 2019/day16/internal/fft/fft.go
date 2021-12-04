@@ -2,7 +2,7 @@ package fft
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"strings"
 )
@@ -64,7 +64,7 @@ func getRealSignal(signal string) []int {
 }
 
 func getOffset(signal string) int {
-	return conversion.StringToInt(signal[:MessageOffset])
+	return convert.StringToInt(signal[:MessageOffset])
 }
 
 func coefficient(row, col int) int {
@@ -75,7 +75,7 @@ func parse(signal string) []int {
 	digits := make([]int, len(signal))
 	digitStrings := strings.Split(signal, "")
 	for i, digitString := range digitStrings {
-		digits[i] = conversion.StringToInt(digitString)
+		digits[i] = convert.StringToInt(digitString)
 	}
 	return digits
 }

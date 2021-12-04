@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -115,7 +115,7 @@ func parseInstruction(line string) Instruction {
 }
 
 func parseArgument(sign string, value string) int {
-	argument := conversion.StringToInt(value)
+	argument := convert.StringToInt(value)
 	if sign == "-" {
 		return -argument
 	}

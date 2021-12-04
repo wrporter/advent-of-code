@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -52,7 +52,7 @@ func constructTree(input []string) *Node {
 	for _, line := range input {
 		match := nodeRegex.FindStringSubmatch(line)
 		id := match[1]
-		weight := conversion.StringToInt(match[2])
+		weight := convert.StringToInt(match[2])
 		nodeDef := &NodeDef{ID: id, Weight: weight}
 
 		if strings.Contains(line, "->") {

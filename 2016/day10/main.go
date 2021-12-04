@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 	"sort"
@@ -33,8 +33,8 @@ func part1(instructions []string) (int, int) {
 	for _, instruction := range instructions {
 		if valueRegex.MatchString(instruction) {
 			match := valueRegex.FindStringSubmatch(instruction)
-			chip := conversion.StringToInt(match[1])
-			botID := conversion.StringToInt(match[2])
+			chip := convert.StringToInt(match[1])
+			botID := convert.StringToInt(match[2])
 
 			if bot, ok := bots[botID]; ok {
 				bot.Chips = append(bot.Chips, chip)
@@ -45,11 +45,11 @@ func part1(instructions []string) (int, int) {
 		} else if botRegex.MatchString(instruction) {
 			match := botRegex.FindStringSubmatch(instruction)
 			giveInstructions = append(giveInstructions, GiveInstruction{
-				GiverID: conversion.StringToInt(match[1]),
+				GiverID: convert.StringToInt(match[1]),
 				LowTo:   match[2],
-				LowID:   conversion.StringToInt(match[3]),
+				LowID:   convert.StringToInt(match[3]),
 				HighTo:  match[4],
-				HighID:  conversion.StringToInt(match[5]),
+				HighID:  convert.StringToInt(match[5]),
 			})
 		}
 	}

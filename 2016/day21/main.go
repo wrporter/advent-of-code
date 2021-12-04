@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/mystrings"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -35,15 +35,15 @@ func part1(input []string) interface{} {
 		args := op.args
 		switch op.command {
 		case swapPosition:
-			x := conversion.StringToInt(args[0])
-			y := conversion.StringToInt(args[1])
+			x := convert.StringToInt(args[0])
+			y := convert.StringToInt(args[1])
 			p[x], p[y] = p[y], p[x]
 		case swapLetter:
 			i := indexOf(p, rune(args[0][0]))
 			j := indexOf(p, rune(args[1][0]))
 			p[i], p[j] = p[j], p[i]
 		case rotateDirection:
-			x := conversion.StringToInt(args[0])
+			x := convert.StringToInt(args[0])
 			p = runes.Rotate(p, x)
 		case rotatePosition:
 			i := indexOf(p, rune(args[0][0]))
@@ -53,12 +53,12 @@ func part1(input []string) interface{} {
 			i += 1
 			p = runes.Rotate(p, i)
 		case Reverse:
-			i := conversion.StringToInt(args[0])
-			j := conversion.StringToInt(args[1])
+			i := convert.StringToInt(args[0])
+			j := convert.StringToInt(args[1])
 			p = reverse(p, i, j)
 		case Move:
-			x := conversion.StringToInt(args[0])
-			y := conversion.StringToInt(args[1])
+			x := convert.StringToInt(args[0])
+			y := convert.StringToInt(args[1])
 			p = move(p, x, y)
 		}
 		password = string(p)
@@ -79,8 +79,8 @@ func part2(input []string) interface{} {
 		prev := password
 		switch op.command {
 		case swapPosition:
-			x := conversion.StringToInt(args[0])
-			y := conversion.StringToInt(args[1])
+			x := convert.StringToInt(args[0])
+			y := convert.StringToInt(args[1])
 			p[x], p[y] = p[y], p[x]
 		case swapLetter:
 			i := indexOf(p, rune(args[0][0]))
@@ -88,7 +88,7 @@ func part2(input []string) interface{} {
 			p[i], p[j] = p[j], p[i]
 		case rotateDirection:
 			// reversed by negating x
-			x := conversion.StringToInt(args[0])
+			x := convert.StringToInt(args[0])
 			p = runes.Rotate(p, -x)
 		case rotatePosition:
 			// reversed by negating the pattern
@@ -100,13 +100,13 @@ func part2(input []string) interface{} {
 			i = (i/2 + 1) % len(p)
 			p = runes.Rotate(p, -i)
 		case Reverse:
-			i := conversion.StringToInt(args[0])
-			j := conversion.StringToInt(args[1])
+			i := convert.StringToInt(args[0])
+			j := convert.StringToInt(args[1])
 			p = reverse(p, i, j)
 		case Move:
 			// reversed by swapping x and y
-			x := conversion.StringToInt(args[0])
-			y := conversion.StringToInt(args[1])
+			x := convert.StringToInt(args[0])
+			y := convert.StringToInt(args[1])
 			p = move(p, y, x)
 		}
 		password = string(p)

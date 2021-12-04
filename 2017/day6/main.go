@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -25,7 +25,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	banks, _ := conversion.ToInts(strings.Fields(input[0]))
+	banks, _ := convert.ToInts(strings.Fields(input[0]))
 	seen := make(map[string]bool)
 	cycles := 0
 
@@ -54,7 +54,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	banks, _ := conversion.ToInts(strings.Fields(input[0]))
+	banks, _ := convert.ToInts(strings.Fields(input[0]))
 	seen := make(map[string]int)
 	cycles := 0
 	loopSize := 0

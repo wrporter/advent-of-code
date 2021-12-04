@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -216,7 +216,7 @@ func parse(input []string) map[int]*Tile {
 
 		if strings.HasPrefix(line, "Tile") {
 			match := tileIDRegex.FindStringSubmatch(line)
-			tileID = conversion.StringToInt(match[1])
+			tileID = convert.StringToInt(match[1])
 		} else {
 			grid = append(grid, line)
 		}

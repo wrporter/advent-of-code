@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -31,7 +31,7 @@ func part1(input []string) interface{} {
 	for i := 0; i < len(line); i++ {
 		digit := line[i]
 		if digit == line[(i+1)%len(line)] {
-			sum += conversion.RuneToInt(digit)
+			sum += convert.RuneToInt(digit)
 		}
 	}
 
@@ -48,7 +48,7 @@ func part2(input []string) interface{} {
 		next := ints.WrapMod(i+distance, len(line))
 
 		if digit == line[next] {
-			sum += conversion.RuneToInt(digit)
+			sum += convert.RuneToInt(digit)
 		}
 	}
 

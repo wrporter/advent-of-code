@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/bytes"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
@@ -128,8 +128,8 @@ func parseInput(input []string) (points map[coordinate]bool, dim *dimension) {
 	name := "A"
 	for _, line := range input {
 		parts := strings.Split(line, ", ")
-		x := conversion.StringToInt(parts[0])
-		y := conversion.StringToInt(parts[1])
+		x := convert.StringToInt(parts[0])
+		y := convert.StringToInt(parts[1])
 
 		coord := coordinate{
 			name:  name,

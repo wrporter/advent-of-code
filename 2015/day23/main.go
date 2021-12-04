@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"regexp"
@@ -102,7 +102,7 @@ func parseInstructions(input []string) []Instruction {
 			register = parts[1]
 		case "jmp":
 			sign = string(parts[1][0])
-			offset = conversion.StringToInt(parts[1][1:])
+			offset = convert.StringToInt(parts[1][1:])
 			if sign == "-" {
 				offset = -offset
 			}
@@ -111,7 +111,7 @@ func parseInstructions(input []string) []Instruction {
 		case "jio":
 			register = parts[1][:len(parts[1])-1]
 			sign = string(parts[2][0])
-			offset = conversion.StringToInt(parts[2][1:])
+			offset = convert.StringToInt(parts[2][1:])
 			if sign == "-" {
 				offset = -offset
 			}

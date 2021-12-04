@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -86,8 +86,8 @@ func parseInput(input []string) (int, map[int]int, map[int]int) {
 	scanners := make(map[int]int)
 	for _, line := range input {
 		chunks := strings.Split(line, ": ")
-		depth := conversion.StringToInt(chunks[0])
-		layerRange := conversion.StringToInt(chunks[1])
+		depth := convert.StringToInt(chunks[0])
+		layerRange := convert.StringToInt(chunks[1])
 
 		layers[depth] = layerRange
 		scanners[depth] = 0

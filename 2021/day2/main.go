@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -70,7 +70,7 @@ func parseInput(input []string) []command {
 		parts := strings.Fields(line)
 		commands[i] = command{
 			direction: parts[0],
-			amount:    conversion.StringToInt(parts[1]),
+			amount:    convert.StringToInt(parts[1]),
 		}
 	}
 	return commands

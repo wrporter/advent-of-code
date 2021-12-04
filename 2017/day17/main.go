@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -24,7 +24,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	stepSize := conversion.StringToInt(input[0])
+	stepSize := convert.StringToInt(input[0])
 	buffer := []int{0}
 	iterations := 2017
 	position := 0
@@ -38,7 +38,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	stepSize := conversion.StringToInt(input[0])
+	stepSize := convert.StringToInt(input[0])
 	iterations := 50_000_000
 	position := 0
 	valueAfter0 := 0

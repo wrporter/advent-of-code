@@ -3,7 +3,7 @@ package main
 import (
 	"container/ring"
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -38,8 +38,8 @@ func part2(input []string) interface{} {
 
 func parseInput(input []string) (int, int) {
 	parts := strings.Fields(input[0])
-	numPlayers := conversion.StringToInt(parts[0])
-	lastMarble := conversion.StringToInt(parts[6])
+	numPlayers := convert.StringToInt(parts[0])
+	lastMarble := convert.StringToInt(parts[6])
 	return numPlayers, lastMarble
 }
 

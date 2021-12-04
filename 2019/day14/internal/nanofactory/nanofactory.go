@@ -1,7 +1,7 @@
 package nanofactory
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	mymath "github.com/wrporter/advent-of-code/internal/common/ints"
 	"math"
 	"regexp"
@@ -153,7 +153,7 @@ func parseChemical(chemical string) Chemical {
 	match := chemicalRegex.FindStringSubmatch(chemical)
 	return Chemical{
 		Name:   match[2],
-		Amount: conversion.StringToInt(match[1]),
+		Amount: convert.StringToInt(match[1]),
 	}
 }
 

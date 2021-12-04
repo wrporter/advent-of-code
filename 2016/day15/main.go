@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -69,10 +69,10 @@ func parseInput(input []string) []*Disc {
 	for i, line := range input {
 		match := regex.FindStringSubmatch(line)
 		discs[i] = &Disc{
-			id:        conversion.StringToInt(match[1]),
-			positions: conversion.StringToInt(match[2]),
-			time:      conversion.StringToInt(match[3]),
-			position:  conversion.StringToInt(match[4]),
+			id:        convert.StringToInt(match[1]),
+			positions: convert.StringToInt(match[2]),
+			time:      convert.StringToInt(match[3]),
+			position:  convert.StringToInt(match[4]),
 		}
 	}
 	return discs

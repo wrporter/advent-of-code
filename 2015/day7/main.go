@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 )
@@ -53,7 +53,7 @@ func assemble(wireInstructions []string, wire string) uint16 {
 			match := valueAndRegex.FindStringSubmatch(ins)
 			tree[match[4]] = instruction{
 				expression: ins,
-				value:      uint16(conversion.StringToInt(match[1])),
+				value:      uint16(convert.StringToInt(match[1])),
 				operator:   valueAnd,
 				right:      match[3],
 				result:     match[4],
@@ -64,7 +64,7 @@ func assemble(wireInstructions []string, wire string) uint16 {
 				expression:  ins,
 				left:        match[1],
 				operator:    operator(match[2]),
-				shiftAmount: uint16(conversion.StringToInt(match[3])),
+				shiftAmount: uint16(convert.StringToInt(match[3])),
 				result:      match[4],
 			}
 		} else if notRegex.MatchString(ins) {
@@ -80,7 +80,7 @@ func assemble(wireInstructions []string, wire string) uint16 {
 			tree[match[2]] = instruction{
 				expression: ins,
 				operator:   value,
-				value:      uint16(conversion.StringToInt(match[1])),
+				value:      uint16(convert.StringToInt(match[1])),
 				result:     match[2],
 			}
 		} else if directRegex.MatchString(ins) {

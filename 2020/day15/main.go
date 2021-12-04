@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -59,6 +59,6 @@ func playMemoryGame(startNumbers []int, numTurns int) int {
 
 func parseNumbers(input []string) []int {
 	values := strings.Split(input[0], ",")
-	numbers, _ := conversion.ToInts(values)
+	numbers, _ := convert.ToInts(values)
 	return numbers
 }

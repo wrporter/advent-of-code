@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -59,8 +59,8 @@ func parseInput(input []string) []ipRange {
 	ranges := make([]ipRange, len(input))
 	for i, line := range input {
 		parts := strings.Split(line, "-")
-		start := int64(conversion.StringToInt(parts[0]))
-		end := int64(conversion.StringToInt(parts[1]))
+		start := int64(convert.StringToInt(parts[0]))
+		end := int64(convert.StringToInt(parts[1]))
 		ranges[i] = ipRange{start, end}
 	}
 	sort.SliceStable(ranges, func(i, j int) bool {

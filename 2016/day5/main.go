@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 )
 
 func part1(secret string) string {
@@ -27,7 +27,7 @@ func part2(secret string) string {
 	for value := 1; !allAreSet(password); value++ {
 		hash := md5.Sum([]byte(fmt.Sprintf("%s%d", secret, value)))
 		hexValue := hex.EncodeToString(hash[:])
-		index := conversion.RuneToInt(hexValue[5])
+		index := convert.RuneToInt(hexValue[5])
 
 		if hexValue[:5] == "00000" && index < 8 && password[index] == 0 {
 			value := rune(hexValue[6])

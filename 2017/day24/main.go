@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -97,8 +97,8 @@ func parseInput(input []string) map[int][]Component {
 	connections := make(map[int][]Component)
 	for i, line := range input {
 		parts := strings.Split(line, "/")
-		portA := conversion.StringToInt(parts[0])
-		portB := conversion.StringToInt(parts[1])
+		portA := convert.StringToInt(parts[0])
+		portB := convert.StringToInt(parts[1])
 		component := Component{
 			ID:    i,
 			PortA: portA,

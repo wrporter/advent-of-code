@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -36,7 +36,7 @@ func part2(input []string) interface{} {
 }
 
 func routePacket(input []string) (string, int) {
-	grid := conversion.ToRuneGrid(input)
+	grid := convert.ToRuneGrid(input)
 	start := getStartPosition(grid)
 	current := geometry.Vector{
 		Point:     start,

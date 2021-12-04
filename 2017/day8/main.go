@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -88,10 +88,10 @@ func parseInstructions(input []string) (instructions []Instruction, registers ma
 		instruction := Instruction{
 			Register:          match[1],
 			Operation:         Operation(match[2]),
-			Modifier:          conversion.StringToInt(match[3]),
+			Modifier:          convert.StringToInt(match[3]),
 			ConditionRegister: match[4],
 			Condition:         match[5],
-			ConditionValue:    conversion.StringToInt(match[6]),
+			ConditionValue:    convert.StringToInt(match[6]),
 		}
 		instructions = append(instructions, instruction)
 

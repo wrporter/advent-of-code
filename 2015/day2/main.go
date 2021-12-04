@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
@@ -31,7 +31,7 @@ func sum(values []int) int {
 func calculate(presents []string) (paper int, ribbon int) {
 	for _, present := range presents {
 		match := regex.FindStringSubmatch(present)
-		length, width, height := conversion.StringToInt(match[1]), conversion.StringToInt(match[2]), conversion.StringToInt(match[3])
+		length, width, height := convert.StringToInt(match[1]), convert.StringToInt(match[2]), convert.StringToInt(match[3])
 
 		areas := []int{length * width, width * height, height * length}
 		slack := smallest(areas)

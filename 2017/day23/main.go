@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -56,7 +56,7 @@ func part1(input []string) interface{} {
 
 func part2(input []string) interface{} {
 	parts := strings.Fields(input[0])
-	b := conversion.StringToInt(parts[2])
+	b := convert.StringToInt(parts[2])
 	b *= 100
 	b -= -100000
 

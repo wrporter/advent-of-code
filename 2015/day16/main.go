@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 	"strings"
@@ -19,7 +19,7 @@ func matchAuntSue(auntSueStrings []string, theOne map[string]int, shouldCompare 
 		itemStrings := strings.Split(match[2], ", ")
 		for _, itemString := range itemStrings {
 			itemMatch := itemRegex.FindStringSubmatch(itemString)
-			sue[itemMatch[1]] = conversion.StringToInt(itemMatch[2])
+			sue[itemMatch[1]] = convert.StringToInt(itemMatch[2])
 		}
 
 		found := true

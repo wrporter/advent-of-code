@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -45,7 +45,7 @@ func part1(input []string) interface{} {
 func parseInput(input []string) (string, int, map[string]State) {
 	allInput := strings.Join(input, "\n")
 	stateName := beginRegex.FindStringSubmatch(allInput)[1]
-	checksum := conversion.StringToInt(checksumRegex.FindStringSubmatch(allInput)[1])
+	checksum := convert.StringToInt(checksumRegex.FindStringSubmatch(allInput)[1])
 	stateMatches := stateRegex.FindAllStringSubmatch(allInput, -1)
 
 	states := make(map[string]State)
@@ -54,12 +54,12 @@ func parseInput(input []string) (string, int, map[string]State) {
 			Name: stateMatch[1],
 		}
 		state.Conditions = append(state.Conditions, Condition{
-			WriteValue: conversion.StringToInt(stateMatch[3]),
+			WriteValue: convert.StringToInt(stateMatch[3]),
 			Move:       getMoveValue(stateMatch[4]),
 			Goto:       stateMatch[5],
 		})
 		state.Conditions = append(state.Conditions, Condition{
-			WriteValue: conversion.StringToInt(stateMatch[7]),
+			WriteValue: convert.StringToInt(stateMatch[7]),
 			Move:       getMoveValue(stateMatch[8]),
 			Goto:       stateMatch[9],
 		})

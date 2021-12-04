@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 )
@@ -40,7 +40,7 @@ func subsetSum(values []int, target int) (int, int) {
 
 func main() {
 	lines, _ := file.ReadFile("./2015/day17/input.txt")
-	containers, _ := conversion.ToInts(lines)
+	containers, _ := convert.ToInts(lines)
 	fmt.Println(subsetSum([]int{20, 15, 10, 5, 5}, 25))
 	fmt.Println(subsetSum(containers, 150))
 }

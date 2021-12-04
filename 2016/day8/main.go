@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 )
@@ -124,8 +124,8 @@ func toOperation(operationString string) Operation {
 	match := regex.FindStringSubmatch(operationString)
 	operation := Operation{
 		Command: Command(match[1]),
-		A:       conversion.StringToInt(match[3]),
-		B:       conversion.StringToInt(match[5]),
+		A:       convert.StringToInt(match[3]),
+		B:       convert.StringToInt(match[5]),
 	}
 	return operation
 }

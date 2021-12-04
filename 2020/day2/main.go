@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -27,8 +27,8 @@ func part1(input []string) int {
 
 	for _, passwordString := range input {
 		match := regex.FindStringSubmatch(passwordString)
-		lowest := conversion.StringToInt(match[1])
-		highest := conversion.StringToInt(match[2])
+		lowest := convert.StringToInt(match[1])
+		highest := convert.StringToInt(match[2])
 		letter := rune(match[3][0])
 		password := match[4]
 
@@ -51,8 +51,8 @@ func part2(input []string) int {
 
 	for _, passwordString := range input {
 		match := regex.FindStringSubmatch(passwordString)
-		position1 := conversion.StringToInt(match[1])
-		position2 := conversion.StringToInt(match[2])
+		position1 := convert.StringToInt(match[1])
+		position2 := convert.StringToInt(match[2])
 		letter := rune(match[3][0])
 		password := match[4]
 

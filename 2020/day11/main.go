@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -26,7 +26,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	current := runes.Copy2D(conversion.ToRuneGrid(input))
+	current := runes.Copy2D(convert.ToRuneGrid(input))
 
 	for {
 		next := runes.Copy2D(current)
@@ -54,7 +54,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	current := runes.Copy2D(conversion.ToRuneGrid(input))
+	current := runes.Copy2D(convert.ToRuneGrid(input))
 
 	for {
 		next := runes.Copy2D(current)

@@ -2,14 +2,14 @@ package intcode
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strings"
 )
 
 func ReadCode(filePath string) []int {
 	lines, _ := file.ReadFile(filePath)
-	code, _ := conversion.ToInts(strings.Split(lines[0], ","))
+	code, _ := convert.ToInts(strings.Split(lines[0], ","))
 	return code
 }
 

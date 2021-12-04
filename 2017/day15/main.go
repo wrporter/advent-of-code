@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -86,8 +86,8 @@ func first16BitsAreEqual(generatorA int, generatorB int) bool {
 
 func parseInput(input []string) (int, int) {
 	lineA := strings.Split(input[0], " ")
-	generatorA := conversion.StringToInt(lineA[len(lineA)-1])
+	generatorA := convert.StringToInt(lineA[len(lineA)-1])
 	lineB := strings.Split(input[1], " ")
-	generatorB := conversion.StringToInt(lineB[len(lineB)-1])
+	generatorB := convert.StringToInt(lineB[len(lineB)-1])
 	return generatorA, generatorB
 }

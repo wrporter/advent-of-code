@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
@@ -98,7 +98,7 @@ func parseInput(input []string) (nodes map[geometry.Point]node, empty node) {
 	nodes = make(map[geometry.Point]node, len(nodeInput))
 	for _, line := range nodeInput {
 		match := regex.FindStringSubmatch(line)
-		values, _ := conversion.ToInts(match[1:])
+		values, _ := convert.ToInts(match[1:])
 
 		point := geometry.NewPoint(values[0], values[1])
 		n := node{

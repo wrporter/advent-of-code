@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -34,7 +34,7 @@ func part1(input []string) interface{} {
 	for _, line := range input {
 		match := regex.FindStringSubmatch(line)
 		action := match[1]
-		value := conversion.StringToInt(match[2])
+		value := convert.StringToInt(match[2])
 
 		switch action {
 		case "N":
@@ -64,7 +64,7 @@ func part2(input []string) interface{} {
 	for _, line := range input {
 		match := regex.FindStringSubmatch(line)
 		action := match[1]
-		value := conversion.StringToInt(match[2])
+		value := convert.StringToInt(match[2])
 
 		switch action {
 		case "N":

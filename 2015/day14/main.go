@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 )
@@ -64,9 +64,9 @@ func parse(reindeerSpeeds []string) (map[string]*DeerState, map[string]Reindeer)
 		match := regex.FindStringSubmatch(reindeerSpeed)
 		deer := Reindeer{
 			name:  match[1],
-			speed: conversion.StringToInt(match[2]),
-			time:  conversion.StringToInt(match[3]),
-			rest:  conversion.StringToInt(match[4]),
+			speed: convert.StringToInt(match[2]),
+			time:  convert.StringToInt(match[3]),
+			rest:  convert.StringToInt(match[4]),
 		}
 		race[deer.name] = &DeerState{
 			name:     deer.name,

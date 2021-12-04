@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -99,8 +99,8 @@ type Node struct {
 }
 
 func parseInput(input []string) (int, geometry.Point) {
-	favoriteNumber := conversion.StringToInt(input[0])
+	favoriteNumber := convert.StringToInt(input[0])
 	coordinates := strings.Split(input[1], ",")
-	target := geometry.NewPoint(conversion.StringToInt(coordinates[0]), conversion.StringToInt(coordinates[1]))
+	target := geometry.NewPoint(convert.StringToInt(coordinates[0]), convert.StringToInt(coordinates[1]))
 	return favoriteNumber, target
 }

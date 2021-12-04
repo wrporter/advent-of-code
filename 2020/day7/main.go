@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -82,7 +82,7 @@ func parseBags(input []string) map[string]map[string]int {
 			contents = make(map[string]int)
 			for _, content := range contentString {
 				contentMatch := contentsRegex.FindStringSubmatch(content)
-				contents[contentMatch[2]] = conversion.StringToInt(contentMatch[1])
+				contents[contentMatch[2]] = convert.StringToInt(contentMatch[1])
 			}
 		}
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -53,7 +53,7 @@ func play(numbers []int, boards map[int]*board) []int {
 }
 
 func parseInput(input []string) ([]int, map[int]*board) {
-	numbers, _ := conversion.ToInts(strings.Split(input[0], ","))
+	numbers, _ := convert.ToInts(strings.Split(input[0], ","))
 
 	boards := make(map[int]*board)
 	grid := make([][]int, 0)
@@ -61,7 +61,7 @@ func parseInput(input []string) ([]int, map[int]*board) {
 
 	for i, line := range boardInput {
 		if line != "" {
-			row, _ := conversion.ToInts(strings.Fields(line))
+			row, _ := convert.ToInts(strings.Fields(line))
 			grid = append(grid, row)
 		}
 		if line == "" || i == len(boardInput)-1 {

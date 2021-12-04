@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -83,12 +83,12 @@ func performMove(move string, dance []rune) []rune {
 	moveType := move[0]
 	switch moveType {
 	case Spin:
-		amount := conversion.StringToInt(move[1:])
+		amount := convert.StringToInt(move[1:])
 		dance = rotate(dance, amount)
 	case Exchange:
 		args := strings.Split(move[1:], "/")
-		i := conversion.StringToInt(args[0])
-		j := conversion.StringToInt(args[1])
+		i := convert.StringToInt(args[0])
+		j := convert.StringToInt(args[1])
 		dance[i], dance[j] = dance[j], dance[i]
 	case Partner:
 		args := strings.Split(move[1:], "/")

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -27,7 +27,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	values, _ := conversion.ToInts(input)
+	values, _ := convert.ToInts(input)
 	preambleSize := 25
 
 	for i := preambleSize; i < len(values); i++ {
@@ -45,7 +45,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	values, _ := conversion.ToInts(input)
+	values, _ := convert.ToInts(input)
 	preambleSize := 25
 
 	desiredValue := 0

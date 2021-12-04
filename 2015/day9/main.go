@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
@@ -21,11 +21,11 @@ func parse(distanceStrings []string) map[string][]Destination {
 		match := regex.FindStringSubmatch(routeString)
 		tickets[match[1]] = append(tickets[match[1]], Destination{
 			to:       match[2],
-			distance: conversion.StringToInt(match[3]),
+			distance: convert.StringToInt(match[3]),
 		})
 		tickets[match[2]] = append(tickets[match[2]], Destination{
 			to:       match[1],
-			distance: conversion.StringToInt(match[3]),
+			distance: convert.StringToInt(match[3]),
 		})
 	}
 	return tickets

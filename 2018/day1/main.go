@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 )
@@ -23,7 +23,7 @@ func part1(input []string) interface{} {
 	frequency := 0
 
 	for _, changeStr := range input {
-		change := conversion.StringToInt(changeStr[1:])
+		change := convert.StringToInt(changeStr[1:])
 		sign := changeStr[0]
 		if sign == '-' {
 			change = -change
@@ -40,7 +40,7 @@ func part2(input []string) interface{} {
 
 	for i := 0; ; i++ {
 		changeStr := input[i%len(input)]
-		change := conversion.StringToInt(changeStr[1:])
+		change := convert.StringToInt(changeStr[1:])
 		sign := changeStr[0]
 		if sign == '-' {
 			change = -change

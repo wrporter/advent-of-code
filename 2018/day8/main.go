@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -26,13 +26,13 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	data, _ := conversion.ToInts(strings.Fields(input[0]))
+	data, _ := convert.ToInts(strings.Fields(input[0]))
 	root, _ := parseTree(data, 0)
 	return sumMetadata(root)
 }
 
 func part2(input []string) interface{} {
-	data, _ := conversion.ToInts(strings.Fields(input[0]))
+	data, _ := convert.ToInts(strings.Fields(input[0]))
 	root, _ := parseTree(data, 0)
 	return getValue(root)
 }

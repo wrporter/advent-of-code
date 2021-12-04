@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/mystrings"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -26,7 +26,7 @@ func main() {
 
 func part1(input []string) interface{} {
 	state := input[0]
-	length := conversion.StringToInt(input[1])
+	length := convert.StringToInt(input[1])
 	curve := getDragonCurve(state, length)
 	return getChecksum(curve)
 }

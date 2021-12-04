@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -89,19 +89,19 @@ func parseInput(input []string) map[int]*Particle {
 		particle := &Particle{
 			ID: id,
 			Position: Point3D{
-				X: conversion.StringToInt(match[1]),
-				Y: conversion.StringToInt(match[2]),
-				Z: conversion.StringToInt(match[3]),
+				X: convert.StringToInt(match[1]),
+				Y: convert.StringToInt(match[2]),
+				Z: convert.StringToInt(match[3]),
 			},
 			Velocity: Point3D{
-				X: conversion.StringToInt(match[4]),
-				Y: conversion.StringToInt(match[5]),
-				Z: conversion.StringToInt(match[6]),
+				X: convert.StringToInt(match[4]),
+				Y: convert.StringToInt(match[5]),
+				Z: convert.StringToInt(match[6]),
 			},
 			Acceleration: Point3D{
-				X: conversion.StringToInt(match[7]),
-				Y: conversion.StringToInt(match[8]),
-				Z: conversion.StringToInt(match[9]),
+				X: convert.StringToInt(match[7]),
+				Y: convert.StringToInt(match[8]),
+				Z: convert.StringToInt(match[9]),
 			},
 		}
 		particles[id] = particle

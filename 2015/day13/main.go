@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/probability"
 	"regexp"
@@ -59,7 +59,7 @@ func parse(ratingStrings []string) (map[string]map[string]int, []string) {
 
 	for _, rating := range ratingStrings {
 		match := regex.FindStringSubmatch(rating)
-		value := conversion.StringToInt(match[3])
+		value := convert.StringToInt(match[3])
 		if match[2] == "lose" {
 			value = -value
 		}

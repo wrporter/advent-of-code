@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -154,19 +154,19 @@ func parse(input []string) (map[string]Rule, []int, [][]int) {
 			match := ruleRegex.FindStringSubmatch(line)
 			rule := Rule{
 				Range1: Range{
-					Low:  conversion.StringToInt(match[2]),
-					High: conversion.StringToInt(match[3]),
+					Low:  convert.StringToInt(match[2]),
+					High: convert.StringToInt(match[3]),
 				},
 				Range2: Range{
-					Low:  conversion.StringToInt(match[4]),
-					High: conversion.StringToInt(match[5]),
+					Low:  convert.StringToInt(match[4]),
+					High: convert.StringToInt(match[5]),
 				},
 			}
 			rules[match[1]] = rule
 		} else if section == 1 && !strings.HasPrefix(line, "your ticket") {
-			yourTicket, _ = conversion.ToInts(strings.Split(line, ","))
+			yourTicket, _ = convert.ToInts(strings.Split(line, ","))
 		} else if section == 2 && !strings.HasPrefix(line, "nearby tickets") {
-			tickets, _ := conversion.ToInts(strings.Split(line, ","))
+			tickets, _ := convert.ToInts(strings.Split(line, ","))
 			nearbyTickets = append(nearbyTickets, tickets)
 		}
 	}

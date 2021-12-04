@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 	"strings"
@@ -20,8 +20,8 @@ func part1(file string) int {
 				lastIndex = j
 			}
 			match := regex.FindStringSubmatch(marker)
-			numChars := conversion.StringToInt(match[1])
-			repeat := conversion.StringToInt(match[2])
+			numChars := convert.StringToInt(match[1])
+			repeat := convert.StringToInt(match[2])
 
 			repeatChars := strings.Repeat(file[lastIndex+1:lastIndex+1+numChars], repeat)
 			file = file[:i] + repeatChars + file[lastIndex+1+numChars:]
@@ -43,8 +43,8 @@ func part2(file string) int {
 		endMarkerIndex := strings.IndexRune(file, ')')
 
 		marker := strings.Split(file[startMarkerIndex+1:endMarkerIndex], "x")
-		numChars := conversion.StringToInt(marker[0])
-		repeat := conversion.StringToInt(marker[1])
+		numChars := convert.StringToInt(marker[0])
+		repeat := convert.StringToInt(marker[1])
 
 		length += startMarkerIndex + (part2(file[endMarkerIndex+1:endMarkerIndex+1+numChars]) * repeat)
 

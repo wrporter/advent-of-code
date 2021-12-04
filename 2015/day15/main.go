@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
@@ -25,11 +25,11 @@ func getOptimalRecipe(ingredientStrings []string, teaspoons int, calorieAmount i
 		match := regex.FindStringSubmatch(ingredientString)
 		ingredients = append(ingredients, Ingredient{
 			name:       match[1],
-			capacity:   conversion.StringToInt(match[2]),
-			durability: conversion.StringToInt(match[3]),
-			flavor:     conversion.StringToInt(match[4]),
-			texture:    conversion.StringToInt(match[5]),
-			calories:   conversion.StringToInt(match[6]),
+			capacity:   convert.StringToInt(match[2]),
+			durability: convert.StringToInt(match[3]),
+			flavor:     convert.StringToInt(match[4]),
+			texture:    convert.StringToInt(match[5]),
+			calories:   convert.StringToInt(match[6]),
 		})
 	}
 

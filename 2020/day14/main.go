@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -41,8 +41,8 @@ func part1(input []string) interface{} {
 			mask = match[1]
 		} else if strings.HasPrefix(line, "mem") {
 			match := memRegex.FindStringSubmatch(line)
-			address := conversion.StringToInt(match[1])
-			value := conversion.StringToInt(match[2])
+			address := convert.StringToInt(match[1])
+			value := convert.StringToInt(match[2])
 
 			for i, bit := range mask {
 				position := len(mask) - i - 1
@@ -73,8 +73,8 @@ func part2(input []string) interface{} {
 			mask = match[1]
 		} else if strings.HasPrefix(line, "mem") {
 			match := memRegex.FindStringSubmatch(line)
-			address := conversion.StringToInt(match[1])
-			value := conversion.StringToInt(match[2])
+			address := convert.StringToInt(match[1])
+			value := convert.StringToInt(match[2])
 
 			numXPermutations := getNumXPermutations(mask)
 			newAddress := address

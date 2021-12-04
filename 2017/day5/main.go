@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
@@ -24,7 +24,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	offsets, _ := conversion.ToInts(input)
+	offsets, _ := convert.ToInts(input)
 	steps := 0
 
 	for position := 0; position >= 0 && position < len(offsets); {
@@ -38,7 +38,7 @@ func part1(input []string) interface{} {
 }
 
 func part2(input []string) interface{} {
-	offsets, _ := conversion.ToInts(input)
+	offsets, _ := convert.ToInts(input)
 	steps := 0
 
 	for position := 0; position >= 0 && position < len(offsets); {

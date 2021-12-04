@@ -2,7 +2,7 @@ package universe
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
 )
@@ -30,9 +30,9 @@ func New(particlePositions []string) *Universe {
 		matches := regex.FindStringSubmatch(positionString)
 		particles = append(particles, Particle{
 			Position: Coordinate{
-				conversion.StringToInt(matches[1]),
-				conversion.StringToInt(matches[2]),
-				conversion.StringToInt(matches[3]),
+				convert.StringToInt(matches[1]),
+				convert.StringToInt(matches[2]),
+				convert.StringToInt(matches[3]),
 			},
 			Velocity: Coordinate{},
 		})

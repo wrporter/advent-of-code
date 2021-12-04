@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 )
@@ -20,7 +20,7 @@ func part1(input []string) int {
 
 	for _, line := range input {
 		match := regex.FindStringSubmatch(line)
-		a, b, c := conversion.StringToInt(match[1]), conversion.StringToInt(match[2]), conversion.StringToInt(match[3])
+		a, b, c := convert.StringToInt(match[1]), convert.StringToInt(match[2]), convert.StringToInt(match[3])
 		if isValidTriangle(a, b, c) {
 			numPossibleTriangles++
 		}
@@ -35,7 +35,7 @@ func part2(input []string) int {
 
 	for i, line := range input {
 		match := regex.FindStringSubmatch(line)
-		a, b, c := conversion.StringToInt(match[1]), conversion.StringToInt(match[2]), conversion.StringToInt(match[3])
+		a, b, c := convert.StringToInt(match[1]), convert.StringToInt(match[2]), convert.StringToInt(match[3])
 		triangles[i%3] = []int{a, b, c}
 
 		if (i+1)%3 == 0 && i != 0 {

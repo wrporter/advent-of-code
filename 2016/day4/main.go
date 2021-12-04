@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"regexp"
 	"sort"
@@ -64,7 +64,7 @@ func part1(input []string) int {
 	for _, room := range input {
 		match := regex.FindStringSubmatch(room)
 		encryptedName := strings.ReplaceAll(match[1], "-", "")
-		sectorID := conversion.StringToInt(match[2])
+		sectorID := convert.StringToInt(match[2])
 		checksum := match[3]
 
 		roomChecksum := NewRoomChecksum(encryptedName)
@@ -111,7 +111,7 @@ func part2(input []string, roomName string) int {
 	for _, room := range input {
 		match := regex.FindStringSubmatch(room)
 		encryptedName := match[1]
-		sectorID := conversion.StringToInt(match[2])
+		sectorID := convert.StringToInt(match[2])
 		checksum := match[3]
 
 		roomChecksum := NewRoomChecksum(strings.ReplaceAll(encryptedName, "-", ""))

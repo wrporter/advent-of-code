@@ -1,7 +1,7 @@
 package image
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"strings"
 )
@@ -24,7 +24,7 @@ func New(data string, width int, height int) *Image {
 	var row []int
 
 	for i := 0; i < len(data); i++ {
-		pixel := conversion.RuneToInt(data[i])
+		pixel := convert.RuneToInt(data[i])
 		row = append(row, pixel)
 
 		if (i+1)%width == 0 && row != nil {

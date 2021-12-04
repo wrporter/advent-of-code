@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/knot"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -26,7 +26,7 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	lengths, _ := conversion.ToInts(strings.Split(input[0], ","))
+	lengths, _ := convert.ToInts(strings.Split(input[0], ","))
 	return singleRoundHash(256, lengths)
 }
 

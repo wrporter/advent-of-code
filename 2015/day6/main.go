@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
@@ -96,10 +96,10 @@ func toInstruction(instructionString string) instruction {
 	match := regex.FindStringSubmatch(instructionString)
 	ins := instruction{
 		command:  instructionCommand(match[1]),
-		startCol: conversion.StringToInt(match[2]),
-		startRow: conversion.StringToInt(match[3]),
-		endCol:   conversion.StringToInt(match[4]),
-		endRow:   conversion.StringToInt(match[5]),
+		startCol: convert.StringToInt(match[2]),
+		startRow: convert.StringToInt(match[3]),
+		endCol:   convert.StringToInt(match[4]),
+		endRow:   convert.StringToInt(match[5]),
 	}
 	return ins
 }

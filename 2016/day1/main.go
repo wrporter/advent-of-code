@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"regexp"
@@ -52,7 +52,7 @@ func part1(instructions []string) int {
 
 	for _, instruction := range instructions {
 		match := regex.FindStringSubmatch(instruction)
-		rotation, steps := match[1], conversion.StringToInt(match[2])
+		rotation, steps := match[1], convert.StringToInt(match[2])
 
 		modifier := 0
 		if rotation == "R" {
@@ -76,7 +76,7 @@ func part2(instructions []string) int {
 
 	for _, instruction := range instructions {
 		match := regex.FindStringSubmatch(instruction)
-		rotation, steps := match[1], conversion.StringToInt(match[2])
+		rotation, steps := match[1], convert.StringToInt(match[2])
 
 		modifier := 0
 		if rotation == "R" {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"regexp"
@@ -125,7 +125,7 @@ func parselogs(input []string) []Log {
 		}
 		guardID := 0
 		if len(match) > 3 {
-			guardID = conversion.StringToInt(match[3])
+			guardID = convert.StringToInt(match[3])
 		}
 
 		logs[i] = Log{

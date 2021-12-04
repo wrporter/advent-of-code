@@ -1,7 +1,7 @@
 package stringgrid
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/mystrings"
 	"strings"
 )
@@ -16,7 +16,7 @@ func FlipLR(array []string) []string {
 }
 
 func Rotate90Clockwise(array []string) []string {
-	grid := conversion.ToRuneGrid(array)
+	grid := convert.ToRuneGrid(array)
 	M := len(grid)
 	N := len(grid[0])
 	ret := make([][]rune, N)

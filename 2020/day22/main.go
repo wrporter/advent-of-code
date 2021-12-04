@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -137,9 +137,9 @@ func parse(input []string) ([]int, []int) {
 		}
 
 		if section == 0 {
-			deck1 = append(deck1, conversion.StringToInt(line))
+			deck1 = append(deck1, convert.StringToInt(line))
 		} else {
-			deck2 = append(deck2, conversion.StringToInt(line))
+			deck2 = append(deck2, convert.StringToInt(line))
 		}
 	}
 	return deck1, deck2

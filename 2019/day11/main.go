@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	paint2 "github.com/wrporter/advent-of-code/2019/day11/internal/paint"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"strings"
 )
 
 func main() {
 	codeLines, _ := file.ReadFile("./2019/day11/input.txt")
-	code, _ := conversion.ToInts(strings.Split(codeLines[0], ","))
+	code, _ := convert.ToInts(strings.Split(codeLines[0], ","))
 	robot := paint2.NewRobot(code)
 	//numPaintedPanels, region := robot.Paint(paint.Black)
 	//fmt.Println(numPaintedPanels)

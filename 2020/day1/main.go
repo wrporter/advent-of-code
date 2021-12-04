@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/probability"
@@ -14,7 +14,7 @@ func main() {
 
 	out.Day(2020, 1)
 	input, _ := file.ReadFile("./2020/day1/input.txt")
-	entries, _ := conversion.ToInts(input)
+	entries, _ := convert.ToInts(input)
 	answer1b := part1b(entries)
 	out.Part1(answer1b)
 	answer2 := part2(entries)

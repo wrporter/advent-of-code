@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
@@ -29,7 +29,7 @@ func part1(input []string) interface{} {
 	checksum := 0
 
 	for _, line := range input {
-		values, _ := conversion.ToInts(strings.Fields(line))
+		values, _ := convert.ToInts(strings.Fields(line))
 		min := values[0]
 		max := values[0]
 
@@ -53,7 +53,7 @@ func part2(input []string) interface{} {
 	checksum := 0
 
 	for _, line := range input {
-		values, _ := conversion.ToInts(strings.Fields(line))
+		values, _ := convert.ToInts(strings.Fields(line))
 
 		checksumFound := false
 		for i, value := range values {

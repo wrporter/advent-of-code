@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/internal/common/conversion"
+	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"math/big"
@@ -28,11 +28,11 @@ func (deck *Deck) Shuffle(techniques []string) {
 			deck.ShuffleStack()
 		} else if matched := cutRegex.MatchString(technique); matched {
 			match := cutRegex.FindStringSubmatch(technique)
-			amount := conversion.StringToInt(match[1])
+			amount := convert.StringToInt(match[1])
 			deck.ShuffleCut(amount)
 		} else if matched := incrementRegex.MatchString(technique); matched {
 			match := incrementRegex.FindStringSubmatch(technique)
-			increment := conversion.StringToInt(match[1])
+			increment := convert.StringToInt(match[1])
 			deck.ShuffleIncrement(increment)
 		}
 	}
