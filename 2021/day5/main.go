@@ -5,6 +5,7 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"regexp"
@@ -72,48 +73,36 @@ func parseLine(in string) (int, int, int, int) {
 
 // bresenhamPlot uses [Bresenham's Line Algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm) to
 // plot all integer points on a line.
-func bresenhamPlot(x1, y1, x2, y2 int, plot map[geometry.Point]int) {
-	dx := x2 - x1
-	if dx < 0 {
-		dx = -dx
-	}
-
-	dy := y2 - y1
-	if dy < 0 {
-		dy = -dy
-	}
-
-	var sx, sy int
-	if x1 < x2 {
+func bresenhamPlot(x0, y0, x1, y1 int, plot map[geometry.Point]int) {
+	dx := ints.Abs(x1 - x0)
+	sx := -1
+	if x0 < x1 {
 		sx = 1
-	} else {
-		sx = -1
 	}
 
-	if y1 < y2 {
+	dy := -ints.Abs(y1 - y0)
+	sy := -1
+	if y0 < y1 {
 		sy = 1
-	} else {
-		sy = -1
 	}
 
-	err := dx - dy
+	err := dx + dy
 
 	for {
-		updatePlot(x1, y1, plot)
+		updatePlot(x0, y0, plot)
 
-		if x1 == x2 && y1 == y2 {
+		if x0 == x1 && y0 == y1 {
 			break
 		}
 
 		e2 := 2 * err
-		if e2 > -dy {
-			err -= dy
-			x1 += sx
+		if e2 >= dy {
+			err += dy
+			x0 += sx
 		}
-
-		if e2 < dx {
+		if e2 <= dx {
 			err += dx
-			y1 += sy
+			y0 += sy
 		}
 	}
 }
