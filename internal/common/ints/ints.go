@@ -42,11 +42,14 @@ func Max(values ...int) int {
 	return max
 }
 
-func Min(x int, y int) int {
-	if x < y {
-		return x
+func Min(values ...int) int {
+	min := MaxInt
+	for _, value := range values {
+		if value < min {
+			min = value
+		}
 	}
-	return y
+	return min
 }
 
 func Round(num float64) int {
