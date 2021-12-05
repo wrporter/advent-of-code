@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
-	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/sat"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"math"
 	"time"
@@ -28,20 +28,21 @@ func main() {
 func part1(input []string) interface{} {
 	grid := newFuelCellGrid(1723)
 	windowSize := 3
-	_, topLeftCorner := getTotalPowerCorner(grid, windowSize)
+	sumTable := sat.NewSummedAreaTable(grid)
+	_, topLeftCorner := getTotalPowerCorner(sumTable, windowSize)
 	return fmt.Sprintf("%d,%d", topLeftCorner.X, topLeftCorner.Y)
 }
 
-// TODO: optimize via memoization or other, e.g. https://en.wikipedia.org/wiki/Summed-area_table
 func part2(input []string) interface{} {
 	grid := newFuelCellGrid(1723)
+	sumTable := sat.NewSummedAreaTable(grid)
 
 	maxPower := 0
 	var topLeftCorner geometry.Point
 	size := 0
 
 	for windowSize := 1; windowSize <= len(grid); windowSize++ {
-		power, corner := getTotalPowerCorner(grid, windowSize)
+		power, corner := getTotalPowerCorner(sumTable, windowSize)
 		if power > maxPower {
 			maxPower = power
 			topLeftCorner = corner
@@ -52,14 +53,13 @@ func part2(input []string) interface{} {
 	return fmt.Sprintf("%d,%d,%d", topLeftCorner.X, topLeftCorner.Y, size)
 }
 
-func getTotalPowerCorner(grid [][]int, windowSize int) (int, geometry.Point) {
+func getTotalPowerCorner(sumTable *sat.SummedAreaTable, windowSize int) (int, geometry.Point) {
 	maxPower := 0
 	var topLeftCorner geometry.Point
 
-	for y := 0; y < len(grid)-windowSize; y++ {
-		for x := 0; x < len(grid[y])-windowSize; x++ {
-			window := ints.GetWindow(grid, x, y, windowSize)
-			power := ints.SumGrid(window)
+	for y := 0; y <= sumTable.Height-windowSize; y++ {
+		for x := 0; x <= sumTable.Width-windowSize; x++ {
+			power := sumTable.SumWindow(x, y, x+windowSize-1, y+windowSize-1)
 			if power > maxPower {
 				maxPower = power
 				topLeftCorner = geometry.NewPoint(x+1, y+1)
