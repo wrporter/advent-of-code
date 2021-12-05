@@ -30,8 +30,8 @@ var regex = regexp.MustCompile(`^(\d+),(\d+) -> (\d+),(\d+)$`)
 func part1(input []string) interface{} {
 	plot := make(map[geometry.Point]int)
 
-	for _, in := range input {
-		x1, y1, x2, y2 := parseLine(in)
+	for _, line := range input {
+		x1, y1, x2, y2 := parseLine(line)
 		if x1 == x2 || y1 == y2 {
 			bresenhamPlot(x1, y1, x2, y2, plot)
 		}
@@ -43,8 +43,8 @@ func part1(input []string) interface{} {
 func part2(input []string) interface{} {
 	plot := make(map[geometry.Point]int)
 
-	for _, in := range input {
-		x1, y1, x2, y2 := parseLine(in)
+	for _, line := range input {
+		x1, y1, x2, y2 := parseLine(line)
 		bresenhamPlot(x1, y1, x2, y2, plot)
 	}
 
@@ -99,12 +99,7 @@ func bresenhamPlot(x1, y1, x2, y2 int, plot map[geometry.Point]int) {
 	err := dx - dy
 
 	for {
-		point := geometry.NewPoint(x1, y1)
-		if _, ok := plot[point]; ok {
-			plot[point]++
-		} else {
-			plot[point] = 1
-		}
+		updatePlot(x1, y1, plot)
 
 		if x1 == x2 && y1 == y2 {
 			break
@@ -120,5 +115,14 @@ func bresenhamPlot(x1, y1, x2, y2 int, plot map[geometry.Point]int) {
 			err += dx
 			y1 += sy
 		}
+	}
+}
+
+func updatePlot(x int, y int, plot map[geometry.Point]int) {
+	point := geometry.NewPoint(x, y)
+	if _, ok := plot[point]; ok {
+		plot[point]++
+	} else {
+		plot[point] = 1
 	}
 }
