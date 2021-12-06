@@ -4,7 +4,7 @@
 
 ## Thoughts & Solution
 
-Spawning fish! Part 1 could be done in a very straightforward way, and can be done by simulating the spawning with a linked list or array.
+Spawning fish! Part 1 could be done in a very straightforward way, and can be done by simulating the spawning with a linked list or array. I enjoyed getting some experience with Go's linked list data structure!
 
 I was expecting Part 2 to up the scale, and it sure did! At first, I tried to see if there was some kind of pattern across days and realized that every 7 days, we would double the amount of fish. But this didn't allow me to calculate the amount of fish in between those 7 days. I admit defeat on this one and looked up inspiration from the Reddit board. It was then obvious that we could bucket the fish by age and just keep track of how many were in each bucket.
 
