@@ -5,6 +5,24 @@ import (
 	"sort"
 )
 
+func Some(values string, test func(rune) bool) bool {
+	for _, value := range values {
+		if test(value) {
+			return true
+		}
+	}
+	return false
+}
+
+func Every(values string, test func(rune) bool) bool {
+	for _, value := range values {
+		if !test(value) {
+			return false
+		}
+	}
+	return true
+}
+
 func Contains(arr []rune, value rune) bool {
 	for _, v := range arr {
 		if value == v {

@@ -46,15 +46,6 @@ func Every(values []string, test func(string) bool) bool {
 	return true
 }
 
-func Some(values []string, test func(string) bool) bool {
-	for _, value := range values {
-		if test(value) {
-			return true
-		}
-	}
-	return false
-}
-
 func Contains(arr []string, value string) bool {
 	for _, v := range arr {
 		if value == v {
