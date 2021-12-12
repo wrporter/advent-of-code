@@ -1,6 +1,9 @@
 package mystrings
 
-import "sort"
+import (
+	"sort"
+	"unicode"
+)
 
 type sortRunes []rune
 
@@ -77,4 +80,13 @@ func AreAnagram(s1, s2 string) bool {
 	sort.Sort(r2)
 
 	return string(r1) == string(r2)
+}
+
+func IsLower(s string) bool {
+	for _, r := range s {
+		if !unicode.IsLower(r) && unicode.IsLetter(r) {
+			return false
+		}
+	}
+	return true
 }
