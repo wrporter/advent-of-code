@@ -8,13 +8,12 @@ It took me a little while to wrap my head around the instructions fully at the s
 
 Part 1: The examples hinted at using recursion over iteration, and I figured it would make state management a little easier without having to duplicate data. In the recursive function, I follow this process.
 
-1. Add to the path.
-2. If we are at the `end`, add to the total paths and exit.
-3. Set the current cave as visited.
-4. Recurse on each connected cave that is not small or has not yet been visited.
-5. Set the current cave as not visited so we can allow other branches of the recursion to check that path.
+1. Set the current cave as visited.
+2. Recurse on each connected cave that is not small or has not yet been visited.
+   - If we are at the `end`, add to the total paths and continue.
+3. Set the current cave as not visited so we can allow other branches of the recursion to check that path.
 
-Part 2: I didn't think quickly enough of a solution for singling out visiting a small cave twice. I added a multiple of the time complexity by the number of small caves, then using a map for the paths to deduplicate. Not efficient at all, but the solution still runs in 200ms, so not too bad. I followed the same process at in Part 1, but now I make sure the selected small cave can be visited at least 2 times.
+Part 2: I didn't think quickly enough of a solution for singling out visiting a small cave twice. I added a multiple of the time complexity by the number of small caves, then using a map for the paths to deduplicate. Not efficient at all, but the solution still runs in 216ms, so not too bad. I followed the same process as in Part 1, but now I make sure the selected small cave can be visited at least 2 times. **EDIT:** I noted that I could tell whether a single small cave has been visited twice and pass that down the recursive tree. This ends up getting us to the same time complexity as Part 1, except for more paths. It now runs in 160ms. I made a couple other cleanup improvements as well, like removing the need for a delimiter variable.
 
 ### Time
 

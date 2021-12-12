@@ -26,37 +26,26 @@ func main() {
 
 func part1(input []string) interface{} {
 	connections := parseInput(input)
-	paths := findPaths(connections, make(map[string]bool), "start", "", "")
+	paths := findPaths(connections, make(map[string]bool), "start", "start")
 	return len(paths)
 }
 
 func part2(input []string) interface{} {
 	connections := parseInput(input)
 	paths := make(map[string]bool)
-
-	for cave := range connections {
-		if isSmall(cave) && cave != "start" && cave != "end" {
-			findPaths2(connections, make(map[string]int), "start", cave, "", "", paths)
-		}
-	}
-
+	findPaths2(connections, make(map[string]int), "start", "start", false, paths)
 	return len(paths)
 }
 
-func findPaths(connections map[string][]string, visited map[string]bool, current string, path string, delimiter string) []string {
-	path += delimiter + current
-	delimiter = "-"
+func findPaths(connections map[string][]string, visited map[string]bool, current string, path string) []string {
 	var paths []string
-
-	if current == "end" {
-		paths = append(paths, path)
-		return paths
-	}
 
 	visited[current] = true
 	for _, next := range connections[current] {
-		if !isSmall(next) || !visited[next] {
-			nextPaths := findPaths(connections, visited, next, path, delimiter)
+		if next == "end" {
+			paths = append(paths, path+"-end")
+		} else if !isSmall(next) || !visited[next] {
+			nextPaths := findPaths(connections, visited, next, path+"-"+next)
 			paths = append(paths, nextPaths...)
 		}
 	}
@@ -65,21 +54,16 @@ func findPaths(connections map[string][]string, visited map[string]bool, current
 	return paths
 }
 
-func findPaths2(connections map[string][]string, visited map[string]int, current string, twice string, path string, delim string, paths map[string]bool) {
-	path += delim + current
-	delim = "-"
-
-	if current == "end" {
-		paths[path] = true
-		return
-	}
-
+func findPaths2(connections map[string][]string, visited map[string]int, current string, path string, twice bool, paths map[string]bool) {
 	visited[current]++
 	for _, next := range connections[current] {
-		if !isSmall(next) ||
-			(next == twice && visited[next] < 2) ||
-			(next != twice && visited[next] < 1) {
-			findPaths2(connections, visited, next, twice, path, delim, paths)
+		if next == "start" {
+			continue
+		} else if next == "end" {
+			paths[path+"-end"] = true
+		} else if !isSmall(next) || visited[next] < 1 || (visited[next] == 1 && !twice) {
+			nextTwice := twice || (isSmall(next) && visited[next] == 1 && !twice)
+			findPaths2(connections, visited, next, path+"-"+next, nextTwice, paths)
 		}
 	}
 	visited[current]--
