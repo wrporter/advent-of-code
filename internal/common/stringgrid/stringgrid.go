@@ -6,13 +6,18 @@ import (
 	"strings"
 )
 
-// FlipLR flips the grid up/down.
+// FlipLR flips the grid left/right.
 func FlipLR(array []string) []string {
 	result := make([]string, len(array))
 	for i, str := range array {
 		result[i] = mystrings.Reverse(str)
 	}
 	return result
+}
+
+// FlipUD flips the grid up/down.
+func FlipUD(array []string) []string {
+	return mystrings.ReverseList(array)
 }
 
 func Rotate90Clockwise(array []string) []string {

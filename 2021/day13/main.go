@@ -7,6 +7,7 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out"
+	"github.com/wrporter/advent-of-code/internal/common/stringgrid"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
 	"strings"
 	"time"
@@ -28,42 +29,44 @@ func main() {
 
 func part1(input []string) interface{} {
 	dots, folds := parseInput(input)
-	foldPaper(dots, folds[0])
+	dots = foldPaper(dots, folds[0])
 	return len(dots)
 }
 
 func part2(input []string) interface{} {
 	dots, folds := parseInput(input)
 	for _, fold := range folds {
-		foldPaper(dots, fold)
+		dots = foldPaper(dots, fold)
 	}
-	return "\n" + renderGrid(mapToGrid(dots))
+	return "\n" + renderGrid(stringgrid.FlipUD(mapToGrid(dots)))
 }
 
-func foldPaper(dots map[geometry.Point]bool, fold Fold) {
+func foldPaper(dots map[geometry.Point]bool, fold Fold) map[geometry.Point]bool {
+	next := make(map[geometry.Point]bool)
+
 	for dot := range dots {
 		if fold.axis == "x" {
-			if dot.X == fold.position {
-				delete(dots, dot)
+			if dot.X < fold.position {
+				next[dot] = true
 			} else if dot.X > fold.position {
-				delete(dots, dot)
 				diff := ints.Abs(dot.X - fold.position)
 				newDot := geometry.NewPoint(dot.X-(diff*2), dot.Y)
-				dots[newDot] = true
+				next[newDot] = true
 			}
 		}
 
 		if fold.axis == "y" {
-			if dot.Y == fold.position {
-				delete(dots, dot)
+			if dot.Y < fold.position {
+				next[dot] = true
 			} else if dot.Y > fold.position {
-				delete(dots, dot)
 				diff := ints.Abs(dot.Y - fold.position)
 				newDot := geometry.NewPoint(dot.X, dot.Y-(diff*2))
-				dots[newDot] = true
+				next[newDot] = true
 			}
 		}
 	}
+
+	return next
 }
 
 func parseInput(input []string) (map[geometry.Point]bool, []Fold) {
@@ -99,9 +102,9 @@ type Fold struct {
 	position int
 }
 
-func mapToGrid(m map[geometry.Point]bool) (grid [][]string) {
-	topLeft := geometry.Point{0, 0}
-	bottomRight := geometry.Point{0, 0}
+func mapToGrid(m map[geometry.Point]bool) (grid []string) {
+	topLeft := geometry.NewPoint(0, 0)
+	bottomRight := geometry.NewPoint(0, 0)
 	for p := range m {
 		topLeft.X = ints.Min(topLeft.X, p.X)
 		topLeft.Y = ints.Max(topLeft.Y, p.Y)
@@ -111,19 +114,17 @@ func mapToGrid(m map[geometry.Point]bool) (grid [][]string) {
 
 	width := ints.Abs(topLeft.X) + ints.Abs(bottomRight.X) + 1
 	height := ints.Abs(topLeft.Y) + ints.Abs(bottomRight.Y) + 1
-	region := make([][]string, height)
+	region := make([]string, height)
 
 	for y := 0; y < height; y++ {
-		row := make([]string, width)
-		region[y] = row
 		my := topLeft.Y - y
 
 		for x := 0; x < width; x++ {
 			mx := topLeft.X + x
-			if m[geometry.Point{mx, my}] {
-				row[x] = "#"
+			if m[geometry.NewPoint(mx, my)] {
+				region[y] += "#"
 			} else {
-				row[x] = "."
+				region[y] += "."
 			}
 		}
 	}
@@ -131,21 +132,17 @@ func mapToGrid(m map[geometry.Point]bool) (grid [][]string) {
 	return region
 }
 
-func displayGrid(grid [][]string) {
-	out := &strings.Builder{}
-	//out.WriteString("=====================================================\n")
-	out.WriteString("\033c")
-	out.WriteString(renderGrid(grid))
-	fmt.Print(out.String())
-	time.Sleep(time.Millisecond * 20)
+func displayGrid(grid []string) {
+	b := &strings.Builder{}
+	b.WriteString("\033c")
+	b.WriteString(renderGrid(grid))
+	fmt.Print(b.String())
 }
 
-func renderGrid(grid [][]string) string {
+func renderGrid(grid []string) string {
 	result := ""
 	for _, row := range grid {
-		for _, spot := range row {
-			result += spot
-		}
+		result += row
 		result += "\n"
 	}
 	return result
