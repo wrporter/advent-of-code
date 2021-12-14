@@ -26,57 +26,48 @@ func main() {
 }
 
 func part1(input []string) interface{} {
-	polymer := parseInput(input)
+	p := parseInput(input)
 
 	for s := 1; s <= 10; s++ {
-		polymer.step()
+		p.step()
 	}
 
-	min, max := polymer.getMinMax()
+	min, max := p.getMinMax()
 	return max - min
 }
 
 func part2(input []string) interface{} {
-	polymer := parseInput(input)
+	p := parseInput(input)
 
 	for s := 1; s <= 40; s++ {
-		polymer.step()
-		min, max := polymer.getMinMax()
-		fmt.Println(s, min, max, max-min)
+		p.step()
 	}
 
-	min, max := polymer.getMinMax()
+	min, max := p.getMinMax()
 	return max - min
 }
 
-func (p *Polymer) getMinMax() (int, int) {
-	max := 0
+func (p *polymer) step() {
+	for pair, count := range copyMap(p.pairs) {
+		insert := p.rules[pair]
+		p.pairs[pair] -= count
+		p.pairs[pair[:1]+insert] += count
+		p.pairs[insert+pair[1:]] += count
+		p.elements[insert] += count
+	}
+}
+
+func (p *polymer) getMinMax() (int, int) {
 	min := math.MaxInt
-	for _, count := range p.counts {
-		max = ints.Max(max, count)
+	max := 0
+	for _, count := range p.elements {
 		min = ints.Min(min, count)
+		max = ints.Max(max, count)
 	}
 	return min, max
 }
 
-func (p *Polymer) step() {
-	numInsertions := 0
-	next := p.template
-	for i := 0; i < len(p.template)-1; i++ {
-		part := p.template[i : i+2]
-
-		if result, ok := p.rules[part]; ok {
-			index := i + numInsertions + 1
-			next = next[:index] + result + next[index:]
-
-			numInsertions++
-			p.counts[result]++
-		}
-	}
-	p.template = next
-}
-
-func parseInput(input []string) *Polymer {
+func parseInput(input []string) *polymer {
 	template := input[0]
 	rules := make(map[string]string)
 	for _, line := range input[2:] {
@@ -84,20 +75,32 @@ func parseInput(input []string) *Polymer {
 		rules[parts[0]] = parts[1]
 	}
 
-	counts := make(map[string]int)
-	for _, char := range template {
-		counts[string(char)]++
+	elements := make(map[string]int)
+	pairs := make(map[string]int)
+	for i, char := range template {
+		elements[string(char)]++
+		if i < len(template)-1 {
+			pairs[template[i:i+2]]++
+		}
 	}
 
-	return &Polymer{
-		template: template,
+	return &polymer{
 		rules:    rules,
-		counts:   counts,
+		elements: elements,
+		pairs:    pairs,
 	}
 }
 
-type Polymer struct {
-	template string
+type polymer struct {
 	rules    map[string]string
-	counts   map[string]int
+	elements map[string]int
+	pairs    map[string]int
+}
+
+func copyMap(m map[string]int) map[string]int {
+	result := make(map[string]int)
+	for key, value := range m {
+		result[key] = value
+	}
+	return result
 }
