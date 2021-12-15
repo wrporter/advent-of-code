@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/wrporter/advent-of-code/2021/day15/priorityqueue"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
@@ -59,7 +60,8 @@ func findLowestRiskLevel(cave [][]int) int {
 	prev := make(map[geometry.Point]geometry.Point)
 	source := geometry.NewPoint(0, 0)
 	target := geometry.NewPoint(len(cave[0])-1, len(cave)-1)
-	queue := []geometry.Point{source}
+	queue := priorityqueue.New()
+	queue.Push(&node{Point: source, risk: 0})
 
 	for y, row := range cave {
 		for x := range row {
@@ -69,9 +71,8 @@ func findLowestRiskLevel(cave [][]int) int {
 	}
 	dist[source] = 0
 
-	var u geometry.Point
-	for len(queue) > 0 {
-		u, queue = queue[0], queue[1:]
+	for queue.Length() > 0 {
+		u := queue.Pop().(*node)
 
 		for _, direction := range geometry.Directions {
 			v := u.Move(direction)
@@ -80,11 +81,11 @@ func findLowestRiskLevel(cave [][]int) int {
 				continue
 			}
 
-			alt := dist[u] + cave[y][x]
+			alt := dist[u.Point] + cave[y][x]
 			if alt < dist[v] {
 				dist[v] = alt
-				prev[v] = u
-				queue = append(queue, v)
+				prev[v] = u.Point
+				queue.Push(&node{Point: v, risk: alt})
 			}
 		}
 	}
@@ -98,4 +99,14 @@ func parseInput(input []string) [][]int {
 		cave[i], _ = convert.ToInts(strings.Split(line, ""))
 	}
 	return cave
+}
+
+type node struct {
+	geometry.Point
+	risk int
+}
+
+func (n *node) Less(item priorityqueue.Item) bool {
+	b := item.(*node)
+	return n.risk < b.risk
 }
