@@ -32,6 +32,28 @@ func part1(input []string) interface{} {
 	return lowestRiskLevel
 }
 
+func part2(input []string) interface{} {
+	cave := parseInput(input)
+	cave = expand(cave)
+	lowestRiskLevel := findLowestRiskLevel(cave)
+	return lowestRiskLevel
+}
+
+func expand(cave [][]int) [][]int {
+	size := 5
+	result := make([][]int, len(cave)*size)
+	for y := range result {
+		result[y] = make([]int, len(cave[0])*size)
+		for x := range result[y] {
+			risk := cave[y%len(cave)][x%len(cave[0])] + (y / len(cave)) + (x / len(cave[0]))
+			increase := risk / 10
+			risk -= increase * 9
+			result[y][x] = risk
+		}
+	}
+	return result
+}
+
 func findLowestRiskLevel(cave [][]int) int {
 	visited := make(map[geometry.Point]bool)
 	dist := make(map[geometry.Point]int)
@@ -76,10 +98,6 @@ func findLowestRiskLevel(cave [][]int) int {
 	}
 
 	return dist[end]
-}
-
-func part2(input []string) interface{} {
-	return 0
 }
 
 type node struct {
