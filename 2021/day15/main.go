@@ -55,12 +55,11 @@ func expand(cave [][]int) [][]int {
 }
 
 func findLowestRiskLevel(cave [][]int) int {
-	visited := make(map[geometry.Point]bool)
 	dist := make(map[geometry.Point]int)
 	prev := make(map[geometry.Point]geometry.Point)
-	start := geometry.NewPoint(0, 0)
-	end := geometry.NewPoint(len(cave[0])-1, len(cave)-1)
-	queue := []node{{Point: start, risk: 0}}
+	source := geometry.NewPoint(0, 0)
+	target := geometry.NewPoint(len(cave[0])-1, len(cave)-1)
+	queue := []geometry.Point{source}
 
 	for y, row := range cave {
 		for x := range row {
@@ -68,41 +67,29 @@ func findLowestRiskLevel(cave [][]int) int {
 			dist[vertex] = math.MaxInt
 		}
 	}
-	dist[start] = 0
+	dist[source] = 0
 
-	var cur node
+	var u geometry.Point
 	for len(queue) > 0 {
-		cur, queue = queue[0], queue[1:]
-		if visited[cur.Point] {
-			continue
-		}
+		u, queue = queue[0], queue[1:]
 
 		for _, direction := range geometry.Directions {
-			p := cur.Point.Move(direction)
-			x, y := p.X, p.Y
-			if visited[p] || y < 0 || y >= len(cave) || x < 0 || x >= len(cave[y]) {
+			v := u.Move(direction)
+			x, y := v.X, v.Y
+			if y < 0 || y >= len(cave) || x < 0 || x >= len(cave[y]) {
 				continue
 			}
 
-			risk := cave[p.Y][p.X]
-			if dist[cur.Point]+risk < dist[p] {
-				next := node{
-					Point: p,
-					risk:  dist[cur.Point] + risk,
-				}
-				dist[p] = dist[cur.Point] + risk
-				prev[p] = cur.Point
-				queue = append(queue, next)
+			alt := dist[u] + cave[y][x]
+			if alt < dist[v] {
+				dist[v] = alt
+				prev[v] = u
+				queue = append(queue, v)
 			}
 		}
 	}
 
-	return dist[end]
-}
-
-type node struct {
-	geometry.Point
-	risk int
+	return dist[target]
 }
 
 func parseInput(input []string) [][]int {
