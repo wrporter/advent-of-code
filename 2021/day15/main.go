@@ -57,7 +57,7 @@ func expand(cave [][]int) [][]int {
 
 func findLowestRiskLevel(cave [][]int) int {
 	dist := make(map[geometry.Point]int)
-	prev := make(map[geometry.Point]geometry.Point)
+	//prev := make(map[geometry.Point]geometry.Point) // trails from nodes
 	source := geometry.NewPoint(0, 0)
 	target := geometry.NewPoint(len(cave[0])-1, len(cave)-1)
 	queue := priorityqueue.New()
@@ -84,7 +84,7 @@ func findLowestRiskLevel(cave [][]int) int {
 			alt := dist[u.Point] + cave[y][x]
 			if alt < dist[v] {
 				dist[v] = alt
-				prev[v] = u.Point
+				//prev[v] = u.Point
 				queue.Push(&node{Point: v, risk: alt})
 			}
 		}
