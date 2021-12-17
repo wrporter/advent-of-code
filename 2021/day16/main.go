@@ -116,7 +116,7 @@ func decode(b *bits) packet {
 			value += b.pop(4)
 		}
 		p.LiteralValue = binaryToInt(value)
-		fmt.Println(p)
+		//fmt.Println(p)
 		return p
 	}
 
@@ -145,7 +145,7 @@ func decode(b *bits) packet {
 		}
 	}
 
-	fmt.Println(p)
+	//fmt.Println(p)
 
 	return p
 }
