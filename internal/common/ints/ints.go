@@ -33,7 +33,7 @@ func Abs(x int) int {
 }
 
 func Max(values ...int) int {
-	max := 0
+	max := MinInt
 	for _, value := range values {
 		if value > max {
 			max = value
