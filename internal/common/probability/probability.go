@@ -86,6 +86,27 @@ func combo(values []int, output func([]int), i int) {
 	}
 }
 
+func ComboSizeStrings(values []string, startSize int, endSize int, emit func([]string)) {
+	var permuteSize func([]string, int, int)
+
+	permuteSize = func(current []string, index int, size int) {
+		if len(current) == size {
+			emit(current)
+			return
+		}
+
+		for i := index; i < len(values); i++ {
+			current = append(current, values[i])
+			permuteSize(current, i+1, size)
+			current = current[:len(current)-1]
+		}
+	}
+
+	for size := startSize; size <= endSize; size++ {
+		permuteSize(nil, 0, size)
+	}
+}
+
 func ComboStrings(values []string, output func([]string)) {
 	comboStrings(values, output, 0)
 }
