@@ -1,6 +1,9 @@
 package runegrid
 
-import "github.com/wrporter/advent-of-code/internal/common/runes"
+import (
+	"github.com/wrporter/advent-of-code/internal/common/runes"
+	"strings"
+)
 
 func Rotate(matrix [][]rune) [][]rune {
 	grid := runes.Copy2D(matrix)
@@ -45,4 +48,27 @@ func Contains(grid [][]rune, row []rune) bool {
 		}
 	}
 	return false
+}
+
+func Copy(array []rune) []rune {
+	cpy := make([]rune, len(array))
+	copy(cpy, array)
+	return cpy
+}
+
+func Copy2D(grid [][]rune) [][]rune {
+	cpy := make([][]rune, len(grid))
+	for i := range grid {
+		cpy[i] = Copy(grid[i])
+	}
+	return cpy
+}
+
+func String(grid [][]rune) string {
+	var sb strings.Builder
+	for _, row := range grid {
+		sb.WriteString(string(row))
+		sb.WriteByte('\n')
+	}
+	return sb.String()
 }
