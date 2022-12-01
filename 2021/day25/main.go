@@ -35,10 +35,7 @@ func part1(input []string) interface{} {
 		for y, row := range grid {
 			for x, spot := range row {
 				if spot == '>' {
-					nextX := x + 1
-					if x == len(row)-1 {
-						nextX = 0
-					}
+					nextX := (x + 1) % len(row)
 					if row[nextX] == '.' {
 						next[y][nextX] = spot
 						next[y][x] = '.'
@@ -53,10 +50,7 @@ func part1(input []string) interface{} {
 		for y, row := range grid {
 			for x, spot := range row {
 				if spot == 'v' {
-					nextY := y + 1
-					if y == len(grid)-1 {
-						nextY = 0
-					}
+					nextY := (y + 1) % len(grid)
 					if grid[nextY][x] == '.' {
 						next[nextY][x] = spot
 						next[y][x] = '.'
