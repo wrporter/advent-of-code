@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "include": ["**/*"],
+  "compilerOptions": {
+    "types": ["vitest/globals"],
+    "lib": ["ESNext"],
+    "module": "CommonJS",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./jslib/*"
+      ]
+    }
+  }
+}
