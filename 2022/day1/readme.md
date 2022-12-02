@@ -26,7 +26,7 @@ After I solved the puzzle, I ended up putting together a template and getting ev
 This is how long it took me to complete each part.
 
 - Part 1: 18:31
-- Part 2: 2:36
+- Part 2: 3:14
 
 ## Puzzle
 
