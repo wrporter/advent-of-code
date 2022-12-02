@@ -13,6 +13,7 @@ function main() {
     fs.readdirSync(`${year}`).forEach(async (dayDir) => {
         const { Solution } = await import(`./${year}/${dayDir}/solution.ts`);
         new Solution().run();
+        console.log();
     });
 }
 

@@ -20,6 +20,9 @@
 
     "baseUrl": ".",
     "paths": {
+      "~/": [
+        "./jslib/index.ts"
+      ],
       "~/*": [
         "./jslib/*"
       ]

@@ -1,4 +1,4 @@
-import { AbstractSolution } from '~/solution';
+import { AbstractSolution } from '~/';
 
 export class Solution extends AbstractSolution {
     year = 2022;
