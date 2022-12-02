@@ -5,9 +5,11 @@ const solution = new Solution();
 describe(`Day ${solution.day}`, () => {
     const tests = [
         {
-            input: `1000`,
-            want1: 24000,
-            want2: 45000,
+            input: `A Y
+B X
+C Z`,
+            want1: 15,
+            want2: 12,
         }
     ];
 
