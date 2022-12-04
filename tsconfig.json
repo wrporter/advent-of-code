@@ -26,5 +26,8 @@
         "./internal/js/*"
       ]
     }
+  },
+  "ts-node": {
+    "transpileOnly": true
   }
 }
