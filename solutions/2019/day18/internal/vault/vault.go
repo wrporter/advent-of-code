@@ -120,11 +120,12 @@ func (v *Vault) getReachableKeys(from []byte, currentKeys string) []KeyDistance 
 	return keys
 }
 
-// '@': {
-// 		key: 'b',
-//		neededKeys: {'A', 'B'}
-//		distance: 5
-// },
+//	'@': {
+//			key: 'b',
+//			neededKeys: {'A', 'B'}
+//			distance: 5
+//	},
+//
 // 'a': { ... }, ...
 type Distance struct {
 	key        byte

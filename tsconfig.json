@@ -1,6 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "include": ["**/*"],
   "compilerOptions": {
     "types": ["vitest/globals"],
     "lib": ["ESNext"],
@@ -21,10 +20,10 @@
     "baseUrl": ".",
     "paths": {
       "~/": [
-        "./jslib/index.ts"
+        "./internal/js/index.ts"
       ],
       "~/*": [
-        "./jslib/*"
+        "./internal/js/*"
       ]
     }
   }

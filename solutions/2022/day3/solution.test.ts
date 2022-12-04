@@ -5,9 +5,14 @@ const solution = new Solution();
 describe(`Day ${solution.day}`, () => {
     const tests = [
         {
-            input: `1000`,
-            want1: 24000,
-            want2: 45000,
+            input: `vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw`,
+            want1: 157,
+            want2: 70,
         }
     ];
 

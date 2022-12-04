@@ -2,7 +2,7 @@
   "name": "advent-of-code",
   "scripts": {
     "run-file": "node -r ts-node/register/transpile-only -r tsconfig-paths/register",
-    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register run.ts",
+    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register scripts/run.ts",
     "test": "vitest run"
   },
   "dependencies": {

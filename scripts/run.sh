@@ -11,4 +11,4 @@ echo -e "${green}= Saving Santa for year: ${year} =${reset}"
 echo -e "${green}===============================${reset}"
 echo
 
-find "${year}" -name "main.go" -maxdepth 2 -print0 | sort --version-sort -z | xargs -0 -I{} sh -c "go run {}; echo"
+find "solutions/${year}" -name "main.go" -maxdepth 2 -print0 | sort --version-sort -z | xargs -0 -I{} sh -c "go run {}; echo"

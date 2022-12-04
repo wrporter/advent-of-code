@@ -1,8 +1,8 @@
 // Context-Free Grammars (CGFs) describe the structure and design of a
 // language. CFG rules can be expressed in the following form.
 //
-//     S: a S
-//     S: !
+//	S: a S
+//	S: !
 //
 // The language described by the grammar above is that of all strings of any
 // number of `a`s. The second rule is what stops the grammar from producing
