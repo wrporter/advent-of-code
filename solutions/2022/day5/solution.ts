@@ -4,6 +4,12 @@ const moveRegex = /move (\d+) from (\d+) to (\d+)/;
 const rowRegex = /.{4}/g
 const whitespaceRegex = /^\s+$/
 
+interface Move {
+    amount: number;
+    from: number;
+    to: number;
+}
+
 export class Solution extends AbstractSolution {
     year = 2022;
     day = 5;
@@ -65,7 +71,7 @@ export class Solution extends AbstractSolution {
         return { moves, crates };
     }
 
-    private parseMoves(moves: string[]) {
+    private parseMoves(moves: string[]): Move[]  {
         return moves.map((move) => {
             const match = move.match(moveRegex);
             if (!match) {
