@@ -46,7 +46,7 @@ export class Solution extends AbstractSolution {
         const crates: string[][] = crateLines.reduce((crates, crateLine) => {
             const crateRow = (' ' + crateLine).match(rowRegex);
             if (!crateRow) {
-                return;
+                return crates;
             }
             crateRow.forEach((crate, column) => {
                 if (!crates[column]) {
