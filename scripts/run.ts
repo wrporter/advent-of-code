@@ -10,8 +10,8 @@ function main() {
 ===============================
 `));
 
-    fs.readdirSync(`${year}`).forEach(async (dayDir) => {
-        const { Solution } = await import(`./solutions/${year}/${dayDir}/solution.ts`);
+    fs.readdirSync(`./solutions/${year}`).forEach(async (dayDir) => {
+        const { Solution } = await import(`../solutions/${year}/${dayDir}/solution.ts`);
         new Solution().run();
         console.log();
     });
