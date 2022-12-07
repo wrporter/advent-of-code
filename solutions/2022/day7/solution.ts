@@ -9,7 +9,7 @@ export class Solution extends AbstractSolution {
     filename = 'input.txt';
 
     part1(input: string): string | number {
-        const root = this.parseInput(input);
+        const root = this.buildFileSystem(input);
 
         const sum = (node: Node) => {
             let size = 0;
@@ -28,7 +28,7 @@ export class Solution extends AbstractSolution {
     }
 
     part2(input: string): string | number {
-        const root = this.parseInput(input);
+        const root = this.buildFileSystem(input);
         const spaceOnDisk = TOTAL_SPACE - root.size;
         const requiredSpace = UPDATE_SPACE - spaceOnDisk;
 
@@ -50,7 +50,7 @@ export class Solution extends AbstractSolution {
         return getSmallest(root);
     }
 
-    private parseInput(input: string) {
+    private buildFileSystem(input: string) {
         const lines = input.split('\n').slice(1);
         const root = new Node('/');
         let cwd = root;
