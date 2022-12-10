@@ -1,4 +1,5 @@
 import { AbstractSolution } from '~/solution';
+import { gridToString } from '~/';
 
 export class Solution extends AbstractSolution {
     year = 2022;
@@ -124,9 +125,7 @@ class GridMap {
     }
 
     toString() {
-        return this.grid.reduce((result, row) => {
-            return result + row.join('') + '\n';
-        }, '');
+        return gridToString(this.grid);
     }
 }
 
