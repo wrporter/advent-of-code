@@ -1,8 +1,7 @@
 import { Solution } from './solution';
-import * as fs from 'fs';
 
 const solution = new Solution();
-const input = fs.readFileSync(`solutions/${solution.year}/day${solution.day}/${solution.filename}`, 'utf-8')
+const input = solution.readInput();
 
 describe(`Day ${solution.day}`, () => {
     const tests = [
@@ -21,23 +20,25 @@ Sensor at x=17, y=20: closest beacon is at x=21, y=22
 Sensor at x=16, y=7: closest beacon is at x=15, y=3
 Sensor at x=14, y=3: closest beacon is at x=15, y=3
 Sensor at x=20, y=1: closest beacon is at x=15, y=3`,
-            args: [10],
+            args1: [10],
+            args2: [20],
             want1: 26,
             want2: 56000011,
         },
         {
             input,
-            args: [2000000],
+            args1: [2_000_000],
+            args2: [4_000_000],
             want1: 4919281,
             want2: 12630143363767,
         }
     ];
 
-    test.each(tests)('Part 1 - Test %#', ({ input, want1, args }) => {
-        expect(solution.part1(input, ...args)).toEqual(want1);
+    test.each(tests)('Part 1 - Test %#', ({ input, want1, args1 }) => {
+        expect(solution.part1(input, ...args1)).toEqual(want1);
     });
 
-    test.each(tests)('Part 2 - Test %#', ({ input, want2, args }) => {
-        expect(solution.part2(input, ...args)).toEqual(want2);
+    test.each(tests)('Part 2 - Test %#', ({ input, want2, args2 }) => {
+        expect(solution.part2(input, ...args2)).toEqual(want2);
     });
 });

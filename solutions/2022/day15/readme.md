@@ -4,6 +4,20 @@
 
 I can't tell if I'm just getting worse at solving problems with a tired brain, or if some of these are legitimately harder.
 
+### Part 1
+
+1. Parse all the sensors and beacons. Store sensor range based on Manhattan distance to its beacon.
+2. Go left and right and add 1 for each cell that is not reachable by any sensor.
+
+### Part 2
+
+This one gave me so much trouble. I struggled for a while to come to a solution that wouldn't run forever. I later had a thought to check for positions just out of range of the sensors, but that were essentially a "hole" between sensors. I made the assumption that the distress beacon was within the middle of sensors and not off in some corner.
+
+1. Parse all the sensors and beacons. Store sensor range based on Manhattan distance to its beacon.
+2. My original solution took 10 seconds. Reversing the sensors took that down to about 300ms. The reason being that the distress beacon is next to one of the final sensors in my input. I don't think it's worth it for me to go back and optimize this particular solution.
+3. Get all the points around the perimeter of a sensor's range.
+4. Check every point. If it's not reachable by a sensor, but in the middle of all other sensed positions, then it's our distress beacon! Hoorah!
+
 ## Time
 
 This is how long it took me to complete each part.

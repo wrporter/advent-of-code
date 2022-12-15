@@ -6,16 +6,16 @@ import chalk from 'chalk';
 export abstract class AbstractSolution {
     protected filename = 'input.txt';
 
-    readInput(year: number, day: number) {
-        return read(year, day, this.filename);
+    readInput() {
+        return read(this.year, this.day, this.filename);
     }
 
     @Time(chalk.bold.bgBlue('Total:'))
-    run(...args: unknown[]) {
+    run(args1: unknown[], args2: unknown[]) {
         logDay(this.year, this.day);
-        const input = this.readInput(this.year, this.day);
-        this.solvePart1(input, ...args);
-        this.solvePart2(input, ...args);
+        const input = this.readInput();
+        this.solvePart1(input, ...args1);
+        this.solvePart2(input, ...args2);
     }
 
     @Time('Part 1:')

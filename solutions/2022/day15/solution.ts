@@ -6,8 +6,7 @@ export class Solution extends AbstractSolution {
     day = 15;
     filename = 'input.txt';
 
-    part1(input: string, ...args: unknown[]): string | number {
-        let [targetRow] = args;
+    part1(input: string, ...[targetRow]: number[]): string | number {
         const sensors = parseSensors(input);
         const targetBeacon = sensors.find((sensor) => sensor.beacon.y === targetRow)
             ?.beacon ?? new Point();
@@ -18,19 +17,17 @@ export class Solution extends AbstractSolution {
         return sum;
     }
 
-    part2(input: string, ...args: unknown[]): string | number {
-        const sensors = parseSensors(input);
-
-        const min = 0;
-        const max = 4000000;
+    part2(input: string, ...[max]: number[]): string | number {
+        // Speed-up hack. Distress beacon is near the final sensor.
+        const sensors = parseSensors(input).reverse();
 
         for (const sensor of sensors) {
-            const edges = getDiamond(sensor, min, max);
+            const edges = getDiamond(sensor, max);
             for (const edge of edges) {
                 if (!isReachedBySensor(sensors, edge)) {
                     const isHole = DIRECTIONS.every((dir) => isReachedBySensor(sensors, edge.move(dir)));
                     if (isHole) {
-                        return edge.x * 4000000 + edge.y;
+                        return edge.x * 4_000_000 + edge.y;
                     }
                 }
             }
@@ -91,7 +88,7 @@ interface Sensor {
     range: number;
 }
 
-function getDiamond(sensor: Sensor, min: number, max: number) {
+function getDiamond(sensor: Sensor, max: number) {
     const radius = sensor.range + 1;
     const center = sensor.point;
 
@@ -102,12 +99,16 @@ function getDiamond(sensor: Sensor, min: number, max: number) {
 
     const y = center.y;
     let dy = 1;
-    let x = Math.max(min, center.x - radius) + 1;
+    let x = Math.max(0, center.x - radius) + 1;
     const maxX = Math.min(max, center.x + radius) - 1;
 
     while (x <= maxX) {
-        points.push(new Point(x, y - dy)); // upper
-        points.push(new Point(x, y + dy)); // lower
+        if (y - dy >= 0) {
+            points.push(new Point(x, y - dy)); // upper
+        }
+        if (y + dy <= max) {
+            points.push(new Point(x, y + dy)); // lower
+        }
         dy += 1;
         x += 1;
     }

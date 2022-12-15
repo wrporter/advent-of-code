@@ -5,12 +5,12 @@ export class Solution extends AbstractSolution {
     day = 1;
     filename = 'input.txt';
 
-    part1(input: string): string | number {
+    part1(input: string, ...args: unknown[]): string | number {
         const lines = input.split('\n');
         return 'TBD';
     }
 
-    part2(input: string): string | number {
+    part2(input: string, ...args: unknown[]): string | number {
         const lines = input.split('\n');
         return 'TBD';
     }
