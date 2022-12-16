@@ -11,22 +11,22 @@ export abstract class AbstractSolution {
     }
 
     @Time(chalk.bold.bgBlue('Total:'))
-    run(args1: unknown[], args2: unknown[]) {
+    run(args1?: unknown[], args2?: unknown[]) {
         logDay(this.year, this.day);
         const input = this.readInput();
-        this.solvePart1(input, ...args1);
-        this.solvePart2(input, ...args2);
+        this.solvePart1(input, args1);
+        this.solvePart2(input, args2);
     }
 
     @Time('Part 1:')
-    protected solvePart1(input: string, ...args: unknown[]) {
-        const answer1 = this.part1(input, ...args);
+    protected solvePart1(input: string, args?: unknown[]) {
+        const answer1 = this.part1(input, args);
         logPart1(answer1);
     }
 
     @Time('Part 2:')
-    protected solvePart2(input: string, ...args: unknown[]) {
-        const answer2 = this.part2(input, ...args);
+    protected solvePart2(input: string, args?: unknown[]) {
+        const answer2 = this.part2(input, args);
         logPart2(answer2);
     }
 
