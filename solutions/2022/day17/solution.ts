@@ -1,0 +1,277 @@
+import { AbstractSolution } from '~/solution';
+import { Direction, DIRECTION_MODIFIERS, DIRECTIONS, gridToString, Point } from '~/';
+
+const level: string = 'debug';
+
+export class Solution extends AbstractSolution {
+    year = 2022;
+    day = 17;
+    filename = 'input.txt';
+
+    part1(jets: string, ...args: unknown[]): string | number {
+        return simulateRocksFalling(jets, 2022);
+    }
+
+    part2(jets: string, ...args: unknown[]): string | number {
+        return simulateRocksFalling(jets, 1_000_000_000_000);
+    }
+}
+
+function sleep(millis: number) {
+    const waitTill = new Date(new Date().getTime() + millis);
+    while (waitTill > new Date()) {
+    }
+}
+
+function simulateRocksFalling(jets: string, numRocks: number) {
+    const chamber = initChamber();
+    let pattern = 0;
+    let jet: Jet = { direction: jets[0] as JetDirection, index: 0 };
+    let tall = 0;
+    let bottom = 0;
+
+    for (let r = 1; r <= numRocks; r++) {
+        const rock: Rock = {
+            pattern: patterns[pattern],
+            patternType: pattern,
+            point: new Point(
+                appear.x + leftWall,
+                appear.y + tall - patterns[pattern].length
+            ),
+        };
+        let resting = false;
+
+        // debug(`Rock ${r} begins falling`);
+        while (!resting) {
+            // debug(printChamber(chamber, rock));
+
+            if (jet.direction === '>' && !willCollide(chamber, rock, Direction.Right)) {
+                // debug('Jet of gas pushes rock rightWall >');
+                rock.point = rock.point.right();
+            } else if (jet.direction === '<' && !willCollide(chamber, rock, Direction.Left)) {
+                // debug('Jet of gas pushes rock leftWall <');
+                rock.point = rock.point.left();
+            } else {
+                // debug(`Jet of gas pushes rock ${jet.direction}, but nothing happens`);
+            }
+            jet = getNextJet(jets, jet);
+
+            // debug(printChamber(chamber, rock));
+
+            if (rock.point.y + rock.pattern.length === bottom || willCollide(chamber, rock, Direction.Down)) {
+                addRock(chamber, rock);
+                resting = true;
+                tall = Math.min(tall, rock.point.y);
+
+                // debug('Rock falls 1 unit, causing it to come to rest');
+                // debug(printChamber(chamber, rock));
+            } else {
+                rock.point = rock.point.down();
+
+                // debug('Rock falls 1 unit');
+            }
+        }
+
+        pattern = (pattern + 1) % patterns.length;
+    }
+
+    return -tall;
+}
+
+function debug(message: string) {
+    if (level === 'debug') {
+        console.log(message);
+        // sleep(200);
+    }
+}
+
+function addRock(chamber: { [p: string]: string }, rock: Rock) {
+    for (let y = 0; y < rock.pattern.length; y++) {
+        for (let x = 0; x < rock.pattern[y].length; x++) {
+            const point = new Point(rock.point.x + x, rock.point.y + y);
+            if (rock.pattern[y][x] === '@') {
+                chamber[point.toString()] = '#';
+            }
+        }
+    }
+}
+
+function initChamber() {
+    const chamber: { [key: string]: string } = {};
+    for (let y = -4; y <= 0; y++) {
+        for (let x = 0; x <= 8; x++) {
+            const p = `${x},${y}`;
+            let char = '.';
+            if (x === leftWall || x === rightWall) {
+                char = '|';
+                if (y === bottom) {
+                    char = '+';
+                }
+            }
+            chamber[p] = char;
+        }
+    }
+    return chamber;
+}
+
+function printChamber(chamber: { [p: string]: string }, rock: Rock) {
+    const map = GridMap.fromMap(chamber);
+
+    for (let y = 0; y < rock.pattern.length; y++) {
+        for (let x = 0; x < rock.pattern[y].length; x++) {
+            const point = new Point(rock.point.x + x, rock.point.y + y);
+            const existing = chamber[point.toString()];
+            if (rock.pattern[y][x] === '@' && (existing === undefined || existing === '.')) {
+                map.imprint(point, '@');
+            }
+        }
+    }
+
+    return map.toString() + '\n';
+}
+
+function willCollide(chamber: { [p: string]: string }, rock: Rock, direction: Direction): boolean {
+    const { x: rx, y: ry } = rock.point.move(direction);
+
+
+    if (rock.point.x === leftWall) {
+        return true
+    }
+    if (rock.point.x + rock.pattern[0].length === rightWall) {
+        return true
+    }
+
+    for (let y = 0; y < rock.pattern.length; y++) {
+        for (let x = 0; x < rock.pattern[y].length; x++) {
+            if (rock.pattern[y][x] !== '@') {
+                continue;
+            }
+
+            // cx,cy represent the position of a rock chunk
+            const cx = x + rx;
+            const cy = y + ry;
+            const key = `${cx},${cy}`;
+
+            if (chamber[key] === '#') {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+const leftWall = 0;
+const rightWall = 8;
+const bottom = 0;
+
+type JetDirection = '<' | '>';
+
+interface Jet {
+    direction: JetDirection;
+    index: number;
+}
+
+function getNextJet(jets: string, jet: Jet): Jet {
+    const index = (jet.index + 1) % jets.length;
+    const direction = jets[index] as JetDirection;
+    return { direction, index };
+}
+
+interface Rock {
+    pattern: string[];
+    patternType: number;
+    point: Point;
+}
+
+const appear = { x: 3, y: -3 };
+const patterns = [
+    [
+        '@@@@',
+    ],
+    [
+        '.@.',
+        '@@@',
+        '.@.',
+    ],
+    [
+        '..@',
+        '..@',
+        '@@@',
+    ],
+    [
+        '@',
+        '@',
+        '@',
+        '@',
+    ],
+    [
+        '@@',
+        '@@',
+    ],
+];
+
+class GridMap {
+    public grid: string[][] = [];
+    private minRow: number = 0;
+    private minCol: number = 0;
+
+    static fromMap(map: { [key: string]: string }) {
+        let minRow = Number.MAX_SAFE_INTEGER;
+        let minCol = Number.MAX_SAFE_INTEGER;
+        let maxRow = Number.MIN_SAFE_INTEGER;
+        let maxCol = Number.MIN_SAFE_INTEGER;
+
+        Object.keys(map).forEach((coordinates) => {
+            const { x, y } = Point.fromString(coordinates);
+            minRow = Math.min(minRow, y);
+            minCol = Math.min(minCol, x);
+            maxRow = Math.max(maxRow, y);
+            maxCol = Math.max(maxCol, x);
+        });
+
+        const width = Math.abs(minCol) + Math.abs(maxCol) + 1;
+        let height = Math.abs(minRow) + Math.abs(maxRow) + 1;
+
+        // Account for top of chamber. Height of dropping rock + tallest rock
+        height += 7;
+        minRow -= 7;
+
+        const grid: string[][] = [];
+        for (let row = 0; row < height; row++) {
+            grid.push([]);
+            const rowDiff = minRow + row;
+
+            for (let col = 0; col < width; col++) {
+                const colDiff = minCol + col;
+                const spot = map[`${colDiff},${rowDiff}`];
+
+                if (col === 0 || col === width - 1) {
+                    grid[row][col] = '|';
+                } else if (row === height - 1) {
+                    grid[row][col] = '_';
+                } else if (spot === '#') {
+                    grid[row][col] = '#';
+                } else {
+                    grid[row].push('.');
+                }
+            }
+        }
+
+        const gridMap = new GridMap();
+        gridMap.grid = grid;
+        gridMap.minRow = minRow;
+        gridMap.minCol = minCol;
+        return gridMap;
+    }
+
+    imprint(point: Point, char: string) {
+        const y = point.y - this.minRow;
+        const x = point.x - this.minCol;
+        this.grid[y][x] = char;
+    }
+
+    toString() {
+        return gridToString(this.grid);
+    }
+}
