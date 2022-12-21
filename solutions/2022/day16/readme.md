@@ -6,6 +6,24 @@ Wow, this one was definitely hardest by far. I had to come back to this one over
 
 ### Part 1
 
+1. Parse the valves into a graph-map-like structure. Each valve should keep track of its name, rate, and other valves it leads to.
+2. (Huge optimization). Precompute all the distances from every valve to every other valve. This is called the Floyd Warshall algorithm.
+3. Get all the working valves. Because there is no point in opening valves that do not release any pressure.
+4. Generate all the paths to open valves. This is essentially permutations, but we want to do some pruning. There are a few optimizations here that are critical to pruning the search space.
+   1. Use a generator, so we don't have to deep copy the arrays.
+   2. Keep track of the cost to travel to a valve then open it.
+   3. (Huge optimization). Only continue adding paths if the cost is left than the time remaining.
+   4. (Huge optimization). Do not add cycles. We don't want to revisit a valve.
+5. Keep track of the max pressure flow achievable by the various paths.
+
+### Part 2
+
+1. The first 3 steps are the same as Part 1. Below are optimizations.
+2. (Huge optimization). Keep track of the best possible pressure release for each combination (prune permutations to combinations with a set). For example, if `CC -> EE -> JJ` releases `471` pressure, but `JJ -> EE -> CC` releases `575`, we only care about `JJ -> EE -> CC` because the other permutations are not going to be any better. I sort these and store them in a map with key `JJ-EE-CC` and the value of the max pressure release for that combination.
+3. (Small optimization). We can sort the pressure release in descending order. It's likely that we've found the maximum earlier, so no need to keep trying other paths.
+4. Now we iterate over the best releases we've sorted. The human always takes the higher value, then the elephant takes whatever is left.
+   1. (Small optimization). If two times the human's value is less than the current max, don't bother exploring anymore. Nothing is going to be as good as what we've found.
+
 ## Time
 
 This is how long it took me to complete each part. Yeah... I lost track of these ones...

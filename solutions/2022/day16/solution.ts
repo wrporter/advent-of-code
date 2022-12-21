@@ -6,43 +6,52 @@ export class Solution extends AbstractSolution {
     filename = 'input.txt';
 
     part1(input: string, ...args: unknown[]): string | number {
+        const time = 30;
         const valves = parseValves(input);
-        const distances = floydWarshall(valves);
-        return getMaxFlow(valves, distances);
+        const distances = getFloydWarshallDistances(valves);
+        const workingValves = getWorkingValves(valves);
+
+        let max = 0;
+        for (const path of generateOpenPaths(distances, workingValves, time)) {
+            max = Math.max(max, getFlow(valves, distances, path, time));
+        }
+        return max;
     }
 
     part2(input: string, ...args: unknown[]): string | number {
+        const time = 26;
         const valves = parseValves(input);
-        const distances = floydWarshall(valves);
-        const nonZeroValves = getNonZeroValves(valves);
-        const paths = generateOpenPaths(distances, nonZeroValves, 26);
-        const bestPressureFlow: { [key: string]: number } = {};
+        const distances = getFloydWarshallDistances(valves);
+        const workingValves = getWorkingValves(valves);
 
-        for (const path of paths) {
-            const pressureFlow = getPressureFlow(valves, distances, path, 26);
+        const bestFlows: { [key: string]: number } = {};
+        for (const path of generateOpenPaths(distances, workingValves, time)) {
+            const flow = getFlow(valves, distances, path, time);
             const sorted = path.sort((a, b) => a.localeCompare(b));
             const key = sorted.join('-');
-            bestPressureFlow[key] = Math.max(bestPressureFlow[key] ?? 0, pressureFlow);
+            bestFlows[key] = Math.max(bestFlows[key] ?? 0, flow);
         }
 
-        const bestScores = Object.entries(bestPressureFlow)
-            .map(([path, score]) => ({
+        const bestFlowsSorted = Object.entries(bestFlows)
+            .map(([path, flow]) => ({
                 open: new Set(path.split('-')),
-                score,
+                flow,
             }))
-            .sort((a, b) => b.score - a.score);
+            .sort((a, b) => b.flow - a.flow);
 
         let max = 0;
 
-        for (let human = 0; human < bestScores.length; human++) {
-            const { open: humanOpen, score: humanScore } = bestScores[human];
-            if (humanScore * 2 < max) {
-                continue;
+        for (let human = 0; human < bestFlowsSorted.length; human++) {
+            const { open: humanOpen, flow: humanFlow } = bestFlowsSorted[human];
+            if (humanFlow * 2 < max) {
+                break;
             }
-            for (let elephant = 0; elephant < bestScores.length; elephant++) {
-                const { open: elephantOpen, score: elephantScore } = bestScores[elephant];
+
+            for (let elephant = human + 1; elephant < bestFlowsSorted.length; elephant++) {
+                const { open: elephantOpen, flow: elephantFlow } = bestFlowsSorted[elephant];
                 const intersect = new Set([...humanOpen].filter(x => elephantOpen.has(x)));
-                const score = humanScore + elephantScore;
+                const score = humanFlow + elephantFlow;
+
                 if (intersect.size === 0 && score > max) {
                     max = score;
                 }
@@ -53,55 +62,13 @@ export class Solution extends AbstractSolution {
     }
 }
 
-type Dictionary<T> = { [key: string]: T }
-
-function floydWarshall(valves: ValveGraph) {
-    const distances: Dictionary<Dictionary<number>> = {};
-    const names = Object.keys(valves);
-
-    names.forEach((a) => {
-        distances[a] = {};
-        names.forEach((b) => {
-            distances[a][b] = Number.MAX_SAFE_INTEGER;
-        });
-    });
-
-    names.forEach((a) => {
-        distances[a][a] = 0;
-        valves[a].leads.forEach((b) => {
-            distances[a][b] = 1;
-        });
-    });
-
-    names.forEach((a) => {
-        names.forEach((b) => {
-            names.forEach((c) => {
-                distances[b][c] = Math.min(distances[b][c], distances[b][a] + distances[a][c]);
-            });
-        });
-    });
-
-    return distances;
-}
-
-function getMaxFlow(valves: ValveGraph, distances: Dictionary<Dictionary<number>>) {
-    const nonZeroValves = getNonZeroValves(valves);
-    const paths = generateOpenPaths(distances, nonZeroValves, 30);
-
-    let max = 0;
-    for (const path of paths) {
-        max = Math.max(max, getPressureFlow(valves, distances, path, 30));
-    }
-    return max;
-}
-
-function getNonZeroValves(valves: ValveGraph) {
+function getWorkingValves(valves: ValveGraph) {
     return Object.values(valves)
         .filter(({ rate }) => rate > 0)
         .map((valve) => valve.name);
 }
 
-function getPressureFlow(valves: ValveGraph, distances: Dictionary<Dictionary<number>>, path: string[], time: number) {
+function getFlow(valves: ValveGraph, distances: Dictionary<Dictionary<number>>, path: string[], time: number) {
     let from = 'AA';
     let flow = 0;
     let timeLeft = time;
@@ -118,21 +85,50 @@ function getPressureFlow(valves: ValveGraph, distances: Dictionary<Dictionary<nu
 
 function* generateOpenPaths(
     distances: Dictionary<Dictionary<number>>,
-    nonZeroValves: string[],
+    workingValves: string[],
     timeLeft: number,
-    name: string = 'AA',
+    from: string = 'AA',
     open: string[] = []
 ): Generator<string[]> {
-    for (const next of nonZeroValves) {
-        const cost = distances[name][next] + 1;
-        if (!open.includes(next) && cost < timeLeft) {
-            open.push(next);
-            yield* generateOpenPaths(distances, nonZeroValves, timeLeft - cost, next, open);
+    for (const to of workingValves) {
+        const cost = distances[from][to] + 1;
+        if (!open.includes(to) && cost < timeLeft) {
+            open.push(to);
+            yield* generateOpenPaths(distances, workingValves, timeLeft - cost, to, open);
             open.pop();
         }
     }
-
     yield [...open];
+}
+
+type Dictionary<T> = { [key: string]: T }
+
+function getFloydWarshallDistances(valves: ValveGraph) {
+    const distances: Dictionary<Dictionary<number>> = {};
+    const names = Object.keys(valves);
+
+    names.forEach((a) => {
+        distances[a] = {};
+        distances[a][a] = 0;
+
+        names.forEach((b) => {
+            distances[a][b] = Infinity;
+        });
+
+        valves[a].leads.forEach((b) => {
+            distances[a][b] = 1;
+        });
+    });
+
+    names.forEach((a) => {
+        names.forEach((b) => {
+            names.forEach((c) => {
+                distances[b][c] = Math.min(distances[b][c], distances[b][a] + distances[a][c]);
+            });
+        });
+    });
+
+    return distances;
 }
 
 function parseValves(input: string) {
