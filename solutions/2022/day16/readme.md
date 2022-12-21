@@ -2,7 +2,7 @@
 
 ## Thoughts
 
-Wow, this one was definitely hardest by far. I had to come back to this one over and over and finally got it on Day 21. Days 16-19 really wore me out with the need for a lot of advanced searching algorithms.
+Wow, this one was definitely hardest so far. I had to come back to this one over and over and finally got it on Day 21. Days 16-19 really wore me out with the need for a lot of advanced searching algorithms.
 
 ### Part 1
 
@@ -10,7 +10,7 @@ Wow, this one was definitely hardest by far. I had to come back to this one over
 2. (Huge optimization). Precompute all the distances from every valve to every other valve. This is called the Floyd Warshall algorithm.
 3. Get all the working valves. Because there is no point in opening valves that do not release any pressure.
 4. Generate all the paths to open valves. This is essentially permutations, but we want to do some pruning. There are a few optimizations here that are critical to pruning the search space.
-   1. Use a generator, so we don't have to deep copy the arrays.
+   1. (Tiny optimization). Use a generator, so we don't have to deep copy the arrays.
    2. Keep track of the cost to travel to a valve then open it.
    3. (Huge optimization). Only continue adding paths if the cost is left than the time remaining.
    4. (Huge optimization). Do not add cycles. We don't want to revisit a valve.
