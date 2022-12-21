@@ -37,13 +37,13 @@ export class Point {
         return this.move(Direction.Down, amount);
     }
 
-    downLeft(amount = 1) {
+    in(amount = 1) {
         const x = this.x + (-1 * amount);
         const y = this.y + amount;
         return new Point(x, y);
     }
 
-    downRight(amount = 1) {
+    out(amount = 1) {
         const x = this.x + amount;
         const y = this.y + amount;
         return new Point(x, y);
