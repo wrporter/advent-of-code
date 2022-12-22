@@ -1,8 +1,10 @@
+import { mod } from '~/math';
+
 export enum Direction {
-    Up = 'Up',
-    Right = 'Right',
-    Down = 'Down',
-    Left = 'Left',
+    Up,
+    Right,
+    Down,
+    Left,
 }
 
 export const DIRECTION_MODIFIERS = {
@@ -14,10 +16,36 @@ export const DIRECTION_MODIFIERS = {
 
 export const DIRECTIONS = [
     Direction.Up,
+    Direction.Right,
     Direction.Down,
     Direction.Left,
-    Direction.Right,
 ];
+
+export const DIRECTION_STRINGS = [
+    '^',
+    '>',
+    'v',
+    '<',
+];
+
+export class Vector {
+    constructor(
+        public direction: Direction,
+        public point: Point,
+    ) {}
+
+    move() {
+        this.point = this.point.move(this.direction);
+    }
+
+    rotate(degrees: number) {
+        this.direction = DIRECTIONS[mod((this.direction) + (degrees * 4 / 360), 4)];
+    }
+
+    clone() {
+        return new Vector(this.direction, this.point.clone());
+    }
+}
 
 export class Point {
     constructor(public x = 0, public y = 0) {}
