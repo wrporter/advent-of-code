@@ -2,5 +2,8 @@ export * from './arrays';
 export * from './file';
 export * from './geometry';
 export * from './log';
+export * from './math';
+export * from './probability';
 export * from './solution';
 export * from './time';
+export * from './types';
