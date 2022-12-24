@@ -132,6 +132,7 @@ export class Solution extends AbstractSolution {
 }
 
 function getCubeWrap({ direction, point }: Vector, size: number) {
+    // TODO: can this be generic? Easy way out is to pass in as an argument.
     const faces = {
         back: { x: size, y: 0 },
         right: { x: 2 * size, y: 0 },
@@ -141,6 +142,7 @@ function getCubeWrap({ direction, point }: Vector, size: number) {
         down: { x: 0, y: 3 * size },
     };
 
+    // Determine which face the position is in
     const face = Object.entries(faces)
         .find(([_, { x: fx, y: fy }]) => point.x >= fx && point.x < fx + size && point.y >= fy && point.y < fy + size)
         ?.[0] as Face;
@@ -150,6 +152,7 @@ function getCubeWrap({ direction, point }: Vector, size: number) {
     const y = point.y - faces[face].y;
     const end = size - 1;
 
+    // Wrapping logic, can be made generic by adding all faces from each respective face
     const wraps: { [key: string]: { [key: number]: FaceWrap } } = {
         back: {
             [Direction.Up]: {
