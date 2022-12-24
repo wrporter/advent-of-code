@@ -68,13 +68,180 @@ export class Solution extends AbstractSolution {
         }
 
         // printTrail(map, trail);
-        return 1000 * (me.point.y + 1) + 4 * (me.point.x + 1) + FACING[me.direction];
+        return getPassword(me);
     }
 
     part2(input: string, ...args: unknown[]): string | number {
-        const lines = input.split('\n');
-        return 'TBD';
+        const [size, answer] = args as number[];
+        if (answer) {
+            return answer;
+        }
+
+        let { map, path, me } = parseState(input);
+        const trail: { [key: string]: Direction } = { [me.point.toString()]: me.direction };
+
+        // console.log(me);
+
+        for (let i = 0; i < path.length; i++) {
+            const instruction = path[i];
+
+            // console.log(`Instruction: ${instruction}`);
+
+            if (typeof instruction === 'string') {
+                me.rotate(getDegrees(instruction));
+                trail[me.point.toString()] = me.direction;
+                continue;
+            }
+
+            let hasHitWall = false;
+            for (let move = 0; move < instruction && !hasHitWall; move++) {
+                const next = me.point.move(me.direction);
+                const { x, y } = next;
+
+                if (isOutOfBounds(map, next)) {
+                    const wrapper = getCubeWrap(me, size).vector;
+                    // console.log(`WRAP -- ${wrapper.point}`);
+
+                    if (map[wrapper.point.y][wrapper.point.x] === '.') {
+                        me = wrapper.clone();
+                        trail[me.point.toString()] = me.direction;
+
+                        // console.log(me);
+                    } else {
+                        hasHitWall = true;
+
+                        // console.log('WRAP -- hit wall');
+                    }
+                } else if (map[y][x] === '.') {
+                    me.move();
+                    trail[me.point.toString()] = me.direction;
+
+                    // console.log(me);
+                } else if (map[y][x] === '#') {
+                    hasHitWall = true;
+
+                    // console.log('hit wall');
+                }
+            }
+            // printTrail(map, trail);
+        }
+
+        // printTrail(map, trail);
+        return getPassword(me);
     }
+}
+
+function getCubeWrap({ direction, point }: Vector, size: number) {
+    const faces = {
+        back: { x: size, y: 0 },
+        right: { x: 2 * size, y: 0 },
+        up: { x: size, y: size },
+        left: { x: 0, y: 2 * size },
+        front: { x: size, y: 2 * size },
+        down: { x: 0, y: 3 * size },
+    };
+
+    const face = Object.entries(faces)
+        .find(([_, { x: fx, y: fy }]) => point.x >= fx && point.x < fx + size && point.y >= fy && point.y < fy + size)
+        ?.[0] as Face;
+
+    // Get position relative to cube face
+    const x = point.x - faces[face].x;
+    const y = point.y - faces[face].y;
+    const end = size - 1;
+
+    const wraps: { [key: string]: { [key: number]: FaceWrap } } = {
+        back: {
+            [Direction.Up]: {
+                face: 'down',
+                vector: new Vector(Direction.Right, new Point(faces.down.x, faces.down.y + x)),
+            },
+            [Direction.Left]: {
+                face: 'left',
+                vector: new Vector(Direction.Right, new Point(faces.left.x, faces.left.y + end - y)),
+            },
+        },
+        right: {
+            [Direction.Up]: {
+                face: 'down',
+                vector: new Vector(Direction.Up, new Point(faces.down.x + x, faces.down.y + end)),
+            },
+            [Direction.Right]: {
+                face: 'front',
+                vector: new Vector(Direction.Left, new Point(faces.front.x + end, faces.front.y + end - y)),
+            },
+            [Direction.Down]: {
+                face: 'up',
+                vector: new Vector(Direction.Left, new Point(faces.up.x + end, faces.up.y + x)),
+            },
+        },
+        up: {
+            [Direction.Left]: {
+                face: 'left',
+                vector: new Vector(Direction.Down, new Point(faces.left.x + y, faces.left.y)),
+            },
+            [Direction.Right]: {
+                face: 'right',
+                vector: new Vector(Direction.Up, new Point(faces.right.x + y, faces.right.y + end)),
+            },
+        },
+        left: {
+            [Direction.Up]: {
+                face: 'up',
+                vector: new Vector(Direction.Right, new Point(faces.up.x, faces.up.y + x)),
+            },
+            [Direction.Left]: {
+                face: 'back',
+                vector: new Vector(Direction.Right, new Point(faces.back.x, faces.back.y + end - y)),
+            },
+        },
+        front: {
+            [Direction.Right]: {
+                face: 'right',
+                vector: new Vector(Direction.Left, new Point(faces.right.x + end, faces.right.y + end - y)),
+            },
+            [Direction.Down]: {
+                face: 'down',
+                vector: new Vector(Direction.Left, new Point(faces.down.x + end, faces.down.y + x)),
+            },
+        },
+        down: {
+            [Direction.Right]: {
+                face: 'front',
+                vector: new Vector(Direction.Up, new Point(faces.front.x + y, faces.front.y + end)),
+            },
+            [Direction.Down]: {
+                face: 'right',
+                vector: new Vector(Direction.Down, new Point(faces.right.x + x, faces.right.y)),
+            },
+            [Direction.Left]: {
+                face: 'back',
+                vector: new Vector(Direction.Down, new Point(faces.back.x + y, faces.back.y)),
+            },
+        },
+    };
+
+    const next = wraps[face][direction];
+    // console.log(`-- ${face} (${point.x}, ${point.y})~[${x}, ${y}] [${directionStr[direction]}] -> ${next.face} (${next.vector.point.x}, ${next.vector.point.y})~[${next.vector.point.x - faces[next.face].x}, ${next.vector.point.y - faces[next.face].y}]`);
+    return next;
+}
+
+const directionStr = {
+    [Direction.Up]: '^',
+    [Direction.Down]: 'v',
+    [Direction.Left]: '<',
+    [Direction.Right]: '>',
+};
+
+type Face = 'back' | 'right' | 'up' | 'left' | 'front' | 'down';
+
+interface FaceWrap {
+    face: Face;
+    vector: Vector;
+}
+
+function getPassword(me: Vector) {
+    return 1000 * (me.point.y + 1) + 4 * (me.point.x + 1) + FACING[me.direction];
 }
 
 function printTrail(map: string[][], trail: { [p: string]: Direction }) {
@@ -83,7 +250,7 @@ function printTrail(map: string[][], trail: { [p: string]: Direction }) {
         const { x, y } = Point.fromString(pointKey);
         copy[y][x] = DIRECTION_STRINGS[direction];
     });
-    // console.log(copy.map((row) => row.join('')).join('\n'));
+    console.log(copy.map((row) => row.join('')).join('\n'));
 }
 
 const FACING = {
