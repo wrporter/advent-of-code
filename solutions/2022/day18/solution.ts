@@ -1,4 +1,5 @@
 import { AbstractSolution } from '~/solution';
+import { Dictionary, Point } from '~/';
 
 export class Solution extends AbstractSolution {
     year = 2022;
@@ -6,178 +7,106 @@ export class Solution extends AbstractSolution {
     filename = 'input.txt';
 
     part1(input: string, ...args: unknown[]): string | number {
-        const { lava } = parseLava(input);
+        const { cubes } = parseLava(input);
         let surfaceArea = 0;
 
-        Object.entries(lava).forEach(([key, point]) => {
-            DIRECTIONS.forEach((direction) => {
-                if (!lava[point.move(direction).key()]) {
+        for (const cube of Object.values(cubes)) {
+            for (const side of getSides(cube)) {
+                if (!cubes[toKey(side)]) {
                     surfaceArea = surfaceArea + 1;
                 }
-            });
-        });
+            }
+        }
 
         return surfaceArea;
     }
 
     part2(input: string, ...args: unknown[]): string | number {
-        const { lava, min, max } = parseLava(input);
-        let surfaceArea = 0;
+        const { cubes, min, max } = parseLava(input);
+        const visitedAir: Dictionary<boolean> = {};
+        const queue = [{ x: min.x, y: min.y, z: min.z }];
 
-        const seen: {[key: string]: boolean} = {};
+        while (queue.length > 0) {
+            const point = queue.pop() as Point3D;
 
-        Object.entries(lava).forEach(([key, point]) => {
-            // if (DIRECTIONS.every((direction) => lava[point.move(direction).toString()])) {
-            //     return;
-            // }
-
-            const queue: Node[] = [{ point, score: 0 }];
-
-            while (queue.length > 0) {
-                let { point, score } = queue.shift() as Node;
-                const key = point.key();
-
-                // if (!lava[point.key()]) {
-                //     DIRECTIONS.forEach((direction) => {
-                //         if ()
-                //     })
-                // }
-
-                if (seen[key]) {
-                    continue;
+            for (const side of getSides(point)) {
+                const key = toKey(side);
+                if (isInBounds(side, min, max) && !visitedAir[key] && !cubes[key]) {
+                    queue.push(side);
                 }
-                seen[key] = true;
-
-                if (
-                    point.x === min.x || point.y === min.y || point.z === min.z ||
-                    point.x === max.x || point.y === max.y || point.z === max.z
-                ) {
-                    surfaceArea += score;
-                    continue;
-                }
-
-                DIRECTIONS.forEach((direction) => {
-                    const next = point.move(direction);
-                    if (!lava[next.key()] && !seen[next.key()]) {
-                        queue.push({
-                            point: next,
-                            score: score + 1,
-                        });
-                    }
-                    seen[key] = true;
-                });
             }
-        });
 
+            visitedAir[toKey(point)] = true;
+        }
+
+        let surfaceArea = 0;
+        for (const air of Object.keys(visitedAir)) {
+            for (const side of getSides(fromKey(air))) {
+                if (cubes[toKey(side)]) {
+                    surfaceArea = surfaceArea + 1;
+                }
+            }
+        }
         return surfaceArea;
     }
 }
 
-interface Node {
-    point: Point3D;
-    score: number;
+function isInBounds({ x, y, z }: Point3D, min: Point3D, max: Point3D) {
+    return x >= min.x && y >= min.y && z >= min.z &&
+        x <= max.x && y <= max.y && z <= max.z;
+}
+
+function getSides({ x, y, z }: Point3D) {
+    return DIRECTIONS.reduce((sides, { dx, dy, dz }) => {
+        sides.push({ x: x + dx, y: y + dy, z: z + dz });
+        return sides;
+    }, [] as Point3D[]);
 }
 
 function parseLava(input: string) {
-    const min = new Point3D();
-    const max = new Point3D();
+    const min = { x: 0, y: 0, z: 0 };
+    const max = { x: 0, y: 0, z: 0 };
 
-    const lava = input.split('\n')
+    const cubes = input.split('\n')
         .reduce((result, list) => {
-            const point = Point3D.fromKey(list);
+            const point = fromKey(list);
             result[list] = point;
+            const { x, y, z } = point;
 
-            min.x = Math.min(min.x, point.x);
-            min.y = Math.min(min.y, point.y);
-            min.z = Math.min(min.z, point.z);
-            max.x = Math.max(max.x, point.x);
-            max.y = Math.max(max.y, point.y);
-            max.z = Math.max(max.z, point.z);
+            min.x = Math.min(min.x, point.x - 1);
+            min.y = Math.min(min.y, point.y - 1);
+            min.z = Math.min(min.z, point.z - 1);
+            max.x = Math.max(max.x, point.x + 1);
+            max.y = Math.max(max.y, point.y + 1);
+            max.z = Math.max(max.z, point.z + 1);
 
             return result;
         }, {} as { [key: string]: Point3D });
 
-    return { lava, min, max };
-}
-
-export enum Direction {
-    Up = 'Up',
-    Right = 'Right',
-    Down = 'Down',
-    Left = 'Left',
-    In = 'In',
-    Out = 'Out',
-
-    UpRightIn = 'UpRightIn',
-    UpLeftIn = 'UpLeftIn',
-    UpRightOut = 'UpRightOut',
-    UpLeftOut = 'UpLeftOut',
-    DownRightIn = 'DownRightIn',
-    DownLeftIn = 'DownLeftIn',
-    DownRightOut = 'DownRightOut',
-    DownLeftOut = 'DownLeftOut',
+    return { cubes, min, max };
 }
 
 export const DIRECTIONS = [
-    Direction.Up,
-    Direction.Down,
-    Direction.Left,
-    Direction.Right,
-    Direction.In,
-    Direction.Out,
+    { dx: 0, dy: -1, dz: 0 },
+    { dx: 1, dy: 0, dz: 0 },
+    { dx: 0, dy: 1, dz: 0 },
+    { dx: -1, dy: 0, dz: 0 },
+    { dx: 0, dy: 0, dz: -1 },
+    { dx: 0, dy: 0, dz: 1 },
 ];
 
-export const DIAGONALS = [
-    Direction.UpRightIn,
-    Direction.UpLeftIn,
-    Direction.UpRightOut,
-    Direction.UpLeftOut,
-    Direction.DownRightIn,
-    Direction.DownLeftIn,
-    Direction.DownRightOut,
-    Direction.DownLeftOut,
-];
+interface Point3D {
+    x: number;
+    y: number;
+    z: number;
+}
 
-export const DIRECTION_MODIFIERS = {
-    [Direction.Up]: { x: 0, y: -1, z: 0 },
-    [Direction.Right]: { x: 1, y: 0, z: 0 },
-    [Direction.Down]: { x: 0, y: 1, z: 0 },
-    [Direction.Left]: { x: -1, y: 0, z: 0 },
-    [Direction.In]: { x: 0, y: 0, z: 1 },
-    [Direction.Out]: { x: 0, y: 0, z: -1 },
+function toKey({ x, y, z }: Point3D): string {
+    return `${x},${y},${z}`;
+}
 
-    [Direction.UpRightIn]: { x: 1, y: 1, z: 1 },
-    [Direction.UpLeftIn]: { x: -1, y: 1, z: 1 },
-    [Direction.UpRightOut]: { x: 1, y: 1, z: -1 },
-    [Direction.UpLeftOut]: { x: -1, y: 1, z: -1 },
-    [Direction.DownRightIn]: { x: 1, y: -1, z: 1 },
-    [Direction.DownLeftIn]: { x: -1, y: -1, z: 1 },
-    [Direction.DownRightOut]: { x: 1, y: -1, z: -1 },
-    [Direction.DownLeftOut]: { x: -1, y: -1, z: -1 },
-};
-
-class Point3D {
-    constructor(
-        public x: number = 0,
-        public y: number = 0,
-        public z: number = 0,
-    ) {}
-
-    move(direction: Direction, amount = 1) {
-        const { x: dx, y: dy, z: dz } = DIRECTION_MODIFIERS[direction];
-        const x = this.x + (dx * amount);
-        const y = this.y + (dy * amount);
-        const z = this.z + (dz * amount);
-        return new Point3D(x, y, z);
-    }
-
-    static fromKey(coordinates: string) {
-        const [x, y, z] = coordinates.split(',')
-            .map((v) => Number.parseInt(v, 10));
-        return new Point3D(x, y, z);
-    }
-
-    key() {
-        return `${this.x},${this.y},${this.z}`;
-    }
+function fromKey(coordinates: string): Point3D {
+    const [x, y, z] = coordinates.split(',')
+        .map((v) => Number.parseInt(v, 10));
+    return { x, y, z };
 }
