@@ -48,8 +48,8 @@ I was able to use my same solution for both parts while adding cycle detection a
 
 This is how long it took me to complete each part.
 
-- Part 1: 
-- Part 2: 
+- Part 1: 1:27:48
+- Part 2: 2+ hours
 
 ## Puzzle
 
