@@ -1,7 +1,7 @@
 import { Solution } from './solution';
 
 function main() {
-    new Solution().run();
+    new Solution().run([], [50]);
 }
 
 main();

@@ -65,6 +65,14 @@ export class Point {
         return this.move(Direction.Down, amount);
     }
 
+    downLeft(amount = 1) {
+        return this.down(amount).left(amount);
+    }
+
+    downRight(amount = 1) {
+        return this.down(amount).right(amount);
+    }
+
     in(amount = 1) {
         const x = this.x + (-1 * amount);
         const y = this.y + amount;

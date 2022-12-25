@@ -6,7 +6,7 @@ export class Solution extends AbstractSolution {
     day = 15;
     filename = 'input.txt';
 
-    part1(input: string, ...[targetRow]: number[]): string | number {
+    part1(input: string, [targetRow]: number[]): string | number {
         const sensors = parseSensors(input);
         const targetBeacon = sensors.find((sensor) => sensor.beacon.y === targetRow)
             ?.beacon ?? new Point();
@@ -17,7 +17,7 @@ export class Solution extends AbstractSolution {
         return sum;
     }
 
-    part2(input: string, ...[max]: number[]): string | number {
+    part2(input: string, [max]: number[]): string | number {
         // Speed-up hack. Distress beacon is near the final sensor.
         const sensors = parseSensors(input).reverse();
 

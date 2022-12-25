@@ -71,12 +71,7 @@ export class Solution extends AbstractSolution {
         return getPassword(me);
     }
 
-    part2(input: string, ...args: unknown[]): string | number {
-        const [size, answer] = args as number[];
-        if (answer) {
-            return answer;
-        }
-
+    part2(input: string, [size]: number[]): string | number {
         let { map, path, me } = parseState(input);
         const trail: { [key: string]: Direction } = { [me.point.toString()]: me.direction };
 

@@ -14,3 +14,9 @@ export function Time(label?: string) {
         };
     };
 }
+
+export function sleep(millis: number) {
+    const waitTill = new Date(new Date().getTime() + millis);
+    while (waitTill > new Date()) {
+    }
+}
