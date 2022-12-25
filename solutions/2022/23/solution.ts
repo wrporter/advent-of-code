@@ -110,7 +110,7 @@ function moveElves(map: Dictionary<boolean>, maxRounds: number) {
 }
 
 function parseElves(input: string) {
-    let map = input.split('\n').reduce((result, line, y) => {
+    return input.split('\n').reduce((result, line, y) => {
         for (let x = 0; x < line.length; x++) {
             if (line[x] === '#') {
                 result[toKey({ x, y })] = true;
@@ -118,7 +118,6 @@ function parseElves(input: string) {
         }
         return result;
     }, {} as Dictionary<boolean>);
-    return map;
 }
 
 const directions = {

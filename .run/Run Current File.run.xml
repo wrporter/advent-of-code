@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run Current File" type="NodeJSConfigurationType" singleton="true" path-to-node="/usr/local/bin/node" node-parameters="-r ts-node/register -r tsconfig-paths/register" path-to-js-file="$FilePathRelativeToProjectRoot$" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="Run Current File" type="NodeJSConfigurationType" singleton="true" path-to-node="/usr/local/bin/node" node-parameters="-r ts-node/register -r tsconfig-paths/register" path-to-js-file="$PROJECT_DIR$/solutions/2022/15/main.ts" working-dir="$PROJECT_DIR$">
     <method v="2" />
   </configuration>
 </component>

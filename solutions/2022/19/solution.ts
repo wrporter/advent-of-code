@@ -19,7 +19,7 @@ export class Solution extends AbstractSolution {
 
     part2(input: string, ...args: unknown[]): string | number {
         const blueprints = parseBlueprints(input).slice(0, 3);
-        let product = 0;
+        let product = 1;
 
         for (const blueprint of blueprints) {
             const maxGeodes = findMaxGeodes(blueprint, 32);

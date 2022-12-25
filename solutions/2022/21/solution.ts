@@ -17,8 +17,7 @@ export class Solution extends AbstractSolution {
         const equation = expandEquation(monkeys);
 
         const solution = (algebra.parse(equation) as Equation).solveFor('humn');
-        const result = (solution as { numer: number }).numer;
-        return result;
+        return (solution as { numer: number }).numer;
     }
 }
 

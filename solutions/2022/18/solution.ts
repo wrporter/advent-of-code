@@ -71,7 +71,6 @@ function parseLava(input: string) {
         .reduce((result, list) => {
             const point = fromKey(list);
             result[list] = point;
-            const { x, y, z } = point;
 
             min.x = Math.min(min.x, point.x - 1);
             min.y = Math.min(min.y, point.y - 1);

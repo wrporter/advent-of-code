@@ -37,14 +37,12 @@ export class Solution extends AbstractSolution {
             'C X': 6,
         };
 
-        const totalScore = lines.reduce((score, line) => {
+        return lines.reduce((score, line) => {
             const [opponent, self] = line.split(' ');
             score += shape[self];
             score += outcome[`${opponent} ${self}`];
             return score;
         }, 0);
-
-        return totalScore;
     }
 
     part2(input: string): string | number {
@@ -89,7 +87,7 @@ export class Solution extends AbstractSolution {
             },
         };
 
-        const totalScore = lines.reduce((score, line) => {
+        return lines.reduce((score, line) => {
             const [opponent, end] = line.split(' ');
             const shape = shapes[opponent];
             const outcome = choices[end];
@@ -98,7 +96,5 @@ export class Solution extends AbstractSolution {
             score += outcome.score;
             return score;
         }, 0);
-
-        return totalScore;
     }
 }
