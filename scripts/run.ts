@@ -5,10 +5,10 @@ import { pad, sleep } from '~/';
 function main() {
     const year = process.argv[2] ?? new Date().getFullYear();
 
-    console.log(chalk.bgRedBright.greenBright.bold(`
-🎄                            🎄
-      Advent of Code: ${year}      
-🎄                            🎄
+    console.log(chalk.greenBright.bold(`
+⭐🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄⭐
+🎄   Advent of Code: ${year}   🎄
+⭐🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄⭐
 `));
     sleep(1000);
 
