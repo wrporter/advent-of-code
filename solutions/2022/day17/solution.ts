@@ -1,7 +1,7 @@
 import { AbstractSolution } from '~/solution';
 import { Direction, gridToString, Point } from '~/';
 
-const level: string = process.env.NODE_ENV === 'test' ? 'info' : 'debug';
+const level: string = process.env.NODE_ENV === 'test' ? 'info' : 'info';
 
 export class Solution extends AbstractSolution {
     year = 2022;
@@ -13,20 +13,23 @@ export class Solution extends AbstractSolution {
     }
 
     part2(jets: string, ...args: unknown[]): string | number {
-        return simulateRocksFalling(jets, 5);
+        return simulateRocksFalling(jets, 1000000000000);
     }
 }
 
-function simulateRocksFalling(jets: string, numRocks: number) {
+function simulateRocksFalling(jets: string, maxRocks: number) {
     const chamber = initChamber();
     let pattern = 0;
     let jet: Jet = { direction: jets[0] as JetDirection, index: 0 };
     let tall = 0;
 
-    for (let r = 1; r <= numRocks; r++) {
+    const seen: { [key: string]: { prevRockNum: number, prevTall: number } } = {};
+    let jump = 0;
+
+    for (let rockNum = 1; rockNum <= maxRocks; rockNum++) {
         const rock: Rock = {
+            id: pattern,
             pattern: patterns[pattern],
-            patternType: pattern,
             point: new Point(
                 appear.x + leftWall,
                 appear.y + tall - patterns[pattern].length
@@ -34,7 +37,7 @@ function simulateRocksFalling(jets: string, numRocks: number) {
         };
         let resting = false;
 
-        // debug(`Rock ${r} begins falling`);
+        // debug(`Rock ${rockNum} begins falling`);
         while (!resting) {
             debug(chamberToString(chamber, rock));
 
@@ -56,6 +59,16 @@ function simulateRocksFalling(jets: string, numRocks: number) {
                 resting = true;
                 tall = Math.min(tall, rock.point.y);
 
+                const top = fingerprintTopRows(chamber, tall);
+                const key = `${top}-${rock.id}-${jet.index}`;
+                if (seen[key]) {
+                    const { prevRockNum, prevTall } = seen[key];
+                    const repeat = Math.floor((maxRocks - rockNum) / (rockNum - prevRockNum));
+                    rockNum += (rockNum - prevRockNum) * repeat;
+                    jump += repeat * (-tall + prevTall);
+                }
+                seen[key] = { prevRockNum: rockNum, prevTall: tall };
+
                 // debug('Rock falls 1 unit, causing it to come to rest');
                 debug(chamberToString(chamber, rock));
             } else {
@@ -68,7 +81,17 @@ function simulateRocksFalling(jets: string, numRocks: number) {
         pattern = (pattern + 1) % patterns.length;
     }
 
-    return -tall;
+    return -tall + jump;
+}
+
+function fingerprintTopRows(chamber: { [p: string]: string }, maxY: number) {
+    let result = '';
+    for (let y = maxY; y < maxY + 7; y++) {
+        for (let x = leftWall + 1; x < rightWall; x++) {
+            result += chamber[`${x},${y}`] ?? '.';
+        }
+    }
+    return result;
 }
 
 function addRock(chamber: { [p: string]: string }, rock: Rock) {
@@ -142,7 +165,7 @@ function getNextJet(jets: string, jet: Jet): Jet {
 
 interface Rock {
     pattern: string[];
-    patternType: number;
+    id: number;
     point: Point;
 }
 

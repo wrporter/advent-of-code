@@ -17,7 +17,7 @@ describe(`Day ${solution.day}`, () => {
             args1: [],
             args2: [],
             want1: 3168,
-            want2: 'TBD',
+            want2: 1554117647070,
         },
     ];
 
