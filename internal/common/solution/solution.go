@@ -2,9 +2,11 @@ package solution
 
 import (
 	"fmt"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/out/color"
 	"github.com/wrporter/advent-of-code/internal/common/timeit2"
 	"os"
+	"path"
 	"time"
 )
 
@@ -23,13 +25,17 @@ type AbstractSolution struct {
 }
 
 func (s AbstractSolution) ReadInput() string {
+	return s.ReadInputPrefix("")
+}
+
+func (s AbstractSolution) ReadInputPrefix(prefix string) string {
 	filename := "input.txt"
 	if len(s.Filename) > 0 {
 		filename = s.Filename
 	}
 
 	file := fmt.Sprintf("solutions/%d/%02d/%s", s.Year, s.Day, filename)
-	bytes, _ := os.ReadFile(file)
+	bytes, _ := os.ReadFile(path.Join(prefix, file))
 	return string(bytes)
 }
 
@@ -37,13 +43,23 @@ func (s AbstractSolution) Run(args1 []interface{}, args2 []interface{}) {
 	fmt.Printf("🎄 %s%s%s%d: Day %d\n%s", color.Green, color.Underlined, color.Bold, s.Year, s.Day, color.Reset)
 
 	input := s.ReadInput()
+	startTotal := time.Now()
 
-	start := time.Now()
-	s.solvePart1(input, args1...)
-	s.solvePart2(input, args2...)
+	start1 := time.Now()
+	answer1 := s.Part1(input, args1...)
+	elapsed1 := time.Since(start1)
 
-	elapsed := time.Since(start)
-	fmt.Printf("🕒 %sTotal: %s%s\n", color.Blue, timeit2.Round(elapsed, 2), color.Reset)
+	start2 := time.Now()
+	answer2 := s.Part2(input, args2...)
+	elapsed2 := time.Since(start2)
+
+	padding := ints.Max(len(fmt.Sprintf("%v", answer1)), len(fmt.Sprintf("%v", answer2)))
+
+	fmt.Printf("⭐  %sPart 1: %s%*v%s %s|%s 🕒 %s%s%s\n", color.Green, color.Red, -padding, answer1, color.Reset, color.Cyan, color.Reset, color.Purple, timeit2.Round(elapsed1, 2), color.Reset)
+	fmt.Printf("⭐  %sPart 2: %s%*v%s %s|%s 🕒 %s%s%s\n", color.Green, color.Red, -padding, answer2, color.Reset, color.Cyan, color.Reset, color.Purple, timeit2.Round(elapsed2, 2), color.Reset)
+
+	elapsedTotal := time.Since(startTotal)
+	fmt.Printf("🕒 %sTotal: %s%s\n", color.Blue, timeit2.Round(elapsedTotal, 2), color.Reset)
 }
 
 func (s AbstractSolution) solvePart1(input string, args ...interface{}) {
@@ -51,8 +67,7 @@ func (s AbstractSolution) solvePart1(input string, args ...interface{}) {
 	answer := s.Part1(input, args)
 	elapsed := time.Since(start)
 
-	fmt.Printf("⭐  %sPart 1: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
-	fmt.Printf("🕒 %s%s %s%s\n", color.Dim, "Part 1:", timeit2.Round(elapsed, 2), color.Reset)
+	fmt.Printf("⭐  %sPart 1: %s%-20v%s %s|%s 🕒 %s%s%s\n", color.Green, color.Red, answer, color.Reset, color.Cyan, color.Reset, color.Dim, timeit2.Round(elapsed, 2), color.Reset)
 }
 
 func (s AbstractSolution) solvePart2(input string, args ...interface{}) {
@@ -60,6 +75,5 @@ func (s AbstractSolution) solvePart2(input string, args ...interface{}) {
 	answer := s.Part2(input, args)
 	elapsed := time.Since(start)
 
-	fmt.Printf("⭐  %sPart 2: %s%v\n%s", color.Green, color.Red, answer, color.Reset)
-	fmt.Printf("🕒 %s%s %s%s\n", color.Dim, "Part 1:", timeit2.Round(elapsed, 2), color.Reset)
+	fmt.Printf("⭐  %sPart 2: %s%-20v%s %s|%s 🕒 %s%s%s\n", color.Green, color.Red, answer, color.Reset, color.Cyan, color.Reset, color.Dim, timeit2.Round(elapsed, 2), color.Reset)
 }
