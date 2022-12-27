@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	universe2 "github.com/wrporter/advent-of-code/2019/day12/internal/universe"
+	universe2 "github.com/wrporter/advent-of-code/solutions/2019/day12/internal/universe"
 )
 
 func main() {

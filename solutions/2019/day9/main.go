@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/2019/day5/public/computer"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	"github.com/wrporter/advent-of-code/solutions/2019/day5/public/computer"
 	"strings"
 )
 

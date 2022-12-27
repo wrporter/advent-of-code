@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/2020/day18/parser"
+	"github.com/wrporter/advent-of-code/solutions/2020/day18/parser"
 )
 
 func main() {

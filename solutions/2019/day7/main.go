@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	amplify2 "github.com/wrporter/advent-of-code/2019/day7/internal/amplify"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	amplify2 "github.com/wrporter/advent-of-code/solutions/2019/day7/internal/amplify"
 	"strings"
 )
 

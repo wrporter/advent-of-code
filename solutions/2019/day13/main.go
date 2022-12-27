@@ -1,9 +1,9 @@
 package main
 
 import (
-	breakout2 "github.com/wrporter/advent-of-code/2019/day13/internal/breakout"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	breakout2 "github.com/wrporter/advent-of-code/solutions/2019/day13/internal/breakout"
 	"strings"
 )
 

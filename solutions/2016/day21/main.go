@@ -17,7 +17,7 @@ func main() {
 
 	year, day := 2016, 21
 	out.Day(year, day)
-	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
+	input, _ := file.ReadFile(fmt.Sprintf("./solutions/%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)
@@ -70,7 +70,7 @@ func part1(input []string) interface{} {
 func part2(input []string) interface{} {
 	password := "fbgdceah"
 	p := []rune(password)
-	answers, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/answers.txt", 2016, 21))
+	answers, _ := file.ReadFile(fmt.Sprintf("./solutions/%d/day%d/answers.txt", 2016, 21))
 	input = mystrings.ReverseList(input)
 
 	for a, line := range input {

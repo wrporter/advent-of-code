@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	monitor2 "github.com/wrporter/advent-of-code/2019/day10/internal/monitor"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	monitor2 "github.com/wrporter/advent-of-code/solutions/2019/day10/internal/monitor"
 )
 
 func main() {

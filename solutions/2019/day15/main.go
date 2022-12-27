@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	droid2 "github.com/wrporter/advent-of-code/2019/day15/internal/droid"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	droid2 "github.com/wrporter/advent-of-code/solutions/2019/day15/internal/droid"
 	"strings"
 )
 

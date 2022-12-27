@@ -1,9 +1,9 @@
 package amplify
 
 import (
-	"github.com/wrporter/advent-of-code/2019/day5/public/computer"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"github.com/wrporter/advent-of-code/internal/common/probability"
+	"github.com/wrporter/advent-of-code/solutions/2019/day5/public/computer"
 	"sync"
 )
 

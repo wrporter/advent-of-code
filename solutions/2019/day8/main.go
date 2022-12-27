@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	image2 "github.com/wrporter/advent-of-code/2019/day8/internal/image"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	image2 "github.com/wrporter/advent-of-code/solutions/2019/day8/internal/image"
 )
 
 func main() {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/2017/day15/internal/generator"
+	"github.com/wrporter/advent-of-code/solutions/2017/day15/internal/generator"
 	"time"
 )
 

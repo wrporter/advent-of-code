@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	orbit2 "github.com/wrporter/advent-of-code/2019/day6/internal/orbit"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	orbit2 "github.com/wrporter/advent-of-code/solutions/2019/day6/internal/orbit"
 )
 
 func main() {

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	paint2 "github.com/wrporter/advent-of-code/2019/day11/internal/paint"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	paint2 "github.com/wrporter/advent-of-code/solutions/2019/day11/internal/paint"
 	"strings"
 )
 

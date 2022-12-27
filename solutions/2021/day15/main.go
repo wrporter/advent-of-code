@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/wrporter/advent-of-code/2021/day15/priorityqueue"
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/out"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
+	"github.com/wrporter/advent-of-code/solutions/2021/day15/priorityqueue"
 	"math"
 	"strings"
 	"time"
@@ -18,7 +18,7 @@ func main() {
 
 	year, day := 2021, 15
 	out.Day(year, day)
-	input, _ := file.ReadFile(fmt.Sprintf("./%d/day%d/input.txt", year, day))
+	input, _ := file.ReadFile(fmt.Sprintf("./solutions/%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)

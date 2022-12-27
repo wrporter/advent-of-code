@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	nanofactory2 "github.com/wrporter/advent-of-code/2019/day14/internal/nanofactory"
 	"github.com/wrporter/advent-of-code/internal/common/file"
+	nanofactory2 "github.com/wrporter/advent-of-code/solutions/2019/day14/internal/nanofactory"
 )
 
 func main() {

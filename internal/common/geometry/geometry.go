@@ -1,6 +1,10 @@
 package geometry
 
-import "github.com/wrporter/advent-of-code/internal/common/ints"
+import (
+	"github.com/wrporter/advent-of-code/internal/common/convert"
+	"github.com/wrporter/advent-of-code/internal/common/ints"
+	"strings"
+)
 
 type Direction int
 
@@ -102,10 +106,31 @@ func (p Point) Down() Point {
 	return Point{X: p.X, Y: p.Y + 1}
 }
 
+func (p Point) DownLeft() Point {
+	return Point{X: p.X - 1, Y: p.Y + 1}
+}
+
+func (p Point) DownRight() Point {
+	return Point{X: p.X + 1, Y: p.Y + 1}
+}
+
 func (p Point) Left() Point {
 	return Point{X: p.X - 1, Y: p.Y}
 }
 
 func (p Point) Right() Point {
 	return Point{X: p.X + 1, Y: p.Y}
+}
+
+func ToPoints(coordinateList []string) []Point {
+	points := make([]Point, len(coordinateList))
+	for i, coord := range coordinateList {
+		points[i] = ToPoint(coord)
+	}
+	return points
+}
+
+func ToPoint(coordinates string) Point {
+	coords, _ := convert.ToInts(strings.Split(coordinates, ","))
+	return Point{X: coords[0], Y: coords[1]}
 }
