@@ -34,7 +34,7 @@ func (s AbstractSolution) ReadInput() string {
 }
 
 func (s AbstractSolution) Run(args1 []interface{}, args2 []interface{}) {
-	fmt.Printf("🎄 %s%s%d: Day %d\n%s", color.Green, color.Underlined, s.Year, s.Day, color.Reset)
+	fmt.Printf("🎄 %s%s%s%d: Day %d\n%s", color.Green, color.Underlined, color.Bold, s.Year, s.Day, color.Reset)
 
 	input := s.ReadInput()
 
