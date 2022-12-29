@@ -1,5 +1,7 @@
 import { Solution } from './solution';
+
 const solution = new Solution();
+const input = solution.readInput();
 
 describe(`Day ${solution.day}`, () => {
     const tests = [
@@ -20,7 +22,12 @@ describe(`Day ${solution.day}`, () => {
 10000`,
             want1: 24000,
             want2: 45000,
-        }
+        },
+        {
+            input,
+            want1: 70764,
+            want2: 203905,
+        },
     ];
 
     test.each(tests)('Part 1 - Test %#', ({ input, want1 }) => {
