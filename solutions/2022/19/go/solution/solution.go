@@ -21,15 +21,10 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 
 func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	blueprints := parseInput(input)
-	top := 3
-	if len(blueprints) < top {
-		top = len(blueprints)
-	}
-	blueprints = blueprints[:top]
 	product := 1
 
-	for _, blueprint := range blueprints {
-		maxGeodes := findMaxGeodes(blueprint, 32)
+	for i := 0; i < len(blueprints) && i < 3; i++ {
+		maxGeodes := findMaxGeodes(blueprints[i], 32)
 		product *= maxGeodes
 	}
 
@@ -77,90 +72,35 @@ func findMaxGeodes(blueprint Blueprint, maxTime int) int {
 		}
 		seen[current] = true
 
-		next := Node{
-			Resources: [4]int{
-				current.Resources[0] + current.Robots[0],
-				current.Resources[1] + current.Robots[1],
-				current.Resources[2] + current.Robots[2],
-				current.Resources[3] + current.Robots[3],
-			},
-			Robots: [4]int{
-				current.Robots[0],
-				current.Robots[1],
-				current.Robots[2],
-				current.Robots[3],
-			},
-			TimeLeft: current.TimeLeft,
-		}
-
+		next := clone(current, current.Robots, [4]int{})
 		states = append(states, next)
 
 		if current.Resources[0] >= cost[3][0] && current.Resources[2] >= cost[3][2] {
-			states = append(states, Node{
-				Resources: [4]int{
-					next.Resources[0] - cost[3][0],
-					next.Resources[1],
-					next.Resources[2] - cost[3][2],
-					next.Resources[3],
-				},
-				Robots: [4]int{
-					next.Robots[0],
-					next.Robots[1],
-					next.Robots[2],
-					next.Robots[3] + 1,
-				},
-				TimeLeft: next.TimeLeft,
-			})
+			states = append(states, clone(
+				next,
+				[4]int{-cost[3][0], 0, -cost[3][2], 0},
+				[4]int{0, 0, 0, 1}),
+			)
 		} else if current.Resources[0] >= cost[2][0] && current.Resources[1] >= cost[2][1] {
-			states = append(states, Node{
-				Resources: [4]int{
-					next.Resources[0] - cost[2][0],
-					next.Resources[1] - cost[2][1],
-					next.Resources[2],
-					next.Resources[3],
-				},
-				Robots: [4]int{
-					next.Robots[0],
-					next.Robots[1],
-					next.Robots[2] + 1,
-					next.Robots[3],
-				},
-				TimeLeft: next.TimeLeft,
-			})
+			states = append(states, clone(
+				next,
+				[4]int{-cost[2][0], -cost[2][1], 0, 0},
+				[4]int{0, 0, 1, 0}),
+			)
 		} else {
 			if current.Resources[0] >= cost[1][0] {
-				states = append(states, Node{
-					Resources: [4]int{
-						next.Resources[0] - cost[1][0],
-						next.Resources[1],
-						next.Resources[2],
-						next.Resources[3],
-					},
-					Robots: [4]int{
-						next.Robots[0],
-						next.Robots[1] + 1,
-						next.Robots[2],
-						next.Robots[3],
-					},
-					TimeLeft: next.TimeLeft,
-				})
+				states = append(states, clone(
+					next,
+					[4]int{-cost[1][0], 0, 0, 0},
+					[4]int{0, 1, 0, 0}),
+				)
 			}
 			if current.Resources[0] >= cost[0][0] {
-				states = append(states, Node{
-					Resources: [4]int{
-						next.Resources[0] - cost[0][0],
-						next.Resources[1],
-						next.Resources[2],
-						next.Resources[3],
-					},
-					Robots: [4]int{
-						next.Robots[0] + 1,
-						next.Robots[1],
-						next.Robots[2],
-						next.Robots[3],
-					},
-					TimeLeft: next.TimeLeft,
-				})
+				states = append(states, clone(
+					next,
+					[4]int{-cost[0][0], 0, 0, 0},
+					[4]int{1, 0, 0, 0}),
+				)
 			}
 		}
 	}
@@ -177,45 +117,33 @@ func getPotentialResource(resources, robots, cost, timeLeft int) int {
 }
 
 func getMaxCost(blueprint Blueprint) [4]int {
-	maxRobots := [4]int{}
-
-	for robot := range maxRobots {
-		for mineral := range maxRobots {
-			maxRobots[robot] = ints.Max(maxRobots[robot], blueprint.Cost[mineral][robot])
+	maxCost := [4]int{}
+	for robot := range maxCost {
+		for mineral := range maxCost {
+			maxCost[robot] = ints.Max(maxCost[robot], blueprint.Cost[mineral][robot])
 		}
 	}
-
-	//reflectCost := reflect.ValueOf(&blueprint.Cost).Elem()
-	//reflectMaxRobots := reflect.ValueOf(&maxRobots).Elem()
-	//for i := 0; i < reflectMaxRobots.NumField(); i++ {
-	//	for j := 0; j < reflectMaxRobots.NumField(); j++ {
-	//		cost := reflectCost.Field(i)
-	//		max := reflectMaxRobots.Field(i)
-	//		max.Set(reflect.ValueOf(ints.Max(int(reflect.ValueOf(max).Int()), int(reflect.ValueOf(cost).Int()))))
-	//	}
-	//}
-
-	return maxRobots
+	return maxCost
 }
 
-func keyOf(node Node) string {
-	return `${resources.ore},${resources.clay},${resources.obsidian},${resources.geode}-${robots.ore},${robots.clay},${robots.obsidian},${robots.geode}-${timeLeft}`
+func clone(node Node, resourceDiff [4]int, robotDiff [4]int) Node {
+	nodeClone := Node{
+		Resources: [4]int{
+			node.Resources[0] + resourceDiff[0],
+			node.Resources[1] + resourceDiff[1],
+			node.Resources[2] + resourceDiff[2],
+			node.Resources[3] + resourceDiff[3],
+		},
+		Robots: [4]int{
+			node.Robots[0] + robotDiff[0],
+			node.Robots[1] + robotDiff[1],
+			node.Robots[2] + robotDiff[2],
+			node.Robots[3] + robotDiff[3],
+		},
+		TimeLeft: node.TimeLeft,
+	}
+	return nodeClone
 }
-
-//func clone(node Node, resourceDiff map[string]int, robotDiff map[string]int) Node {
-//	copy := Node{
-//		Resources: {...resources},
-//		Robots:    {...robots},
-//		TimeLeft:  node.TimeLeft,
-//	}
-//
-//	for _, mineral := range MINERALS {
-//		copy.Resources[mineral] += resourceDiff[mineral]
-//		copy.Robots[mineral] += robotDiff[mineral]
-//	}
-//
-//	return copy
-//}
 
 func parseInput(input string) []Blueprint {
 	regex := regexp.MustCompile(`\d+`)
@@ -238,27 +166,11 @@ func parseInput(input string) []Blueprint {
 	return blueprints
 }
 
-//type Minerals struct {
-//	Ore      int
-//	Clay     int
-//	Obsidian int
-//	Geode    int
-//}
-
 type Node struct {
 	Resources [4]int
 	Robots    [4]int
 	TimeLeft  int
 }
-
-//type Cost struct {
-//	Ore      Minerals
-//	Clay     Minerals
-//	Obsidian Minerals
-//	Geode    Minerals
-//}
-
-//var MINERALS = []string{"ore", "clay", "obsidian", "geode"}
 
 type Blueprint struct {
 	ID   int
