@@ -24,7 +24,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
 		args1: []interface{}{},
 		args2: []interface{}{},
 		want1: 33,
-		want2: 3162,
+		want2: 3472,
 	},
 	{
 		input: input,
