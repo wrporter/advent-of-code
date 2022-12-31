@@ -32,9 +32,9 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 }
 
 func findMaxGeodes(blueprint Blueprint, maxTime int) int {
-	var maxPossibleGeodes []int
+	var maxGeodesPossible []int
 	for t := 0; t <= maxTime; t++ {
-		maxPossibleGeodes = append(maxPossibleGeodes, (t-1)*t/2)
+		maxGeodesPossible = append(maxGeodesPossible, (t-1)*t/2)
 	}
 	maxCost := getMaxCost(blueprint)
 	cost := blueprint.Cost
@@ -42,11 +42,11 @@ func findMaxGeodes(blueprint Blueprint, maxTime int) int {
 
 	var dfs func(robot, time int, robots, resources [4]int)
 	dfs = func(robot, time int, robots, resources [4]int) {
-		if (robots[0] >= maxCost[0]) ||
+		if (robot == 0 && robots[0] >= maxCost[0]) ||
 			(robot == 1 && robots[1] >= maxCost[1]) ||
 			(robot == 2 && (robots[2] >= maxCost[2] || robots[1] == 0)) ||
 			(robot == 3 && robots[2] == 0) ||
-			resources[3]+(robots[3]*time)+maxPossibleGeodes[time] <= maxGeodes {
+			resources[3]+(robots[3]*time)+maxGeodesPossible[time] <= maxGeodes {
 			return
 		}
 
