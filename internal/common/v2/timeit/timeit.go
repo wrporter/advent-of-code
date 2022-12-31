@@ -1,4 +1,4 @@
-package timeit2
+package timeit
 
 import (
 	"time"

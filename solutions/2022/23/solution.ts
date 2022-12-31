@@ -106,6 +106,10 @@ function moveElves(map: Dictionary<boolean>, maxRounds: number) {
         }
     }
 
+    console.log(`== End of Round ${round} ==`);
+    console.log(GridMap.fromMap(map).toString());
+    console.log();
+
     return { sumEmptyTiles, round };
 }
 

@@ -19,18 +19,36 @@ var tests = []struct {
 	want2 interface{}
 }{
 	{
-		input: `1000`,
+		input: `.....
+..##.
+..#..
+.....
+..##.
+.....`,
 		args1: []interface{}{},
 		args2: []interface{}{},
-		want1: "TBD",
-		want2: "TBD",
+		want1: 25,
+		want2: 4,
+	},
+	{
+		input: `....#..
+..###.#
+#...#.#
+.#...##
+#.###..
+##.#.##
+.#..#..`,
+		args1: []interface{}{},
+		args2: []interface{}{},
+		want1: 110,
+		want2: 20,
 	},
 	{
 		input: input,
 		args1: []interface{}{},
 		args2: []interface{}{},
-		want1: "TBD",
-		want2: "TBD",
+		want1: 3906,
+		want2: 895,
 	},
 }
 

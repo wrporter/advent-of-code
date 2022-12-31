@@ -1,6 +1,6 @@
 package solution
 
-import "github.com/wrporter/advent-of-code/internal/common/solution"
+import "github.com/wrporter/advent-of-code/internal/common/v2/solution"
 
 func Run() {
 	s := New()

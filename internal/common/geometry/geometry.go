@@ -3,6 +3,8 @@ package geometry
 import (
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/ints"
+	"github.com/wrporter/advent-of-code/internal/common/v2/mymath"
+	"math"
 	"strings"
 )
 
@@ -13,18 +15,23 @@ const (
 	Right Direction = 2
 	Down  Direction = 3
 	Left  Direction = 4
+
+	UpLeft    Direction = 5
+	UpRight   Direction = 6
+	DownLeft  Direction = 7
+	DownRight Direction = 8
 )
 
 var Directions = []Direction{Up, Right, Down, Left}
 
-var AllDirections = []Point{
-	{-1, -1},
+var AllDirectionsModifiers = []Point{
 	{0, -1},
-	{1, -1},
-	{-1, 0},
 	{1, 0},
-	{-1, 1},
 	{0, 1},
+	{-1, 0},
+	{-1, -1},
+	{1, -1},
+	{-1, 1},
 	{1, 1},
 }
 
@@ -61,8 +68,8 @@ func NewPoint(x, y int) Point {
 }
 
 func (p Point) Move(direction Direction) Point {
-	x := p.X + DirectionModifiers[direction-1].X
-	y := p.Y + DirectionModifiers[direction-1].Y
+	x := p.X + AllDirectionsModifiers[direction-1].X
+	y := p.Y + AllDirectionsModifiers[direction-1].Y
 	return Point{X: x, Y: y}
 }
 
@@ -133,4 +140,44 @@ func ToPoints(coordinateList []string) []Point {
 func ToPoint(coordinates string) Point {
 	coords, _ := convert.ToInts(strings.Split(coordinates, ","))
 	return Point{X: coords[0], Y: coords[1]}
+}
+
+func MapToGrid(m map[Point]bool) []string {
+	topLeft := NewPoint(math.MaxInt, math.MaxInt)
+	bottomRight := NewPoint(math.MinInt, math.MinInt)
+	for p := range m {
+		topLeft.X = mymath.Min(topLeft.X, p.X)
+		topLeft.Y = mymath.Min(topLeft.Y, p.Y)
+		bottomRight.X = mymath.Max(bottomRight.X, p.X)
+		bottomRight.Y = mymath.Max(bottomRight.Y, p.Y)
+	}
+
+	width := mymath.Abs(topLeft.X) + mymath.Abs(bottomRight.X) + 1
+	height := mymath.Abs(topLeft.Y) + mymath.Abs(bottomRight.Y) + 1
+	region := make([]string, height)
+
+	for y := 0; y < height; y++ {
+		dy := topLeft.Y + y
+
+		for x := 0; x < width; x++ {
+			dx := topLeft.X + x
+
+			if m[NewPoint(dx, dy)] {
+				region[y] += "#"
+			} else {
+				region[y] += "."
+			}
+		}
+	}
+
+	return region
+}
+
+func RenderGrid(grid []string) string {
+	result := ""
+	for _, row := range grid {
+		result += row
+		result += "\n"
+	}
+	return result
 }

@@ -83,7 +83,7 @@ func part2(input []string) interface{} {
 
 func numSeenOccupied(grid [][]rune, row int, col int) int {
 	count := 0
-	for _, direction := range geometry.AllDirections {
+	for _, direction := range geometry.AllDirectionsModifiers {
 		y := row + direction.Y
 		x := col + direction.X
 
@@ -108,7 +108,7 @@ func numSeenOccupied(grid [][]rune, row int, col int) int {
 
 func numAdjacentOccupied(grid [][]rune, row int, col int) int {
 	count := 0
-	for _, direction := range geometry.AllDirections {
+	for _, direction := range geometry.AllDirectionsModifiers {
 		y := row + direction.Y
 		x := col + direction.X
 

@@ -77,7 +77,7 @@ func flash(octopuses [][]int, flashed map[geometry.Point]bool, x int, y int) {
 	point := geometry.NewPoint(x, y)
 	flashed[point] = true
 
-	for _, direction := range geometry.AllDirections {
+	for _, direction := range geometry.AllDirectionsModifiers {
 		neighbor := point.Add(direction)
 		if neighbor.Y >= 0 && neighbor.Y < len(octopuses) && neighbor.X >= 0 && neighbor.X < len(octopuses[neighbor.Y]) {
 			if !flashed[neighbor] {

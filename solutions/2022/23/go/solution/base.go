@@ -11,7 +11,7 @@ func New() Solution {
 	s := Solution{AbstractSolution: solution.AbstractSolution{
 		Solution: Solution{},
 		Year:     2022,
-		Day:      14,
+		Day:      23,
 	}}
 	return s
 }

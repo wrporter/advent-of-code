@@ -90,7 +90,7 @@ func part2(input []string) interface{} {
 		}
 
 		value = 0
-		for _, direction := range geometry.AllDirections {
+		for _, direction := range geometry.AllDirectionsModifiers {
 			location := geometry.NewPoint(x+direction.X, y+direction.Y)
 			if locationValue, ok := grid[location]; ok {
 				value += locationValue

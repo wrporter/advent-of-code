@@ -64,7 +64,7 @@ func simulate(vectors map[vector]bool) (int, string) {
 
 func isAdjacentToAnotherPoint(points map[geometry.Point]bool) func(p geometry.Point) bool {
 	return func(p geometry.Point) bool {
-		for _, direction := range geometry.AllDirections {
+		for _, direction := range geometry.AllDirectionsModifiers {
 			neighbor := p.Add(direction)
 			if points[neighbor] {
 				return true
