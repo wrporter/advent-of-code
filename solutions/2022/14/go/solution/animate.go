@@ -20,8 +20,6 @@ var (
 	// sandColor pulled from https://icolorpalette.com/color/wet-sand
 	sandColor  = noire.NewHex("ab8a5a")
 	trailColor = animate.ToColor(sandColor.Darken(0.20))
-
-	pulseStep = 0.002
 )
 
 func Animate() {
@@ -65,8 +63,7 @@ type Game struct {
 	rockColor     uint8
 	rockColorDiff int8
 
-	sandColorPercent float64
-	sandColorStep    float64
+	sandColorPulse *animate.ColorPulse
 }
 
 func NewGame(input string) *Game {
@@ -77,9 +74,10 @@ func NewGame(input string) *Game {
 	}
 
 	g := &Game{
-		originalScan: scan,
-		source:       source,
-		floor:        floor,
+		originalScan:   scan,
+		source:         source,
+		floor:          floor,
+		sandColorPulse: animate.NewColorPulse(sandColor),
 	}
 	g.AbstractGame = animate.New(g)
 
@@ -97,8 +95,7 @@ func (g *Game) Restart() {
 	g.rockColor = 50
 	g.rockColorDiff = 1
 
-	g.sandColorPercent = 0
-	g.sandColorStep = pulseStep
+	g.sandColorPulse.Reset()
 
 	g.AbstractGame.Restart()
 	g.TPS = 2000
@@ -159,11 +156,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	} else if g.Mode == animate.ModeDone {
 		ebitenutil.DebugPrint(screen, fmt.Sprintf("Sand: %d - Done!", g.sand))
 
-		g.sandColorPercent += g.sandColorStep
-		if g.sandColorPercent >= 0.10 || g.sandColorPercent <= -0.20 {
-			g.sandColorStep = -g.sandColorStep
-		}
-		sc = sc.Lighten(g.sandColorPercent)
+		sc = g.sandColorPulse.Update()
 	}
 	_, height := ebiten.WindowSize()
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("[TPS: %d, Actual: %d]", ebiten.TPS(), int(ebiten.ActualTPS())), 0, height-16)
@@ -192,15 +185,4 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			)
 		}
 	}
-}
-
-func (g *Game) getRockColor() color.RGBA {
-	g.rockColor = uint8(int8(g.rockColor) + g.rockColorDiff)
-	if g.rockColor == 160 {
-		g.rockColorDiff = -1
-	}
-	if g.rockColor == 60 {
-		g.rockColorDiff = 1
-	}
-	return color.RGBA{R: g.rockColor, G: g.rockColor, B: g.rockColor, A: 255}
 }
