@@ -8,14 +8,11 @@ func Run() {
 }
 
 func New() Solution {
-	s := Solution{AbstractSolution: solution.AbstractSolution{
-		Solution: Solution{},
-		Year:     2022,
-		Day:      14,
-	}}
+	s := Solution{}
+	s.AbstractSolution = solution.New(s, 2022, 14)
 	return s
 }
 
 type Solution struct {
-	solution.AbstractSolution
+	*solution.AbstractSolution
 }

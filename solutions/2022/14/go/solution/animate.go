@@ -3,7 +3,7 @@ package solution
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/teacat/noire"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/v2/animate"
@@ -14,6 +14,7 @@ import (
 
 var (
 	backgroundColor = color.RGBA{R: 1, G: 31, B: 75, A: 255}
+	fontColor       = color.White
 	rockColor       = color.RGBA{R: 77, G: 77, B: 77, A: 255}
 
 	// sandColor pulled from https://icolorpalette.com/color/wet-sand
@@ -30,8 +31,8 @@ func Animate() {
 	//503,4 -> 502,4 -> 502,9 -> 494,9`
 	game := NewGame(input)
 
-	width := 2*game.floor*game.TileSize + 2*game.BorderSize
-	height := game.floor*game.TileSize + 2*game.BorderSize
+	width := 2*game.floor*game.TileSize + 2*game.BorderHorizontal
+	height := game.floor*game.TileSize + 2*game.BorderVertical
 	if width < 400 {
 		width = 400
 	}
@@ -55,10 +56,13 @@ type Game struct {
 	trail  map[geometry.Point]string
 	source geometry.Point
 
-	sand          int
 	unit          geometry.Point
 	hasComeToRest bool
+	bottom        int
 	floor         int
+
+	sand          int
+	sandUntilVoid int
 
 	rockColor     uint8
 	rockColorDiff int8
@@ -76,6 +80,7 @@ func NewGame(input string) *Game {
 	g := &Game{
 		originalScan:   scan,
 		source:         source,
+		bottom:         bottom,
 		floor:          floor,
 		sandColorPulse: animate.NewColorPulse(sandColor),
 	}
@@ -89,8 +94,10 @@ func (g *Game) Restart() {
 	g.scan = contain.CopyMap(g.originalScan)
 	g.unit = g.source
 	g.hasComeToRest = false
-	g.sand = 0
 	g.trail = make(map[geometry.Point]string)
+
+	g.sand = 0
+	g.sandUntilVoid = 0
 
 	g.rockColor = 50
 	g.rockColorDiff = 1
@@ -124,6 +131,10 @@ func (g *Game) Play() {
 
 		g.trail[g.unit] = "-"
 
+		if g.unit.Y > g.bottom && g.sandUntilVoid == 0 {
+			g.sandUntilVoid = g.sand
+		}
+
 		if g.shouldExit(g.unit) {
 			g.Mode = animate.ModeDone
 		}
@@ -150,16 +161,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	sc := sandColor
 
 	if g.Mode == animate.ModeTitle {
-		ebitenutil.DebugPrint(screen, "Falling Sand -- Press [Enter] to Start!")
+		animate.DrawText(screen, "Press [Enter] to Start! (Regolith Reservoir)", 8, 16, fontColor)
 	} else if g.Mode == animate.ModePlay || g.Mode == animate.ModePause {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("Sand: %d", g.sand))
+		animate.DrawText(screen, fmt.Sprintf("Sand: %d", g.sand), 8, 16, fontColor)
 	} else if g.Mode == animate.ModeDone {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("Sand: %d - Done!", g.sand))
+		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.sandUntilVoid, g.sand), 8, 16, fontColor)
 
 		sc = g.sandColorPulse.Update()
 	}
 	_, height := ebiten.WindowSize()
-	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("[TPS: %d, Actual: %d]", ebiten.TPS(), int(ebiten.ActualTPS())), 0, height-16)
+	animate.DrawText(screen, fmt.Sprintf("[TPS: %d, Actual: %d]", ebiten.TPS(), int(ebiten.ActualTPS())), 8, height-8, fontColor)
 
 	var c color.Color
 	for y := 0; y < len(gridMap.Grid); y++ {
@@ -177,10 +188,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				c = animate.ToColor(sc)
 			}
 
-			ebitenutil.DrawRect(
+			vector.DrawFilledRect(
 				screen,
-				float64(x*g.TileSize+g.BorderSize), float64(y*g.TileSize+g.BorderSize),
-				float64(g.TileSize), float64(g.TileSize),
+				float32(x*g.TileSize+g.BorderHorizontal), float32(y*g.TileSize+g.BorderVertical),
+				float32(g.TileSize), float32(g.TileSize),
 				c,
 			)
 		}

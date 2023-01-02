@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	DefaultTPS        = 60
-	DefaultTileSize   = 4
-	DefaultBorderSize = 20
+	DefaultTPS              = 60
+	DefaultTileSize         = 4
+	DefaultBorderVertical   = 32
+	DefaultBorderHorizontal = 20
 )
 
 type Game interface {
@@ -30,19 +31,21 @@ const (
 type AbstractGame struct {
 	Game
 
-	Mode       GameMode
-	TPS        int
-	TileSize   int
-	BorderSize int
+	Mode             GameMode
+	TPS              int
+	TileSize         int
+	BorderVertical   int
+	BorderHorizontal int
 }
 
 func New(game Game) *AbstractGame {
 	return &AbstractGame{
-		Game:       game,
-		Mode:       ModeTitle,
-		TPS:        DefaultTPS,
-		TileSize:   DefaultTileSize,
-		BorderSize: DefaultBorderSize,
+		Game:             game,
+		Mode:             ModeTitle,
+		TPS:              DefaultTPS,
+		TileSize:         DefaultTileSize,
+		BorderVertical:   DefaultBorderVertical,
+		BorderHorizontal: DefaultBorderHorizontal,
 	}
 }
 
@@ -69,8 +72,6 @@ func (g *AbstractGame) Update() error {
 		g.Mode = ModeTitle
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
 		return errors.New("quit")
-	} else if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		g.Mode = ModePause
 	}
 
 	switch g.Mode {
@@ -79,6 +80,9 @@ func (g *AbstractGame) Update() error {
 			g.Mode = ModePlay
 		}
 	case ModePlay:
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			g.Mode = ModePause
+		}
 		g.Play()
 	case ModePause:
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {

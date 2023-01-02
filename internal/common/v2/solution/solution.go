@@ -24,6 +24,15 @@ type AbstractSolution struct {
 	Filename string
 }
 
+func New(s Solution, year, day int) *AbstractSolution {
+	return &AbstractSolution{
+		Solution: s,
+		Year:     year,
+		Day:      day,
+		Filename: "",
+	}
+}
+
 func (s AbstractSolution) ReadInput() string {
 	return s.ReadInputPrefix("")
 }

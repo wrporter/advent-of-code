@@ -8,11 +8,15 @@ import (
 const (
 	DefaultPulsePercent = 0
 	DefaultPulseStep    = 0.002
+	DefaultMin          = -0.15
+	DefaultMax          = 0.05
 )
 
 type ColorPulse struct {
 	Percent float64
 	Step    float64
+	Min     float64
+	Max     float64
 	Color   noire.Color
 }
 
@@ -20,6 +24,8 @@ func NewColorPulse(c noire.Color) *ColorPulse {
 	return &ColorPulse{
 		Percent: DefaultPulsePercent,
 		Step:    DefaultPulseStep,
+		Min:     DefaultMin,
+		Max:     DefaultMax,
 		Color:   c,
 	}
 }
@@ -29,9 +35,20 @@ func (p *ColorPulse) Reset() {
 	p.Step = DefaultPulseStep
 }
 
+func (p *ColorPulse) SetRange(min, max float64) *ColorPulse {
+	p.Min = min
+	p.Max = max
+	return p
+}
+
+func (p *ColorPulse) SetStep(step float64) *ColorPulse {
+	p.Step = step
+	return p
+}
+
 func (p *ColorPulse) Update() noire.Color {
 	p.Percent += p.Step
-	if p.Percent >= 0.05 || p.Percent <= -0.15 {
+	if p.Percent <= p.Min || p.Percent >= p.Max {
 		p.Step = -p.Step
 	}
 	return p.Color.Lighten(p.Percent)
