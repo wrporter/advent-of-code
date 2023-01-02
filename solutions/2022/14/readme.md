@@ -38,7 +38,7 @@ This is how long it took me to complete each part.
 
 Looks a lot like the shape of a Christmas tree at the end.
 
-![Sand Falling](day14.gif)
+![Falling Sand](day14.gif)
 
 ## Puzzle
 
