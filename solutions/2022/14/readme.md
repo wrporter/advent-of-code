@@ -34,6 +34,12 @@ This is how long it took me to complete each part.
 - Part 1: 41:37
 - Part 2: 
 
+## Animation!
+
+Looks a lot like the shape of a Christmas tree at the end.
+
+![Sand Falling](day14.gif)
+
 ## Puzzle
 
 # Day 14: Regolith Reservoir

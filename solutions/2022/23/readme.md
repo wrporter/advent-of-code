@@ -35,9 +35,9 @@ This is how long it took me to complete each part.
 - Part 1: 1:23:26
 - Part 2: 3:35
 
-## Visuals!
+## Animation!
 
-I visualized this one with Go and Ebitengine. Super fun. Looks so much like Game of Life.
+I animated this one with Go and Ebitengine. Super fun. Looks so much like Game of Life.
 
 ![Elves Go Marching](elves.mp4)
 
