@@ -92,15 +92,15 @@ func step(grove map[geometry.Point]bool, firstDirection int, firstHalf map[geome
 }
 
 func sumEmptyTiles(rectangle []string) int {
-	sumEmptyTiles := 0
+	sum := 0
 	for y := 0; y < len(rectangle); y++ {
 		for x := 0; x < len(rectangle[y]); x++ {
 			if rectangle[y][x] == '.' {
-				sumEmptyTiles += 1
+				sum += 1
 			}
 		}
 	}
-	return sumEmptyTiles
+	return sum
 }
 
 func move(firstHalf map[geometry.Point][]Move) map[geometry.Point]bool {

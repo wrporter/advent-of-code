@@ -10,7 +10,10 @@ import (
 func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 	source, scan, bottom := parseRockScan(input)
 	hasEnteredVoid := func(unit geometry.Point) bool { return unit.Y > bottom }
-	shouldFallTo := func(position geometry.Point) bool { return !scan[position] }
+	shouldFallTo := func(position geometry.Point) bool {
+		_, exists := scan[position]
+		return !exists
+	}
 	return sumRestedSand(scan, source, shouldFallTo, hasEnteredVoid)
 }
 
@@ -18,14 +21,17 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	source, scan, bottom := parseRockScan(input)
 	bottom += 2
 	hasReachedSource := func(unit geometry.Point) bool { return unit == source }
-	shouldFallTo := func(position geometry.Point) bool { return !scan[position] && position.Y != bottom }
+	shouldFallTo := func(position geometry.Point) bool {
+		_, exists := scan[position]
+		return !exists && position.Y != bottom
+	}
 	return sumRestedSand(scan, source, shouldFallTo, hasReachedSource)
 }
 
-func parseRockScan(input string) (geometry.Point, map[geometry.Point]bool, int) {
+func parseRockScan(input string) (geometry.Point, map[geometry.Point]string, int) {
 	rockPaths := strings.Split(input, "\n")
 	source := geometry.Point{X: 500, Y: 0}
-	scan := make(map[geometry.Point]bool)
+	scan := make(map[geometry.Point]string)
 	bottom := math.MinInt
 
 	for _, path := range rockPaths {
@@ -36,11 +42,11 @@ func parseRockScan(input string) (geometry.Point, map[geometry.Point]bool, int) 
 
 			if a.X == b.X {
 				for y := ints.Min(a.Y, b.Y); y <= ints.Max(a.Y, b.Y); y++ {
-					scan[geometry.Point{X: a.X, Y: y}] = true
+					scan[geometry.Point{X: a.X, Y: y}] = "#"
 				}
 			} else if a.Y == b.Y {
 				for x := ints.Min(a.X, b.X); x <= ints.Max(a.X, b.X); x++ {
-					scan[geometry.Point{X: x, Y: a.Y}] = true
+					scan[geometry.Point{X: x, Y: a.Y}] = "#"
 				}
 			}
 
@@ -51,7 +57,7 @@ func parseRockScan(input string) (geometry.Point, map[geometry.Point]bool, int) 
 }
 
 func sumRestedSand(
-	scan map[geometry.Point]bool,
+	scan map[geometry.Point]string,
 	source geometry.Point,
 	shouldFallTo func(position geometry.Point) bool,
 	shouldExit func(unit geometry.Point) bool,
@@ -72,7 +78,7 @@ func sumRestedSand(
 			} else if next = unit.DownRight(); shouldFallTo(next) {
 				unit = next
 			} else {
-				scan[unit] = true
+				scan[unit] = "o"
 				sumSandComeToRest++
 				hasComeToRest = true
 			}

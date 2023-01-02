@@ -35,6 +35,12 @@ This is how long it took me to complete each part.
 - Part 1: 1:23:26
 - Part 2: 3:35
 
+## Visuals!
+
+I visualized this one with Go and Ebitengine. Super fun. Looks so much like Game of Life.
+
+![Elves Go Marching](elves.mp4)
+
 ## Puzzle
 
 # Day 23: Unstable Diffusion

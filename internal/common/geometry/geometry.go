@@ -142,7 +142,67 @@ func ToPoint(coordinates string) Point {
 	return Point{X: coords[0], Y: coords[1]}
 }
 
-func MapToGrid(m map[Point]bool) []string {
+type GridMap struct {
+	Grid [][]uint8
+	MinY int
+	MinX int
+}
+
+func MapToGridV2[T string | bool](m map[Point]T) *GridMap {
+	topLeft := NewPoint(math.MaxInt, math.MaxInt)
+	bottomRight := NewPoint(math.MinInt, math.MinInt)
+	for p := range m {
+		topLeft.X = mymath.Min(topLeft.X, p.X)
+		topLeft.Y = mymath.Min(topLeft.Y, p.Y)
+		bottomRight.X = mymath.Max(bottomRight.X, p.X)
+		bottomRight.Y = mymath.Max(bottomRight.Y, p.Y)
+	}
+
+	width := mymath.Abs(topLeft.X-bottomRight.X) + 1
+	height := mymath.Abs(topLeft.Y-bottomRight.Y) + 1
+	grid := make([][]uint8, height)
+
+	for y := 0; y < height; y++ {
+		grid[y] = make([]uint8, width)
+		dy := topLeft.Y + y
+
+		for x := 0; x < width; x++ {
+			dx := topLeft.X + x
+			value, exists := m[NewPoint(dx, dy)]
+			grid[y][x] = getChar(value, exists)
+		}
+	}
+
+	return &GridMap{
+		Grid: grid,
+		MinY: topLeft.Y,
+		MinX: topLeft.X,
+	}
+}
+
+func Imprint[T string | bool](g *GridMap, m map[Point]T) {
+	for p, v := range m {
+		y := p.Y - g.MinY
+		x := p.X - g.MinX
+		g.Grid[y][x] = getChar(v, true)
+	}
+}
+
+func getChar[T string | bool](value T, exists bool) uint8 {
+	if !exists {
+		return '.'
+	}
+
+	switch any(value).(type) {
+	case string:
+		return any(value).(string)[0]
+	case bool:
+		return '#'
+	}
+	return '.'
+}
+
+func MapToGrid[T string | bool](m map[Point]T) []string {
 	topLeft := NewPoint(math.MaxInt, math.MaxInt)
 	bottomRight := NewPoint(math.MinInt, math.MinInt)
 	for p := range m {
@@ -162,8 +222,13 @@ func MapToGrid(m map[Point]bool) []string {
 		for x := 0; x < width; x++ {
 			dx := topLeft.X + x
 
-			if m[NewPoint(dx, dy)] {
-				region[y] += "#"
+			if value, ok := m[NewPoint(dx, dy)]; ok {
+				switch any(value).(type) {
+				case string:
+					region[y] += any(value).(string)
+				case bool:
+					region[y] += "#"
+				}
 			} else {
 				region[y] += "."
 			}
