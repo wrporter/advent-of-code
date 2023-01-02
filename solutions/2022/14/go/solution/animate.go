@@ -15,11 +15,11 @@ import (
 var (
 	backgroundColor = color.RGBA{R: 1, G: 31, B: 75, A: 255}
 	rockColor       = color.RGBA{R: 77, G: 77, B: 77, A: 255}
-	sourceColor     = color.RGBA{R: 234, G: 226, B: 214, A: 255}
 
 	// sandColor pulled from https://icolorpalette.com/color/wet-sand
-	sandColor  = noire.NewHex("ab8a5a")
-	trailColor = animate.ToColor(sandColor.Darken(0.20))
+	sandColor   = noire.NewHex("ab8a5a")
+	trailColor  = animate.ToColor(sandColor.Darken(0.20))
+	sourceColor = animate.ToColor(sandColor.Lighten(0.40))
 )
 
 func Animate() {
