@@ -7,6 +7,7 @@ import (
 	"github.com/teacat/noire"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/v2/animate"
+	"github.com/wrporter/advent-of-code/internal/common/v2/animate/audio"
 	"image/color"
 	"log"
 )
@@ -59,6 +60,8 @@ func NewGame(grove string) *Game {
 		fillColorPulse: animate.NewColorPulse(fillColor).SetRange(-0.05, 0.01).SetStep(0.001),
 	}
 	g.AbstractGame = animate.New(g)
+
+	audio.NewPlayer()
 
 	g.Restart()
 	return g

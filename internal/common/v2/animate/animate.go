@@ -39,6 +39,7 @@ type AbstractGame struct {
 }
 
 func New(game Game) *AbstractGame {
+	ebiten.SetRunnableOnUnfocused(false)
 	return &AbstractGame{
 		Game:             game,
 		Mode:             ModeTitle,

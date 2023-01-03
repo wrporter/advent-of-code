@@ -11,6 +11,8 @@ require (
 require (
 	github.com/ebitengine/purego v0.2.0-alpha.0.20221115115134-c9e35fa8a6a1 // indirect
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
+	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
+	github.com/hajimehoshi/oto/v2 v2.4.0-alpha.9.0.20221230155005-e8225b9b4e49 // indirect
 	github.com/jezek/xgb v1.1.0 // indirect
 	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
 	golang.org/x/mobile v0.0.0-20221110043201-43a038452099 // indirect
