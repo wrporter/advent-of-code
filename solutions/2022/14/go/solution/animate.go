@@ -114,38 +114,39 @@ func (g *Game) Restart() {
 	g.sandColorPulse.Reset()
 
 	g.AbstractGame.Restart()
-	g.TPS = 2000
-	ebiten.SetTPS(g.TPS)
 }
 
 func (g *Game) Play() {
 	var next geometry.Point
 
-	g.unit = g.source
-	g.trail = make(map[geometry.Point]string)
-	hasComeToRest := false
+	for i := 0; i < g.Speed; i++ {
+		g.trail = make(map[geometry.Point]string)
+		g.unit = g.source
 
-	for !hasComeToRest {
-		if next = g.unit.Down(); g.shouldFallTo(next) {
-			g.unit = next
-		} else if next = g.unit.DownLeft(); g.shouldFallTo(next) {
-			g.unit = next
-		} else if next = g.unit.DownRight(); g.shouldFallTo(next) {
-			g.unit = next
-		} else {
-			g.scan[g.unit] = "o"
-			g.sand++
-			hasComeToRest = true
-		}
+		hasComeToRest := false
 
-		g.trail[g.unit] = "-"
+		for !hasComeToRest {
+			if next = g.unit.Down(); g.shouldFallTo(next) {
+				g.unit = next
+			} else if next = g.unit.DownLeft(); g.shouldFallTo(next) {
+				g.unit = next
+			} else if next = g.unit.DownRight(); g.shouldFallTo(next) {
+				g.unit = next
+			} else {
+				g.scan[g.unit] = "o"
+				g.sand++
+				hasComeToRest = true
+			}
 
-		if g.unit.Y > g.bottom && g.sandUntilVoid == 0 {
-			g.sandUntilVoid = g.sand
-		}
+			g.trail[g.unit] = "-"
 
-		if g.shouldExit(g.unit) {
-			g.Mode = animate.ModeDone
+			if g.unit.Y > g.bottom && g.sandUntilVoid == 0 {
+				g.sandUntilVoid = g.sand
+			}
+
+			if g.shouldExit(g.unit) {
+				g.Mode = animate.ModeDone
+			}
 		}
 	}
 }
@@ -179,7 +180,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		sc = g.sandColorPulse.Update()
 	}
 	_, height := ebiten.WindowSize()
-	animate.DrawText(screen, fmt.Sprintf("[TPS: %d, Actual: %d]", ebiten.TPS(), int(ebiten.ActualTPS())), 8, height-8, fontColor)
+	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, height-8, fontColor)
 
 	var c color.Color
 	for y := 0; y < len(gridMap.Grid); y++ {

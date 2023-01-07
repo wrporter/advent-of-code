@@ -7,7 +7,6 @@ import (
 	"github.com/teacat/noire"
 	"github.com/wrporter/advent-of-code/internal/common/geometry"
 	"github.com/wrporter/advent-of-code/internal/common/v2/animate"
-	"github.com/wrporter/advent-of-code/internal/common/v2/animate/audio"
 	"image/color"
 	"log"
 )
@@ -61,7 +60,7 @@ func NewGame(grove string) *Game {
 	}
 	g.AbstractGame = animate.New(g)
 
-	audio.NewPlayer()
+	//audio.NewPlayer()
 
 	g.Restart()
 	return g
@@ -77,19 +76,21 @@ func (g *Game) Restart() {
 }
 
 func (g *Game) Play() {
-	firstHalf := make(map[geometry.Point][]Move)
-	anyElfHasMoved := step(g.grove, g.firstDirection, firstHalf)
-	g.grove = move(firstHalf)
+	for i := 0; i < g.Speed; i++ {
+		firstHalf := make(map[geometry.Point][]Move)
+		anyElfHasMoved := step(g.grove, g.firstDirection, firstHalf)
+		g.grove = move(firstHalf)
 
-	if g.round == 10 {
-		g.emptyTilesAfterRound10 = sumEmptyTiles(geometry.MapToGrid(g.grove))
-	}
+		if g.round == 10 {
+			g.emptyTilesAfterRound10 = sumEmptyTiles(geometry.MapToGrid(g.grove))
+		}
 
-	if !anyElfHasMoved {
-		g.Mode = animate.ModeDone
-	} else {
-		g.firstDirection = (g.firstDirection + 1) % len(directionGroups)
-		g.round += 1
+		if !anyElfHasMoved {
+			g.Mode = animate.ModeDone
+		} else {
+			g.firstDirection = (g.firstDirection + 1) % len(directionGroups)
+			g.round += 1
+		}
 	}
 }
 
@@ -113,7 +114,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.emptyTilesAfterRound10, g.round), 8, 16, fontColor)
 	}
 	_, height := ebiten.WindowSize()
-	animate.DrawText(screen, fmt.Sprintf("[TPS: %d, Actual: %d]", ebiten.TPS(), int(ebiten.ActualTPS())), 8, height-8, fontColor)
+	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, height-8, fontColor)
 
 	for y := 0; y < len(rectangle); y++ {
 		for x := 0; x < len(rectangle[y]); x++ {

@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	DefaultTPS              = 60
+	DefaultSpeed            = 1
 	DefaultTileSize         = 4
 	DefaultBorderVertical   = 32
 	DefaultBorderHorizontal = 20
@@ -31,8 +31,10 @@ const (
 type AbstractGame struct {
 	Game
 
-	Mode             GameMode
-	TPS              int
+	Mode GameMode
+	// Speed represents how many operations should be performed every
+	// update. This creates an artificial speed for when the game is drawn.
+	Speed            int
 	TileSize         int
 	BorderVertical   int
 	BorderHorizontal int
@@ -43,7 +45,7 @@ func New(game Game) *AbstractGame {
 	return &AbstractGame{
 		Game:             game,
 		Mode:             ModeTitle,
-		TPS:              DefaultTPS,
+		Speed:            DefaultSpeed,
 		TileSize:         DefaultTileSize,
 		BorderVertical:   DefaultBorderVertical,
 		BorderHorizontal: DefaultBorderHorizontal,
@@ -52,27 +54,25 @@ func New(game Game) *AbstractGame {
 
 func (g *AbstractGame) Restart() {
 	g.Mode = ModeTitle
-	g.TPS = DefaultTPS
+	g.Speed = DefaultSpeed
 }
 
 func (g *AbstractGame) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && g.TPS > 0 {
-		g.TPS = g.TPS - 100
-		if g.TPS <= 0 {
-			g.TPS = 60
-		}
-		ebiten.SetTPS(g.TPS)
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyRight) && g.TPS < 2000 {
-		g.TPS = g.TPS + 100
-		if g.TPS == 160 {
-			g.TPS = 100
-		}
-		ebiten.SetTPS(g.TPS)
-	} else if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 		g.Game.Restart()
 		g.Mode = ModeTitle
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
 		return errors.New("quit")
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		if g.Speed < 100 {
+			g.Speed += 1
+		}
+	} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		if g.Speed > 1 {
+			g.Speed -= 1
+		}
 	}
 
 	switch g.Mode {
