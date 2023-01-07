@@ -38,6 +38,9 @@ type AbstractGame struct {
 	TileSize         int
 	BorderVertical   int
 	BorderHorizontal int
+
+	Height int
+	Width  int
 }
 
 func New(game Game) *AbstractGame {

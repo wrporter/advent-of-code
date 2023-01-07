@@ -38,8 +38,8 @@ func Animate() {
 	//503,4 -> 502,4 -> 502,9 -> 494,9`
 	game := NewGame(input)
 
-	width := 2*game.floor*game.TileSize + 2*game.BorderHorizontal
-	height := game.floor*game.TileSize + 2*game.BorderVertical
+	width := game.Width
+	height := game.Height
 	if width < 400 {
 		width = 400
 	}
@@ -75,6 +75,8 @@ type Game struct {
 	rockColorDiff int8
 
 	sandColorPulse *animate.ColorPulse
+	sandImage      *ebiten.Image
+	gridMap        *geometry.GridMap
 }
 
 func NewGame(input string) *Game {
@@ -100,10 +102,15 @@ func NewGame(input string) *Game {
 }
 
 func (g *Game) Restart() {
+	g.Width = 2*g.floor*g.TileSize + 2*g.BorderHorizontal
+	g.Height = g.floor*g.TileSize + 2*g.BorderVertical
+
 	g.scan = contain.CopyMap(g.originalScan)
 	g.unit = g.source
 	g.hasComeToRest = false
 	g.trail = make(map[geometry.Point]string)
+
+	g.sandImage = ebiten.NewImage(g.Width, g.Height)
 
 	g.sand = 0
 	g.sandUntilVoid = 0
@@ -114,15 +121,42 @@ func (g *Game) Restart() {
 	g.sandColorPulse.Reset()
 
 	g.AbstractGame.Restart()
+
+	g.scan[g.source] = "S"
+	g.gridMap = geometry.MapToGridV2(g.scan)
+	delete(g.scan, g.source)
+
+	var c color.Color
+	for y := 0; y < len(g.gridMap.Grid); y++ {
+		for x := 0; x < len(g.gridMap.Grid[y]); x++ {
+			if g.gridMap.Grid[y][x] == '.' {
+				continue
+			}
+
+			c = rockColor
+			if g.gridMap.Grid[y][x] == 'S' {
+				c = sourceColor
+			} else if g.gridMap.Grid[y][x] == '-' {
+				c = trailColor
+			} else if g.gridMap.Grid[y][x] == 'o' {
+				c = animate.ToColor(sandColor)
+			}
+
+			vector.DrawFilledRect(
+				g.sandImage,
+				float32(x*g.TileSize+g.BorderHorizontal), float32(y*g.TileSize+g.BorderVertical),
+				float32(g.TileSize), float32(g.TileSize),
+				c,
+			)
+		}
+	}
 }
 
 func (g *Game) Play() {
 	var next geometry.Point
 
-	for i := 0; i < g.Speed; i++ {
-		g.trail = make(map[geometry.Point]string)
+	for i := 0; i < g.Speed && g.Mode == animate.ModePlay; i++ {
 		g.unit = g.source
-
 		hasComeToRest := false
 
 		for !hasComeToRest {
@@ -136,8 +170,25 @@ func (g *Game) Play() {
 				g.scan[g.unit] = "o"
 				g.sand++
 				hasComeToRest = true
+
+				p := g.gridMap.Translate(g.unit)
+				vector.DrawFilledRect(
+					g.sandImage,
+					float32(p.X*g.TileSize+g.BorderHorizontal), float32(p.Y*g.TileSize+g.BorderVertical),
+					float32(g.TileSize), float32(g.TileSize),
+					animate.ToColor(sandColor),
+				)
 			}
 
+			if _, exists := g.trail[g.unit]; !hasComeToRest && !exists {
+				p := g.gridMap.Translate(g.unit)
+				vector.DrawFilledRect(
+					g.sandImage,
+					float32(p.X*g.TileSize+g.BorderHorizontal), float32(p.Y*g.TileSize+g.BorderVertical),
+					float32(g.TileSize), float32(g.TileSize),
+					trailColor,
+				)
+			}
 			g.trail[g.unit] = "-"
 
 			if g.unit.Y > g.bottom && g.sandUntilVoid == 0 {
@@ -163,47 +214,14 @@ func (g *Game) shouldFallTo(unit geometry.Point) bool {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(backgroundColor)
 
-	g.scan[g.source] = "S"
-	gridMap := geometry.MapToGridV2(g.scan)
-	geometry.Imprint(gridMap, g.trail)
-	delete(g.scan, g.source)
-
-	sc := sandColor
-
 	if g.Mode == animate.ModeTitle {
 		animate.DrawText(screen, "Press [Enter] to Start! (Regolith Reservoir)", 8, 16, fontColor)
 	} else if g.Mode == animate.ModePlay || g.Mode == animate.ModePause {
 		animate.DrawText(screen, fmt.Sprintf("Sand: %d", g.sand), 8, 16, fontColor)
 	} else if g.Mode == animate.ModeDone {
 		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.sandUntilVoid, g.sand), 8, 16, fontColor)
-
-		sc = g.sandColorPulse.Update()
 	}
-	_, height := ebiten.WindowSize()
-	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, height-8, fontColor)
+	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, g.Height-8, fontColor)
 
-	var c color.Color
-	for y := 0; y < len(gridMap.Grid); y++ {
-		for x := 0; x < len(gridMap.Grid[y]); x++ {
-			if gridMap.Grid[y][x] == '.' {
-				continue
-			}
-
-			c = rockColor
-			if gridMap.Grid[y][x] == 'S' {
-				c = sourceColor
-			} else if gridMap.Grid[y][x] == '-' {
-				c = trailColor
-			} else if gridMap.Grid[y][x] == 'o' {
-				c = animate.ToColor(sc)
-			}
-
-			vector.DrawFilledRect(
-				screen,
-				float32(x*g.TileSize+g.BorderHorizontal), float32(y*g.TileSize+g.BorderVertical),
-				float32(g.TileSize), float32(g.TileSize),
-				c,
-			)
-		}
-	}
+	screen.DrawImage(g.sandImage, nil)
 }

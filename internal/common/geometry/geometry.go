@@ -180,6 +180,10 @@ func MapToGridV2[T string | bool](m map[Point]T) *GridMap {
 	}
 }
 
+func (g *GridMap) Translate(p Point) Point {
+	return NewPoint(p.X-g.MinX, p.Y-g.MinY)
+}
+
 func Imprint[T string | bool](g *GridMap, m map[Point]T) {
 	for p, v := range m {
 		y := p.Y - g.MinY
