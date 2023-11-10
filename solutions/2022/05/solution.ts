@@ -72,6 +72,7 @@ export class Solution extends AbstractSolution {
     }
 
     private parseMoves(moves: string[]): Move[]  {
+        // @ts-ignore
         return moves.map((move) => {
             const match = move.match(moveRegex);
             if (!match) {
