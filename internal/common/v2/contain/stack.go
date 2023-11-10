@@ -1,62 +1,77 @@
 package contain
 
-type (
-	Stack[T any] struct {
-		top    *node[T]
-		length int
-	}
-	node[T any] struct {
-		value T
-		prev  *node[T]
-	}
+import (
+	"sync"
 )
 
-// Create a new stack
+// Stack is a generic array-based stack implementation that is concurrent-safe
+type Stack[T any] struct {
+	lock  sync.Mutex
+	items []T
+}
+
+// NewStack initializes a new Stack
 func NewStack[T any]() *Stack[T] {
-	return &Stack[T]{nil, 0}
+	return &Stack[T]{items: []T{}}
 }
 
-// Return the number of items in the stack
-func (s *Stack[T]) Len() int {
-	return s.length
+// Push adds an item on top of the stack
+func (stack *Stack[T]) Push(item T) {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+	stack.items = append(stack.items, item)
 }
 
-// View the top item on the stack
-func (s *Stack[T]) Peek() T {
-	if s.length == 0 {
-		return GetZero[T]()
-	}
-	return s.top.value
+// PushMany adds an item on top of the stack
+func (stack *Stack[T]) PushMany(items ...T) {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+	stack.items = append(stack.items, items...)
 }
 
-// Pop the top item of the stack and return it
-func (s *Stack[T]) Pop() T {
-	if s.length == 0 {
-		return GetZero[T]()
-	}
+// Pop removes and returns the top item on the stack
+func (stack *Stack[T]) Pop() T {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
 
-	n := s.top
-	s.top = n.prev
-	s.length--
-	return n.value
-}
-
-// Push a value onto the top of the stack
-func (s *Stack[T]) Push(value T) {
-	n := &node[T]{value, s.top}
-	s.top = n
-	s.length++
-}
-
-func (s *Stack[T]) Copy() *Stack[T] {
-	reverse := NewStack[T]()
-	for s.Len() > 0 {
-		reverse.Push(s.Pop())
+	size := len(stack.items)
+	if size == 0 {
+		var empty T
+		return empty
 	}
 
-	result := NewStack[T]()
-	for reverse.Len() > 0 {
-		reverse.Push(reverse.Pop())
+	item := stack.items[size-1]
+	stack.items = stack.items[:size-1]
+	return item
+}
+
+// PopMany removes and returns the top n items on the stack. If n exceeds the
+// size of the stack, all remaining items are removed and returned.
+func (stack *Stack[T]) PopMany(n int) []T {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+
+	size := len(stack.items)
+	if size == 0 {
+		var empty []T
+		return empty
 	}
-	return result
+
+	items := stack.items[size-n:]
+	stack.items = stack.items[:size-n]
+	return items
+}
+
+// Peek returns the top item on the stack
+func (stack *Stack[T]) Peek() T {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+
+	size := len(stack.items)
+	if size == 0 {
+		var empty T
+		return empty
+	}
+
+	return stack.items[size-1]
 }

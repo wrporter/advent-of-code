@@ -19,17 +19,23 @@ var tests = []struct {
 	want2 interface{}
 }{
 	{
-		input: `    [D]    
-[N] [C]    
-[Z] [M] [P]
- 1   2   3 `,
-		want1: "TBD",
-		want2: "TBD",
+		input: `vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw`,
+		args1: []interface{}{},
+		args2: []interface{}{},
+		want1: 157,
+		want2: 70,
 	},
 	{
 		input: input,
-		want1: "TBD",
-		want2: "TBD",
+		args1: []interface{}{},
+		args2: []interface{}{},
+		want1: 7737,
+		want2: 2697,
 	},
 }
 

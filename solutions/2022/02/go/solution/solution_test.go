@@ -18,18 +18,26 @@ var tests = []struct {
 	want1 interface{}
 	want2 interface{}
 }{
+	{input: `A Z`, want1: 3, want2: 8}, // Lose, Win
+	{input: `C Y`, want1: 2, want2: 6}, // Lose, Draw
+	{input: `B X`, want1: 1, want2: 1}, // Lose, Lose
+	{input: `A X`, want1: 4, want2: 3}, // Draw, Lose
+	{input: `B Y`, want1: 5, want2: 5}, // Draw, Draw
+	{input: `C Z`, want1: 6, want2: 7}, // Draw, Win
+	{input: `C X`, want1: 7, want2: 2}, // Win, Lose
+	{input: `A Y`, want1: 8, want2: 4}, // Win, Draw
+	{input: `B Z`, want1: 9, want2: 9}, // Win, Win
 	{
-		input: `    [D]    
-[N] [C]    
-[Z] [M] [P]
- 1   2   3 `,
-		want1: "TBD",
-		want2: "TBD",
+		input: `A Y
+B X
+C Z`,
+		want1: 15,
+		want2: 12,
 	},
 	{
 		input: input,
-		want1: "TBD",
-		want2: "TBD",
+		want1: 12740,
+		want2: 11980,
 	},
 }
 

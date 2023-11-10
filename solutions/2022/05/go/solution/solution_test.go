@@ -22,14 +22,19 @@ var tests = []struct {
 		input: `    [D]    
 [N] [C]    
 [Z] [M] [P]
- 1   2   3 `,
-		want1: "TBD",
-		want2: "TBD",
+ 1   2   3 
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2`,
+		want1: "CMZ",
+		want2: "MCD",
 	},
 	{
 		input: input,
-		want1: "TBD",
-		want2: "TBD",
+		want1: "MQTPGLLDN",
+		want2: "LVZPSTTCZ",
 	},
 }
 

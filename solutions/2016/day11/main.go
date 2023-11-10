@@ -196,7 +196,7 @@ func (s State) NextStates() []State {
 
 func (s State) PrintAll() {
 	for node := &s; node != nil; node = node.Parent {
-		fmt.Println(node, "\n")
+		fmt.Println(node)
 	}
 }
 

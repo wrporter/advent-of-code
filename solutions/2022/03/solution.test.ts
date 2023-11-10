@@ -1,6 +1,7 @@
 import { Solution } from './solution';
 
 const solution = new Solution();
+const input = solution.readInput();
 
 describe(`Day ${solution.day}`, () => {
     const tests = [
@@ -13,6 +14,11 @@ ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw`,
             want1: 157,
             want2: 70,
+        },
+        {
+            input,
+            want1: 7737,
+            want2: 2697,
         }
     ];
 

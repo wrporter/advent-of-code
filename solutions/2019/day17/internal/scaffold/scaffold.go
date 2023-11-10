@@ -92,7 +92,7 @@ func (s *Scaffold) MoveRobot(grid [][]rune, robot *VacuumRobot) int {
 
 func showVideoFeed(robot *VacuumRobot) {
 	for c := range robot.output {
-		fmt.Print(string(c))
+		fmt.Print(string(rune(c)))
 	}
 }
 

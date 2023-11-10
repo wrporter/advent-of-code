@@ -21,7 +21,7 @@ func Test_parse(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
-			got, expected, index := parse(tt.input)
+			got, expected, _, index := parse(tt.input)
 			if got != tt.wantGot {
 				t.Errorf("parse() got = %v, wantGot %v", got, tt.wantGot)
 			}

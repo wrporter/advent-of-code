@@ -19,17 +19,19 @@ var tests = []struct {
 	want2 interface{}
 }{
 	{
-		input: `    [D]    
-[N] [C]    
-[Z] [M] [P]
- 1   2   3 `,
-		want1: "TBD",
-		want2: "TBD",
+		input: `2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8`,
+		want1: 2,
+		want2: 4,
 	},
 	{
 		input: input,
-		want1: "TBD",
-		want2: "TBD",
+		want1: 651,
+		want2: 956,
 	},
 }
 

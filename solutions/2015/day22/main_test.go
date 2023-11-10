@@ -56,7 +56,7 @@ func Test_winMinMana(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
-			if got := winMinMana(tt.args.startPlayer, tt.args.startBoss, ""); got != tt.want {
+			if got, _ := winMinMana(tt.args.startPlayer, tt.args.startBoss, ""); got != tt.want {
 				t.Errorf("winMinMana() = %v, want %v", got, tt.want)
 			}
 		})

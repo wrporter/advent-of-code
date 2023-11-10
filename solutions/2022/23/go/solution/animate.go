@@ -109,7 +109,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		vector.DrawFilledRect(screen,
 			float32(g.BorderHorizontal), float32(g.BorderVertical),
 			float32(g.TileSize*len(rectangle[0])), float32(g.TileSize*len(rectangle)),
-			fc)
+			fc,
+			false,
+		)
 
 		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.emptyTilesAfterRound10, g.round), 8, 16, fontColor)
 	}
@@ -126,6 +128,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				float32(x*g.TileSize+g.BorderHorizontal), float32(y*g.TileSize+g.BorderVertical),
 				float32(g.TileSize), float32(g.TileSize),
 				elfColor,
+				false,
 			)
 		}
 	}

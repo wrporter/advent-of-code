@@ -147,6 +147,7 @@ func (g *Game) Restart() {
 				float32(x*g.TileSize+g.BorderHorizontal), float32(y*g.TileSize+g.BorderVertical),
 				float32(g.TileSize), float32(g.TileSize),
 				c,
+				false,
 			)
 		}
 	}
@@ -177,6 +178,7 @@ func (g *Game) Play() {
 					float32(p.X*g.TileSize+g.BorderHorizontal), float32(p.Y*g.TileSize+g.BorderVertical),
 					float32(g.TileSize), float32(g.TileSize),
 					animate.ToColor(sandColor),
+					false,
 				)
 			}
 
@@ -187,6 +189,7 @@ func (g *Game) Play() {
 					float32(p.X*g.TileSize+g.BorderHorizontal), float32(p.Y*g.TileSize+g.BorderVertical),
 					float32(g.TileSize), float32(g.TileSize),
 					trailColor,
+					false,
 				)
 			}
 			g.trail[g.unit] = "-"
