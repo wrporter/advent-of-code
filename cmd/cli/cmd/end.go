@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/wrporter/advent-of-code/internal/common/v2/timeit"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -38,7 +37,7 @@ var endCmd = &cobra.Command{
 			checkError(err)
 		}
 
-		elapsed := timeit.Round(end.Sub(start), 2)
+		elapsed := end.Sub(start).Round(time.Second)
 		timings[fmt.Sprintf("part%dElapsed", part)] = fmt.Sprintf("%s", elapsed)
 
 		content, err := json.MarshalIndent(timings, "", "  ")

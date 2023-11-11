@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"log/slog"
 	"os"
 	"os/exec"
@@ -155,10 +154,4 @@ func removeTrailingNewline() {
 	checkError(err)
 
 	slog.Default().Info("✅ Removed trailing newline from input")
-}
-
-func checkError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
 }
