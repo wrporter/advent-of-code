@@ -1,6 +1,9 @@
 package convert
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
+)
 
 func ToRuneGrid(lines []string) [][]rune {
 	grid := make([][]rune, len(lines))
@@ -13,6 +16,15 @@ func ToRuneGrid(lines []string) [][]rune {
 		}
 	}
 
+	return grid
+}
+
+func ToIntGrid(lines string) [][]int {
+	rows := strings.Split(lines, "\n")
+	grid := make([][]int, len(rows))
+	for i, line := range rows {
+		grid[i], _ = ToInts(strings.Split(line, ""))
+	}
 	return grid
 }
 
