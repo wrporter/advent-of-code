@@ -15,7 +15,12 @@ var endCmd = &cobra.Command{
 	Use:   "end",
 	Short: "Record end time for a part",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := filepath.Join(conf.OutputPath, "time.json")
+		path := conf.OutputPath
+		if conf.Language != "all" {
+			path = filepath.Join(conf.OutputPath, conf.Language)
+		}
+		path = filepath.Join(path, "time.json")
+
 		part := viper.GetInt("part")
 
 		file, err := os.ReadFile(path)
@@ -46,7 +51,7 @@ var endCmd = &cobra.Command{
 		err = os.WriteFile(path, content, os.ModePerm)
 		checkError(err)
 
-		slog.Default().With("timings", timings).Info("⏱️ Tada!")
+		slog.Default().With("timings", timings).Info("⏱️ Times recorded!")
 	},
 }
 
