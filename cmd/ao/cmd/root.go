@@ -14,7 +14,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "aocup",
+	Use:   "ao",
 	Short: "A wrapper around the aoc CLI https://github.com/scarvalhojr/aoc-cli",
 }
 
@@ -30,7 +30,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.aocup.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.ao.yaml)")
 
 	defaultYear, _, defaultDay := time.Now().Date()
 	rootCmd.PersistentFlags().IntP("year", "y", defaultYear, "event Year")
@@ -51,7 +51,7 @@ func initConfig() {
 
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".aocup")
+		viper.SetConfigName(".ao")
 	}
 
 	viper.AutomaticEnv()

@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wrporter/advent-of-code/cmd/cli/cmd/color"
+	"github.com/wrporter/advent-of-code/cmd/ao/cmd/color"
 	"log/slog"
 	"strings"
 	"sync"

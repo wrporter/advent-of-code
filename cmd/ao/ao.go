@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/wrporter/advent-of-code/cmd/cli/cmd"
-	"github.com/wrporter/advent-of-code/cmd/cli/cmd/prettylog"
+	"github.com/wrporter/advent-of-code/cmd/ao/cmd"
+	"github.com/wrporter/advent-of-code/cmd/ao/cmd/prettylog"
 	"log/slog"
 )
 
