@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wrporter/advent-of-code/cmd/ao/cmd/color"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -51,7 +52,7 @@ var endCmd = &cobra.Command{
 		err = os.WriteFile(path, content, os.ModePerm)
 		cobra.CheckErr(err)
 
-		slog.Default().With("timings", timings).Info("⏱️ Times recorded!")
+		slog.Default().With("timings", timings).Info(fmt.Sprintf("⏱️ Times recorded at: %s", color.Set(color.Green, path)))
 	},
 }
 

@@ -49,6 +49,14 @@ func ToInts(values []string) (result []int, err error) {
 	return result, nil
 }
 
+func ToIntsV2(values []string) (result []int) {
+	for _, stringValue := range values {
+		value := StringToInt(stringValue)
+		result = append(result, value)
+	}
+	return result
+}
+
 func RuneToInt(rune uint8) int {
 	return int(rune - '0')
 }
