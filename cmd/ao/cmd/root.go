@@ -33,13 +33,13 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.ao.yaml)")
 
 	defaultYear, _, defaultDay := time.Now().Date()
-	rootCmd.PersistentFlags().IntP("year", "y", defaultYear, "event Year")
-	rootCmd.PersistentFlags().IntP("day", "d", defaultDay, "event Day")
+	rootCmd.PersistentFlags().IntP("year", "y", defaultYear, "event year")
+	rootCmd.PersistentFlags().IntP("day", "d", defaultDay, "event day")
 	rootCmd.PersistentFlags().StringP("output-path", "o", "", "path to output files to")
 	rootCmd.PersistentFlags().StringP("language", "l", "all", "specify writing templated files for a single language")
 
 	err := viper.BindPFlags(rootCmd.PersistentFlags())
-	checkError(err)
+	cobra.CheckErr(err)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -51,6 +51,7 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		viper.AddConfigPath(home)
+		viper.AddConfigPath(".")
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".ao")
 	}
@@ -58,13 +59,8 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
-}
-
-func checkError(err error) {
-	if err != nil {
-		slog.Default().Error(err.Error())
-		os.Exit(1)
+		slog.Default().Info(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
+	} else {
+		cobra.CheckErr(err)
 	}
 }

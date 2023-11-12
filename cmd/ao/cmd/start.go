@@ -28,7 +28,7 @@ var conf config
 
 func initConfigStart() {
 	err := viper.Unmarshal(&conf)
-	checkError(err)
+	cobra.CheckErr(err)
 
 	if conf.OutputPath == "" {
 		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
@@ -54,7 +54,7 @@ func init() {
 	startCmd.Flags().StringP("output-path", "o", "", "path to output files to")
 
 	err := viper.BindPFlags(startCmd.Flags())
-	checkError(err)
+	cobra.CheckErr(err)
 }
 
 const (
@@ -71,10 +71,10 @@ func generateNewDay() {
 			}
 			return nil
 		})
-		checkError(err)
+		cobra.CheckErr(err)
 	} else {
 		paths, err := filepath.Glob(filepath.Join(baseTemplateDir, "*"+templateExt))
-		checkError(err)
+		cobra.CheckErr(err)
 		templatePaths = append(templatePaths, paths...)
 
 		err = filepath.Walk(filepath.Join(baseTemplateDir, conf.Language), func(path string, f os.FileInfo, err error) error {
@@ -83,14 +83,14 @@ func generateNewDay() {
 			}
 			return nil
 		})
-		checkError(err)
+		cobra.CheckErr(err)
 	}
 
 	for _, templatePath := range templatePaths {
 		newPath := strings.ReplaceAll(templatePath, baseTemplateDir+"/", "")
 		newPath = strings.ReplaceAll(filepath.Join(conf.OutputPath, newPath), templateExt, "")
 		err := os.MkdirAll(filepath.Dir(newPath), os.ModePerm)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		if _, err := os.Stat(newPath); err == nil && !conf.Overwrite {
 			slog.Default().Warn(fmt.Sprintf("Skipped writing file because it already exists: %s", color.Set(color.Yellow, newPath)))
@@ -100,13 +100,13 @@ func generateNewDay() {
 		}
 
 		file, err := os.Create(newPath)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		t, err := template.ParseFiles(templatePath)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		err = t.Execute(file, conf)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		slog.Default().Info(fmt.Sprintf("Wrote file: %s", color.Set(color.Green, newPath)))
 	}
@@ -134,7 +134,7 @@ func downloadInput() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
-	checkError(err)
+	cobra.CheckErr(err)
 
 	slog.Default().Info("✅  Downloaded input")
 }
@@ -142,10 +142,10 @@ func downloadInput() {
 func removeTrailingNewline() {
 	inputPath := filepath.Join(conf.OutputPath, "input.txt")
 	content, err := os.ReadFile(inputPath)
-	checkError(err)
+	cobra.CheckErr(err)
 
 	err = os.WriteFile(inputPath, []byte(strings.TrimSuffix(string(content), "\n")), os.ModeType)
-	checkError(err)
+	cobra.CheckErr(err)
 
 	slog.Default().Info("✅  Removed trailing newline from input")
 }
@@ -154,7 +154,7 @@ func writeStartTime() {
 	contents, err := json.MarshalIndent(map[string]string{
 		"start": time.Now().Format(time.RFC3339),
 	}, "", "  ")
-	checkError(err)
+	cobra.CheckErr(err)
 
 	path := conf.OutputPath
 	if conf.Language != "all" {
@@ -162,7 +162,7 @@ func writeStartTime() {
 	}
 
 	err = os.WriteFile(filepath.Join(path, "time.json"), contents, os.ModePerm)
-	checkError(err)
+	cobra.CheckErr(err)
 
 	slog.Default().Info("✅  Wrote start time")
 }

@@ -24,11 +24,11 @@ var endCmd = &cobra.Command{
 		part := viper.GetInt("part")
 
 		file, err := os.ReadFile(path)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		var timings map[string]string
 		err = json.Unmarshal(file, &timings)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		end := time.Now()
 		timings[fmt.Sprintf("part%dEnd", part)] = end.Format(time.RFC3339)
@@ -36,20 +36,20 @@ var endCmd = &cobra.Command{
 		var start time.Time
 		if part == 1 {
 			start, err = time.Parse(time.RFC3339, timings["start"])
-			checkError(err)
+			cobra.CheckErr(err)
 		} else {
 			start, err = time.Parse(time.RFC3339, timings["part1End"])
-			checkError(err)
+			cobra.CheckErr(err)
 		}
 
 		elapsed := end.Sub(start).Round(time.Second)
 		timings[fmt.Sprintf("part%dElapsed", part)] = fmt.Sprintf("%s", elapsed)
 
 		content, err := json.MarshalIndent(timings, "", "  ")
-		checkError(err)
+		cobra.CheckErr(err)
 
 		err = os.WriteFile(path, content, os.ModePerm)
-		checkError(err)
+		cobra.CheckErr(err)
 
 		slog.Default().With("timings", timings).Info("⏱️ Times recorded!")
 	},
@@ -58,7 +58,7 @@ var endCmd = &cobra.Command{
 func init() {
 	cobra.OnInitialize(func() {
 		err := viper.Unmarshal(&conf)
-		checkError(err)
+		cobra.CheckErr(err)
 	})
 
 	rootCmd.AddCommand(endCmd)
@@ -66,5 +66,5 @@ func init() {
 	endCmd.Flags().IntP("part", "p", 1, "part to record time for")
 
 	err := viper.BindPFlags(endCmd.Flags())
-	checkError(err)
+	cobra.CheckErr(err)
 }
