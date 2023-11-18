@@ -3,3 +3,4 @@
 node_modules
 .adventofcode.session
 build
+target
