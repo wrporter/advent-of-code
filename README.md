@@ -9,7 +9,7 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
 ### Usage
 
 1. Install [aoc-cli](https://github.com/scarvalhojr/aoc-cli).
-    - After you log in at https://adventofcode.com/, copy your `session` cookie and save it to `adventofcode.session`.
+    - After you log in at https://adventofcode.com/, copy your `session` cookie and save it to `.adventofcode.session`.
 2. Compile and install the binary with `go install cmd/ao/ao.go`.
 3. For convenience, create a `.ao.yaml` file. Example:
     ```yaml
