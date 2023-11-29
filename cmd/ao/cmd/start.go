@@ -29,10 +29,6 @@ var conf config
 func initConfigStart() {
 	err := viper.Unmarshal(&conf)
 	cobra.CheckErr(err)
-
-	if conf.OutputPath == "" {
-		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
-	}
 }
 
 var startCmd = &cobra.Command{
@@ -51,7 +47,6 @@ func init() {
 	rootCmd.AddCommand(startCmd)
 
 	startCmd.Flags().Bool("overwrite", false, "overwrite existing files with templates")
-	startCmd.Flags().StringP("output-path", "o", "", "path to output files to")
 
 	err := viper.BindPFlags(startCmd.Flags())
 	cobra.CheckErr(err)

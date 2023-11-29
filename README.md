@@ -25,3 +25,27 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
     - When a language is specified, the timer is scoped to that language's directory. This can be a nice way to time how long it takes you to write solutions in each language.
 6. End a part with `ao end -d 13 -p 1`.
     - Records how long it took you to solve the part.
+
+```shell
+$ ao help                
+A wrapper around the aoc CLI https://github.com/scarvalhojr/aoc-cli
+
+Usage:
+  ao [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  end         Record end time for a part
+  help        Help about any command
+  start       Start solving parts for a given Day
+
+Flags:
+  -c, --config string        config file (default is $HOME/.ao.yaml)
+  -d, --day int              event day (default 29)
+  -h, --help                 help for ao
+  -l, --language string      specify writing templated files for a single language (default "all")
+  -o, --output-path string   path to output files to (default "solutions/2023/29")
+  -y, --year int             event year (default 2023)
+
+Use "ao [command] --help" for more information about a command.
+```
