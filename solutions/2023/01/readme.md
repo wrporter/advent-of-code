@@ -22,3 +22,9 @@ Now this one was a doozy 😅! Maybe there are better approaches, but I went for
 3. Find the first and last numbers.
 4. Make sure to get the first and last digit within those numbers in case there are teens to account for.
 5. Concatenate the digits as strings and convert to a number, then add to the total sum.
+
+Here's what tripped me up and discovered while debugging.
+
+1. I didn't realize actual digits were still included. For example, `3` versus `three`. Make sure to read all the instructions!!!
+2. I forgot to account for duplicates, so I did a second pass to get both the first and last occurrences of numbers.
+3. To account for teens, there is an extra digit. When calculating my first and last digits, I had to make sure to split those out. **Edit:** The example input has `7pqrstsixteen`, so I thought for sure I'd have to account for teens. Looks like my input doesn't actually have `teen` anywhere in it. Well, that would have saved 10 minutes of debugging, but at least my solution is teen-proof 😂.
