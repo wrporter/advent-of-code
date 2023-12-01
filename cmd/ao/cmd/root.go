@@ -35,7 +35,7 @@ func init() {
 	defaultYear, _, defaultDay := time.Now().Date()
 	rootCmd.PersistentFlags().IntP("year", "y", defaultYear, "event year")
 	rootCmd.PersistentFlags().IntP("day", "d", defaultDay, "event day")
-	rootCmd.PersistentFlags().StringP("output-path", "o", fmt.Sprintf("solutions/%d/%02d", defaultYear, defaultDay), "path to output files to")
+	rootCmd.PersistentFlags().StringP("output-path", "o", "", "path to output files to (default is solutions/{year}/{day})")
 	rootCmd.PersistentFlags().StringP("language", "l", "all", "specify writing templated files for a single language")
 
 	err := viper.BindPFlags(rootCmd.PersistentFlags())

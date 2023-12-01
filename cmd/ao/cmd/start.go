@@ -29,6 +29,10 @@ var conf config
 func initConfigStart() {
 	err := viper.Unmarshal(&conf)
 	cobra.CheckErr(err)
+
+	if conf.OutputPath == "" {
+		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
+	}
 }
 
 var startCmd = &cobra.Command{
