@@ -56,6 +56,7 @@ var numbers = map[string]string{
 	"nine":  "9",
 }
 
+// MAX_NUM_LENGTH is the max size any of the digits can be in word form.
 const MAX_NUM_LENGTH = 5
 
 // Part2 uses a sliding window algorithm to find the first and last digit. This
