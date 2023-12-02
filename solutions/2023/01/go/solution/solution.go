@@ -56,27 +56,64 @@ var numbers = map[string]string{
 	"nine":  "9",
 }
 
+const MAX_NUM_LENGTH = 5
+
+// Part2 uses a sliding window algorithm to find the first and last digit. This
+// is more performant, but there is a much higher chance for error due to off-
+// by-one errors.
 func (s Solution) Part2(input string, _ ...interface{}) interface{} {
+	sum := 0
+
+	for _, line := range strings.Split(input, "\n") {
+		var first, last string
+
+		for i := 0; i < len(line) && first == ""; i++ {
+			for size := 1; size <= MAX_NUM_LENGTH && i+size <= len(line) && first == ""; size++ {
+				window := line[i : i+size]
+				if digit, ok := numbers[window]; ok {
+					first = digit
+				}
+			}
+		}
+
+		for i := len(line); i >= 1 && last == ""; i-- {
+			for size := 1; size <= MAX_NUM_LENGTH && i-size >= 0 && last == ""; size++ {
+				window := line[i-size : i]
+				if digit, ok := numbers[window]; ok {
+					last = digit
+				}
+			}
+		}
+
+		value, _ := strconv.Atoi(first + last)
+		sum += value
+	}
+
+	return sum
+}
+
+// Part2_alternative is less performant, but easier to think through with less
+// potential for bugs.
+func (s Solution) Part2_alternative(input string, _ ...interface{}) interface{} {
 	sum := 0
 
 	for _, line := range strings.Split(input, "\n") {
 		var first, last string
 		locations := make(map[int]string)
 
+		low := math.MaxInt
+		high := math.MinInt
 		for num := range numbers {
 			if i := strings.Index(line, num); i >= 0 {
 				locations[i] = num
+				low = min(low, i)
+				high = max(high, i)
 			}
 			if i := strings.LastIndex(line, num); i >= 0 {
 				locations[i] = num
+				low = min(low, i)
+				high = max(high, i)
 			}
-		}
-
-		low := math.MaxInt
-		high := math.MinInt
-		for i := range locations {
-			low = min(low, i)
-			high = max(high, i)
 		}
 
 		first = numbers[locations[low]]
