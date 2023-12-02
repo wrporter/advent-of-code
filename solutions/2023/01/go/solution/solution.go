@@ -1,7 +1,6 @@
 package solution
 
 import (
-	"github.com/wrporter/advent-of-code/internal/common/ints"
 	"math"
 	"strconv"
 	"strings"
@@ -76,8 +75,8 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 		low := math.MaxInt
 		high := math.MinInt
 		for i := range locations {
-			low = ints.Min(low, i)
-			high = ints.Max(high, i)
+			low = min(low, i)
+			high = max(high, i)
 		}
 
 		first = numbers[locations[low]]
