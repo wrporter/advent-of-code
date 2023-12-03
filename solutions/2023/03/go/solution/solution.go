@@ -35,7 +35,7 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 					}
 				}
 
-				debugNumber(isPart, start, col, line, row, lines)
+				//debugNumber(isPart, start, col, line, row, lines)
 
 				start = -1
 			}
