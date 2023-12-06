@@ -16,7 +16,7 @@ I kicked this one off with a quick brute force algorithm.
 
 ### Part 2
 
-I worried that we'd need to use a math trick for performance, but my brute force solution ran in 38 microseconds! However, I wasn't satisfied, so I explored better approaches.
+I worried that we'd need to use a math trick for performance, but my brute force solution ran in 38ms! However, I wasn't satisfied, so I explored better approaches.
 
 First, I realized I could get run up to the first time we beat the record, then start from the end and find the last time we'd beat the record and get the difference between the two (and add one to be inclusive). This improved performance by 4x for my input.
 
