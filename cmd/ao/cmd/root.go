@@ -10,6 +10,16 @@ import (
 	"github.com/spf13/viper"
 )
 
+type config struct {
+	Year       int    `mapstructure:"year"`
+	Day        int    `mapstructure:"day"`
+	OutputPath string `mapstructure:"output-path"`
+	Overwrite  bool   `mapstructure:"overwrite"`
+	Language   string `mapstructure:"language"`
+}
+
+var conf config
+
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -59,8 +69,17 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		slog.Default().Info(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
+		slog.Default().Debug(fmt.Sprintf("Using config file: %s", viper.ConfigFileUsed()))
 	} else {
 		cobra.CheckErr(err)
+	}
+}
+
+func setConfig() {
+	err := viper.Unmarshal(&conf)
+	cobra.CheckErr(err)
+
+	if conf.OutputPath == "" {
+		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
 	}
 }

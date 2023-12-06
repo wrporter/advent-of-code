@@ -54,18 +54,16 @@ var endCmd = &cobra.Command{
 
 		slog.Default().With("timings", timings).Info(fmt.Sprintf("⏱️ Times recorded at: %s", color.Set(color.Green, path)))
 	},
+	PreRun: func(cmd *cobra.Command, args []string) {
+		err := viper.BindPFlags(cmd.Flags())
+		cobra.CheckErr(err)
+
+		setConfig()
+	},
 }
 
 func init() {
-	cobra.OnInitialize(func() {
-		err := viper.Unmarshal(&conf)
-		cobra.CheckErr(err)
-	})
-
 	rootCmd.AddCommand(endCmd)
 
-	endCmd.Flags().IntP("part", "p", 1, "part to record time for")
-
-	err := viper.BindPFlags(endCmd.Flags())
-	cobra.CheckErr(err)
+	rootCmd.PersistentFlags().IntP("part", "p", 1, "part to record time for")
 }

@@ -16,25 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type config struct {
-	Year       int    `mapstructure:"year"`
-	Day        int    `mapstructure:"day"`
-	OutputPath string `mapstructure:"output-path"`
-	Overwrite  bool   `mapstructure:"overwrite"`
-	Language   string `mapstructure:"language"`
-}
-
-var conf config
-
-func initConfigStart() {
-	err := viper.Unmarshal(&conf)
-	cobra.CheckErr(err)
-
-	if conf.OutputPath == "" {
-		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
-	}
-}
-
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start solving parts for a given Day",
@@ -44,16 +25,18 @@ var startCmd = &cobra.Command{
 		removeTrailingNewline()
 		writeStartTime()
 	},
+	PreRun: func(cmd *cobra.Command, args []string) {
+		err := viper.BindPFlags(cmd.Flags())
+		cobra.CheckErr(err)
+
+		setConfig()
+	},
 }
 
 func init() {
-	cobra.OnInitialize(initConfigStart)
 	rootCmd.AddCommand(startCmd)
 
 	startCmd.Flags().Bool("overwrite", false, "overwrite existing files with templates")
-
-	err := viper.BindPFlags(startCmd.Flags())
-	cobra.CheckErr(err)
 }
 
 const (
