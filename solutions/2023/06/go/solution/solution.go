@@ -66,7 +66,7 @@ func countWaysToWin_Faster(raceDuration int, record int) int {
 	return end - start + 1
 }
 
-func countWaysToWin_Optimal(time int, record int) interface{} {
+func countWaysToWin_Optimal(time int, record int) int {
 	// a = -1 due to the step time being constant and a < 0 indicates a
 	// parabola open downward (upside down U)
 	a := float64(-1)
