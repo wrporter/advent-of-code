@@ -3,6 +3,7 @@ package solution
 import (
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/v2/mymath"
+	"math"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 	for _, conversions := range maps {
 		for i, seed := range seeds {
 			for _, c := range conversions {
-				if seed >= c.source && seed < c.source+c.length {
+				if seed >= c.source && seed < c.sourceEnd {
 					seeds[i] = seed + c.destination - c.source
 				}
 			}
@@ -24,33 +25,67 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 
 func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	seeds, maps := parseInput(input)
-	var seeds2 []int
+	low := math.MaxInt
+
 	for i := 0; i < len(seeds); i += 2 {
-		start := seeds[i]
-		length := seeds[i+1]
-		for seed := start; seed < start+length-1; seed++ {
-			seeds2 = append(seeds2, seed)
-		}
-	}
+		current := []interval{{seeds[i], seeds[i] + seeds[i+1]}}
 
-	for _, conversions := range maps {
-		for i, seed := range seeds2 {
+		for _, conversions := range maps {
+			// Seed ranges that are fully contained within a category conversion
+			var contained []interval
+
 			for _, c := range conversions {
-				if seed >= c.source && seed < c.source+c.length {
-					delta := seed - c.source
-					seeds2[i] = c.destination + delta
+				// Ranges that are split that still need to be considered for conversion by other
+				// ranges
+				var split []interval
+
+				for _, node := range current {
+					// Ranges relative to the category conversion
+					before := interval{node.start, min(node.end, c.source)}
+					within := interval{max(node.start, c.source), min(c.sourceEnd, node.end)}
+					after := interval{max(c.sourceEnd, node.start), node.end}
+
+					// Only process valid ranges
+					if before.end > before.start {
+						split = append(split, before)
+					}
+
+					if within.end > within.start {
+						contained = append(contained, interval{
+							start: within.start - c.source + c.destination,
+							end:   within.end - c.source + c.destination,
+						})
+					}
+
+					if after.end > after.start {
+						split = append(split, after)
+					}
 				}
+
+				current = split
 			}
+
+			current = append(current, contained...)
+		}
+
+		for _, r := range current {
+			low = min(low, r.start)
 		}
 	}
 
-	return mymath.Min(seeds2...)
+	return low
+}
+
+// range is a keyword, so we use interval instead
+type interval struct {
+	start int
+	end   int
 }
 
 type conversion struct {
 	destination int
 	source      int
-	length      int
+	sourceEnd   int
 }
 
 func parseInput(input string) ([]int, [][]conversion) {
@@ -68,7 +103,7 @@ func parseInput(input string) ([]int, [][]conversion) {
 			conversions[j] = conversion{
 				destination: numbers[0],
 				source:      numbers[1],
-				length:      numbers[2],
+				sourceEnd:   numbers[1] + numbers[2],
 			}
 		}
 

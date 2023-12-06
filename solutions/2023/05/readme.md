@@ -27,3 +27,17 @@ Here's my brute force method, which took only a minute to write, then another fe
 Overall, I was very lucky with my delta time between solving parts 1 and 2. Advent of Code shows it was 21m55s.
 
 I'll commit the brute force solution now, with plans to return and clean things up.
+
+#### Edit (performance improvement!)
+
+Got some time to come back and think through the range math. 
+
+1. Loop through each seed range.
+2. Loop through each category map. Keep track of seed ranges that are fully contained within a category conversion. These are ranges we know matched a range and need no further processing.
+3. Loop through each source/destination conversion and update the seed ranges. Keep track of ranges that need to be split and considered by other conversions.
+4. Loop through the original seed range and any splits that we perform.
+   1. Create ranges relative to the category conversion we are currently evaluating. We track before, within, and after the conversion source range.
+   2. Only process valid ranges. The end of the range must be after the start of the range.
+5. Set the current seed ranges to evaluate to any ranges that we split.
+6. Once we are done processing a seed range, keep track of the minimum value from the start of the each range.
+7. Return the minimum value from the processed ranges.
