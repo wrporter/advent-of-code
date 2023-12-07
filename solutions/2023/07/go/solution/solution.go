@@ -20,21 +20,12 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	return sumWinnings(hands)
 }
 
-var strength = map[byte]int{
-	'A': 12,
-	'K': 11,
-	'Q': 10,
-	'J': 9,
-	'T': 8,
-	'9': 7,
-	'8': 6,
-	'7': 5,
-	'6': 4,
-	'5': 3,
-	'4': 2,
-	'3': 1,
-	'2': 0,
-	'W': -1, // wild joker
+var strength = make(map[byte]int)
+
+func init() {
+	for i, card := range []byte("W23456789TJQKA") {
+		strength[card] = i
+	}
 }
 
 const (
