@@ -18,7 +18,7 @@ import (
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Start solving parts for a given Day",
+	Short: "Start solving parts for a given day. Generates a solution template, downloads the puzzle input, and writes a starting time.",
 	Run: func(cmd *cobra.Command, args []string) {
 		generateNewDay()
 		downloadInput()
@@ -109,8 +109,7 @@ func downloadInput() {
 		"--overwrite",
 		"--input-file",
 		filepath.Join(conf.OutputPath, "input.txt"),
-		"--puzzle-file",
-		filepath.Join(conf.OutputPath, "puzzle.md"),
+		"--input-only",
 	)
 
 	cmd.Stdout = os.Stdout

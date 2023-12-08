@@ -48,8 +48,39 @@ To see how much margin of error you have, determine the *number of ways you can 
 
 Determine the number of ways you could beat the record in each race. *What do you get if you multiply these numbers together?*
 
-To begin, [get your puzzle input](6/input).
+Your puzzle answer was `1195150`.
 
-Answer:
+\--- Part Two ---
+----------
 
-You can also [Shareon [Twitter](https://twitter.com/intent/tweet?text=%22Wait+For+It%22+%2D+Day+6+%2D+Advent+of+Code+2023&url=https%3A%2F%2Fadventofcode%2Ecom%2F2023%2Fday%2F6&related=ericwastl&hashtags=AdventOfCode) [Mastodon](javascript:void(0);)] this puzzle.
+As the race is about to start, you realize the piece of paper with race times and record distances you got earlier actually just has very bad [kerning](https://en.wikipedia.org/wiki/Kerning). There's really *only one race* - ignore the spaces between the numbers on each line.
+
+So, the example from before:
+
+```
+Time:      7  15   30
+Distance:  9  40  200
+
+```
+
+...now instead means this:
+
+```
+Time:      71530
+Distance:  940200
+
+```
+
+Now, you have to figure out how many ways there are to win this single race. In this example, the race lasts for *`71530` milliseconds* and the record distance you need to beat is *`940200` millimeters*. You could hold the button anywhere from `14` to `71516` milliseconds and beat the record, a total of `*71503*` ways!
+
+*How many ways can you beat the record in this one much longer race?*
+
+Your puzzle answer was `42550411`.
+
+Both parts of this puzzle are complete! They provide two gold stars: \*\*
+
+At this point, you should [return to your Advent calendar](/2023) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](6/input).
+
+You can also [Shareon [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Wait+For+It%22+%2D+Day+6+%2D+Advent+of+Code+2023&url=https%3A%2F%2Fadventofcode%2Ecom%2F2023%2Fday%2F6&related=ericwastl&hashtags=AdventOfCode) [Mastodon](javascript:void(0);)] this puzzle.

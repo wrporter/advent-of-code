@@ -8,13 +8,14 @@ import (
 	"github.com/wrporter/advent-of-code/cmd/ao/cmd/color"
 	"log/slog"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 )
 
 var endCmd = &cobra.Command{
 	Use:   "end",
-	Short: "Record end time for a part",
+	Short: "Record end time for a part. Download puzzle description after completing part 2.",
 	Run: func(cmd *cobra.Command, args []string) {
 		path := conf.OutputPath
 		if conf.Language != "all" {
@@ -41,6 +42,8 @@ var endCmd = &cobra.Command{
 		} else {
 			start, err = time.Parse(time.RFC3339, timings["part1End"])
 			cobra.CheckErr(err)
+
+			downloadPuzzle()
 		}
 
 		elapsed := end.Sub(start).Round(time.Second)
@@ -66,4 +69,28 @@ func init() {
 	rootCmd.AddCommand(endCmd)
 
 	rootCmd.PersistentFlags().IntP("part", "p", 1, "part to record time for")
+}
+
+func downloadPuzzle() {
+	cmd := exec.Command(
+		"aoc",
+		"download",
+		"--session-file",
+		".adventofcode.session",
+		"--year",
+		fmt.Sprintf("%d", conf.Year),
+		"--day",
+		fmt.Sprintf("%d", conf.Day),
+		"--overwrite",
+		"--puzzle-file",
+		filepath.Join(conf.OutputPath, "puzzle.md"),
+		"--puzzle-only",
+	)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	cobra.CheckErr(err)
+
+	slog.Default().Info("✅  Downloaded input")
 }

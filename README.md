@@ -21,13 +21,14 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
 5. Start a day with `ao start -d 13`.
     - Writes new files from the templates for the day.
     - Starts a timer.
-    - Downloads puzzle input from the Advent of Code site.
+    - Downloads puzzle input from the Advent of Code site. Formats the file to remove any trailing newline characters to keep files consistent.
     - When a language is specified, the timer is scoped to that language's directory. This can be a nice way to time how long it takes you to write solutions in each language.
 6. End a part with `ao end -d 13 -p 1`.
     - Records how long it took you to solve the part.
+    - Upon completing Part 2, downloads the full puzzle description.
 
 ```shell
-$ ao help                
+$ ao help
 A wrapper around the aoc CLI https://github.com/scarvalhojr/aoc-cli
 
 Usage:
@@ -35,16 +36,18 @@ Usage:
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  end         Record end time for a part
+  end         Record end time for a part. Download puzzle description after completing part 2.
   help        Help about any command
-  start       Start solving parts for a given Day
+  run         Run all solutions for a year or a specified day
+  start       Start solving parts for a given day. Generates a solution template, downloads the puzzle input, and writes a starting time.
 
 Flags:
   -c, --config string        config file (default is $HOME/.ao.yaml)
-  -d, --day int              event day (default 29)
+  -d, --day int              event day (default 8)
   -h, --help                 help for ao
   -l, --language string      specify writing templated files for a single language (default "all")
-  -o, --output-path string   path to output files to (default "solutions/2023/29")
+  -o, --output-path string   path to output files to (default is solutions/{year}/{day})
+  -p, --part int             part to record time for (default 1)
   -y, --year int             event year (default 2023)
 
 Use "ao [command] --help" for more information about a command.

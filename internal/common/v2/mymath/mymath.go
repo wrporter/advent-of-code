@@ -157,11 +157,20 @@ func GCD(a, b int) int {
 }
 
 // LCM returns the Least Common Multiple (LCM) via GCD.
-func LCM(a, b int, integers ...int) int {
+func LCM(values ...int) int {
+	if len(values) == 0 {
+		return 0
+	}
+	if len(values) == 1 {
+		return values[0]
+	}
+
+	a, b := values[0], values[1]
 	result := a * b / GCD(a, b)
 
-	for i := 0; i < len(integers); i++ {
-		result = LCM(result, integers[i])
+	rest := values[2:]
+	for i := 0; i < len(rest); i++ {
+		result = LCM(result, rest[i])
 	}
 
 	return result
