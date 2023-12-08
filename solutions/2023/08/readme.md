@@ -35,3 +35,8 @@ I'm not sure how long this would take to complete, but as soon as I ran it, my s
 I immediately jumped to using the least common multiple of the values. I already have functions in my mini-AoC library for that, so I plugged that in and got a result super quick. Plugged that in and it got accepted!
 
 My solution takes about `11ms` so I feel like there might be other optimizations I'm not thinking of, but I will let it rest there.
+
+**Edit:** The performance on this bothered me, so I thought about it a little more and realized two optimizations I could make:
+
+1. Once we've reached a location that ends in `Z` we can stop looping over that location. By extracting the similar code from Part 1, it made this simpler to reorder the logic because I had a lot more going on in Part 2 that I didn't need, such as maps keeping track of the chain of locations. This got my solution down to `3ms` from `11ms`. Then I went to my next optimization.
+2. We can process all the paths in parallel. Either way, we'd be using the same number of CPU cycles, so we might as well put computing power to work! So I added a wait group and mutex to thread-safely update the list of step counts. This gets us down to about `1.3ms`. Now I am truly satisfied 😄.

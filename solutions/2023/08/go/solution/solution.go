@@ -4,18 +4,63 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/v2/mymath"
 	"regexp"
 	"strings"
+	"sync"
 )
 
 func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 	instructions, network := parseInput(input)
-	location := "AAA"
-	steps := 0
 
 	if _, ok := network["ZZZ"]; !ok {
 		return -1
 	}
 
-	for location != "ZZZ" {
+	return calculateSteps(instructions, network, "AAA", func(location string) bool {
+		return location == "ZZZ"
+	})
+}
+
+func (s Solution) Part2(input string, _ ...interface{}) interface{} {
+	instructions, network := parseInput(input)
+
+	var starts []string
+	for location := range network {
+		if location[len(location)-1] == 'A' {
+			starts = append(starts, location)
+		}
+	}
+
+	done := func(location string) bool {
+		return location[2] == 'Z'
+	}
+
+	var first []int
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+
+	for _, start := range starts {
+		wg.Add(1)
+
+		go func(start string) {
+			steps := calculateSteps(instructions, network, start, done)
+
+			mu.Lock()
+			first = append(first, steps)
+			mu.Unlock()
+
+			wg.Done()
+		}(start)
+	}
+
+	wg.Wait()
+
+	return mymath.LCM(first...)
+}
+
+func calculateSteps(instructions []string, network map[string]node, start string, done func(location string) bool) int {
+	location := start
+	steps := 0
+
+	for !done(location) {
 		instruction := instructions[steps%len(instructions)]
 		steps++
 
@@ -24,54 +69,6 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 		} else {
 			location = network[location].right
 		}
-	}
-
-	return steps
-}
-
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
-	instructions, network := parseInput(input)
-	steps := 0
-	end := false
-
-	locations := make(map[string]string)
-	for location := range network {
-		if location[len(location)-1] == 'A' {
-			locations[location] = location
-		}
-	}
-
-	first := make(map[string]int)
-
-	for !end {
-		next := make(map[string]string)
-		end = true
-		instruction := instructions[steps%len(instructions)]
-		steps++
-
-		for from, location := range locations {
-			if instruction == "L" {
-				next[from] = network[location].left
-			} else {
-				next[from] = network[location].right
-			}
-
-			if _, ok := first[from]; !ok && next[from][2] == 'Z' {
-				first[from] = steps
-			}
-
-			if len(first) == len(locations) {
-				var values []int
-				for _, value := range first {
-					values = append(values, value)
-				}
-				return mymath.LCM(values...)
-			}
-
-			end = end && next[from][2] == 'Z'
-		}
-
-		locations = next
 	}
 
 	return steps
