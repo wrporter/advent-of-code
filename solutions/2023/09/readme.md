@@ -4,6 +4,8 @@
 
 This one totally looked like it was going to require some polynomial math, which I don't remember or know much about anymore. But luckily, we could compute it just by following instructions and didn't need a math trick for performance. I was able to use most of my Part 1 code in Part 2 which was really nice yet again.
 
+Recursion was very helpful here because it allowed us to start calculating the extrapolated value at the bottom of the history and work our way back up. If we did this with for loops, we'd have to collect the full history first, then start at the bottom and add or subtract the overall value.
+
 ### Part 1
 
 1. Parse the input by creating a table of sequences.
