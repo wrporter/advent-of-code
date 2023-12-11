@@ -10,3 +10,7 @@ edition = "2021"
 [[bin]]
 name = "2022_01"
 path = "solutions/2022/01/rust/main.rs"
+
+[[bin]]
+name = "2023_11"
+path = "solutions/2023/11/rust/main.rs"
