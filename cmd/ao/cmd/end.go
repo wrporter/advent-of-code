@@ -92,5 +92,5 @@ func downloadPuzzle() {
 	err := cmd.Run()
 	cobra.CheckErr(err)
 
-	slog.Default().Info("✅  Downloaded input")
+	slog.Default().Info("✅  Downloaded puzzle description")
 }

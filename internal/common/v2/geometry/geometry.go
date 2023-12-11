@@ -41,7 +41,7 @@ func (d Direction) Rotate(degrees int) Direction {
 }
 
 type Vector struct {
-	Point
+	*Point
 	Direction
 }
 
@@ -58,9 +58,10 @@ func (p *Point) Copy() *Point {
 	return NewPoint(p.X, p.Y)
 }
 
-func (p *Point) Move(direction Direction) {
+func (p *Point) Move(direction Direction) *Point {
 	p.X += AllDirectionsModifiers[direction-1].X
 	p.Y += AllDirectionsModifiers[direction-1].Y
+	return p
 }
 
 func (p *Point) Add(point *Point) {
