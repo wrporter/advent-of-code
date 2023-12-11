@@ -6,7 +6,7 @@ This was a nice breather from the previous day. I'm still sick and my 5-year-old
 
 ### Part 1
 
-My initial thought was that a naive approach would be to do a BFS between the points to get the distances, but I immediately jumped to being able to calculate the Manhattan distance between all the pairs of galaxies to drastically optimize.
+My initial thought was that a naive approach would be to do a BFS between the points to get the distances, but I've seen this kind of problem enough times on Advent of Code that I immediately jumped to being able to calculate the Manhattan distance between all the pairs of galaxies to drastically optimize.
 
 My next thoughts on performance were to start by pre-calculating the y-gap and x-gap spaces. Then, factor in the gaps while creating the galaxy coordinates. 
 
