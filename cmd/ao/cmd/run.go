@@ -10,9 +10,9 @@ import (
 
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "Run all solutions for a year or a specified day",
+	Short: "Run solutions for a year and day (runs all days when day is 0)",
 	Run: func(cmd *cobra.Command, args []string) {
-		if conf.Day == -1 {
+		if conf.Day == 0 {
 			delimiter := ""
 			for day := 1; day <= 25; day++ {
 				filename := fmt.Sprintf("solutions/%d/%02d/go/main.go", conf.Year, day)
@@ -43,6 +43,4 @@ func runDay(filename string) error {
 
 func init() {
 	rootCmd.AddCommand(runCmd)
-
-	runCmd.PersistentFlags().IntP("day", "d", -1, "Day to run. If set to -1, all days are run (default).")
 }
