@@ -33,6 +33,7 @@ func parseInput(input string, addGap int) []*point {
 		for x := 0; x < len(image[0]); x++ {
 			if image[y][x] == '#' {
 				gap = 0
+				break
 			}
 		}
 
@@ -47,6 +48,7 @@ func parseInput(input string, addGap int) []*point {
 		for y := 0; y < len(image); y++ {
 			if image[y][x] == '#' {
 				gap = 0
+				break
 			}
 		}
 
