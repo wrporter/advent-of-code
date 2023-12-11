@@ -16,6 +16,8 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
     year: 2022
     day: 13
     language: go
+    leaderboardId: 11111
+    memberId: 11111
     ```
 4. Copy the directory [templates/0-template](templates/0-template). This is the base directory for the Go templates to generate files for a new day.
 5. Start a day with `ao start -d 13`.
@@ -24,7 +26,7 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
     - Downloads puzzle input from the Advent of Code site. Formats the file to remove any trailing newline characters to keep files consistent.
     - When a language is specified, the timer is scoped to that language's directory. This can be a nice way to time how long it takes you to write solutions in each language.
 6. End a part with `ao end -d 13 -p 1`.
-    - Records how long it took you to solve the part.
+    - Records how long it took you to solve the part. Prefers the timestamp from a private leaderboard (both the `leaderboardId` and the `memberId` must be specified in `.ao.yaml`). Otherwise, uses the current time to determine how long the part took to solve.
     - Upon completing Part 2, downloads the full puzzle description.
 
 ```shell

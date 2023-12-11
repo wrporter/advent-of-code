@@ -11,11 +11,13 @@ import (
 )
 
 type config struct {
-	Year       int    `mapstructure:"year"`
-	Day        int    `mapstructure:"day"`
-	OutputPath string `mapstructure:"output-path"`
-	Overwrite  bool   `mapstructure:"overwrite"`
-	Language   string `mapstructure:"language"`
+	Year          int    `mapstructure:"year"`
+	Day           int    `mapstructure:"day"`
+	OutputPath    string `mapstructure:"output-path"`
+	Overwrite     bool   `mapstructure:"overwrite"`
+	Language      string `mapstructure:"language"`
+	LeaderboardId string `mapstructure:"leaderboardId"`
+	MemberId      string `mapstructure:"memberId"`
 }
 
 var conf config

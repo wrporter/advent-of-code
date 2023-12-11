@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wrporter/advent-of-code/cmd/ao/cmd/aoc"
 	"github.com/wrporter/advent-of-code/cmd/ao/cmd/color"
 	"log/slog"
 	"os"
@@ -17,6 +18,11 @@ var endCmd = &cobra.Command{
 	Use:   "end",
 	Short: "Record end time for a part. Download puzzle description after completing part 2.",
 	Run: func(cmd *cobra.Command, args []string) {
+		sessionCookie, err := os.ReadFile(".adventofcode.session")
+		cobra.CheckErr(err)
+		client := aoc.NewClient(string(sessionCookie))
+		leaderboard, _ := client.GetPrivateLeaderboard(conf.Year, conf.LeaderboardId)
+
 		path := conf.OutputPath
 		if conf.Language != "all" {
 			path = filepath.Join(conf.OutputPath, conf.Language)
@@ -32,7 +38,10 @@ var endCmd = &cobra.Command{
 		err = json.Unmarshal(file, &timings)
 		cobra.CheckErr(err)
 
-		end := time.Now()
+		end := getEndTime(leaderboard)
+		if end == nil {
+			end = &time.Time{}
+		}
 		timings[fmt.Sprintf("part%dEnd", part)] = end.Format(time.RFC3339)
 
 		var start time.Time
@@ -63,6 +72,24 @@ var endCmd = &cobra.Command{
 
 		setConfig()
 	},
+}
+
+func getEndTime(leaderboard *aoc.Leaderboard) *time.Time {
+	part, err := rootCmd.Flags().GetInt("part")
+	cobra.CheckErr(err)
+
+	day, ok := leaderboard.Members[conf.MemberId].CompletionDayLevel[fmt.Sprintf("%d", conf.Day)]
+	if !ok {
+		return nil
+	}
+
+	partEnd, ok := day[fmt.Sprintf("%d", part)]
+	if !ok {
+		return nil
+	}
+
+	t := time.Unix(partEnd.GetStarTs, 0)
+	return &t
 }
 
 func init() {
