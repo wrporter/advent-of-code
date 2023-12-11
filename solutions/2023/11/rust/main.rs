@@ -37,46 +37,60 @@ impl AbstractSolution for Solution {
 
 fn get_total_distance(input: &str, gap_size: usize) -> usize {
     let galaxies = parse_input(input, gap_size - 1);
-    galaxies
-        .iter()
-        .enumerate()
-        .flat_map(|(i, p1)| galaxies.iter().skip(i + 1).map(move |p2| p1.manhattan_distance(p2)))
-        .sum()
+    let mut sum = 0;
+
+    for i in 0..galaxies.len() {
+        for j in (i + 1)..galaxies.len() {
+            sum += galaxies[i].manhattan_distance(&galaxies[j]);
+        }
+    }
+
+    sum
 }
 
 fn parse_input(input: &str, add_gap: usize) -> Vec<Point> {
     let image: Vec<&str> = input.lines().collect();
+    let mut y_gaps = vec![0; image.len()];
+    let mut y_gap = 0;
 
-    let y_gaps: Vec<usize> = image
-        .iter()
-        .scan(0, |y_gap, _| {
-            let gap = add_gap;
-            *y_gap += gap;
-            Some(*y_gap)
-        })
-        .collect();
+    for (y, line) in image.iter().enumerate() {
+        let mut gap = add_gap;
 
-    let x_gaps: Vec<usize> = (0..image[0].len())
-        .scan(0, |x_gap, _| {
-            let gap = add_gap;
-            *x_gap += gap;
-            Some(*x_gap)
-        })
-        .collect();
+        for x in 0..line.len() {
+            if line.chars().nth(x).unwrap() == '#' {
+                gap = 0;
+            }
+        }
 
-    let galaxies: Vec<Point> = image
-        .iter()
-        .enumerate()
-        .flat_map(|(y, line)| {
-            line.chars().enumerate().filter_map(move |(x, char)| {
-                if char == '#' {
-                    Some(Point::new(x + x_gaps[x], y + y_gaps[y]))
-                } else {
-                    None
-                }
-            })
-        })
-        .collect();
+        y_gap += gap;
+        y_gaps[y] = y_gap;
+    }
+
+    let mut x_gaps = vec![0; image[0].len()];
+    let mut x_gap = 0;
+
+    for x in 0..image[0].len() {
+        let mut gap = add_gap;
+
+        for y in 0..image.len() {
+            if image[y].chars().nth(x).unwrap() == '#' {
+                gap = 0;
+            }
+        }
+
+        x_gap += gap;
+        x_gaps[x] = x_gap;
+    }
+
+    let mut galaxies = Vec::new();
+
+    for (y, line) in image.iter().enumerate() {
+        for (x, char) in line.chars().enumerate() {
+            if char == '#' {
+                galaxies.push(Point::new(x + x_gaps[x], y + y_gaps[y]));
+            }
+        }
+    }
 
     galaxies
 }
