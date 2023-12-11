@@ -28,6 +28,9 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
 6. End a part with `ao end -d 13 -p 1`.
     - Records how long it took you to solve the part. Prefers the timestamp from a private leaderboard (both the `leaderboardId` and the `memberId` must be specified in `.ao.yaml`). Otherwise, uses the current time to determine how long the part took to solve.
     - Upon completing Part 2, downloads the full puzzle description.
+7. Run the solution for a day with `ao run`.
+    - Specify the year or day with the `--year` and `--day` flags.
+    - Run all days for a year with `--day 0`.
 
 ```shell
 $ ao help
@@ -40,12 +43,12 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   end         Record end time for a part. Download puzzle description after completing part 2.
   help        Help about any command
-  run         Run all solutions for a year or a specified day
+  run         Run solutions for a year and day (runs all days when day is 0)
   start       Start solving parts for a given day. Generates a solution template, downloads the puzzle input, and writes a starting time.
 
 Flags:
   -c, --config string        config file (default is $HOME/.ao.yaml)
-  -d, --day int              event day (default 8)
+  -d, --day int              event day (default 11)
   -h, --help                 help for ao
   -l, --language string      specify writing templated files for a single language (default "all")
   -o, --output-path string   path to output files to (default is solutions/{year}/{day})
