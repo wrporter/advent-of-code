@@ -1,0 +1,63 @@
+
+== .
+.......
+.......
+..ooo..
+..ooo..
+..ooo..
+.......
+.......
+
+== -
+.......
+.......
+ooooooo
+ooooooo
+ooooooo
+.......
+.......
+
+== |
+..ooo..
+..ooo..
+..ooo..
+..ooo..
+..ooo..
+..ooo..
+..ooo..
+
+== F
+.......
+.......
+..ooooo
+..ooooo
+..ooooo
+..ooo..
+..ooo..
+
+== 7
+.......
+.......
+ooooo..
+ooooo..
+ooooo..
+..ooo..
+..ooo..
+
+== L
+..ooo..
+..ooo..
+..ooooo
+..ooooo
+..ooooo
+.......
+.......
+
+== J
+..ooo..
+..ooo..
+ooooo..
+ooooo..
+ooooo..
+.......
+.......
