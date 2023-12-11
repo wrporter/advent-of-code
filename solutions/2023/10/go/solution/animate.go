@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"github.com/teacat/noire"
 	"github.com/wrporter/advent-of-code/internal/common/v2/animate"
 	"github.com/wrporter/advent-of-code/internal/common/v2/geometry"
 	"image/color"
@@ -17,7 +16,6 @@ var (
 	green     = color.RGBA{R: 85, G: 158, B: 131, A: 255}
 	blue      = color.RGBA{R: 27, G: 133, B: 184, A: 255}
 	darkBlue  = color.RGBA{R: 12, G: 23, B: 39, A: 255}
-	fillColor = noire.NewHexA("333337", 1)
 	fontColor = color.White
 )
 
@@ -48,8 +46,6 @@ type Game struct {
 
 	part1 int
 	part2 int
-
-	fillColorPulse *animate.ColorPulse
 }
 
 func NewGame(input string) *Game {
@@ -61,8 +57,6 @@ func NewGame(input string) *Game {
 		grid:      grid,
 		start:     start,
 		startPipe: startPipe,
-
-		fillColorPulse: animate.NewColorPulse(fillColor).SetRange(-0.05, 0.01).SetStep(0.001),
 	}
 
 	g.AbstractGame = animate.New(g)
@@ -81,7 +75,6 @@ func (g *Game) Restart() {
 	g.loop = map[geometry.Point]string{*g.start.Copy(): g.pipe.char}
 
 	g.AbstractGame.Restart()
-	g.fillColorPulse.Reset()
 }
 
 func (g *Game) Play() {
@@ -89,6 +82,7 @@ func (g *Game) Play() {
 		g.step()
 
 		if g.current.Equals(g.start) {
+			g.part1 = len(g.loop) / 2
 			g.Mode = animate.ModeDone
 		}
 	}
@@ -104,25 +98,13 @@ func (g *Game) step() {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(darkBlue)
 	//rectangle := geometry.MapToGrid(g.loop)
-	height := len(g.grid)
-	width := len(g.grid[0])
 	cellBorder := divCeil(g.TileSize, 4)
 
 	if g.Mode == animate.ModeTitle {
 		animate.DrawText(screen, "Press [Enter] to Start! (Pipe Maze)", 8, 16, fontColor)
 	} else if g.Mode == animate.ModePlay || g.Mode == animate.ModePause {
-		//animate.DrawText(screen, fmt.Sprintf("Rounds: %d", g.round), 8, 16, fontColor)
+		animate.DrawText(screen, fmt.Sprintf("Pipes: %d", len(g.loop)), 8, 16, fontColor)
 	} else if g.Mode == animate.ModeDone {
-		c := g.fillColorPulse.Update()
-		fc := animate.ToColor(c)
-
-		vector.DrawFilledRect(screen,
-			float32(g.BorderHorizontal), float32(g.BorderVertical),
-			float32(g.TileSize*width), float32(g.TileSize*height),
-			fc,
-			false,
-		)
-
 		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.part1, g.part2), 8, 16, fontColor)
 	}
 	_, windowHeight := ebiten.WindowSize()
