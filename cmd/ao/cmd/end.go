@@ -18,11 +18,6 @@ var endCmd = &cobra.Command{
 	Use:   "end",
 	Short: "Record end time for a part. Download puzzle description after completing part 2.",
 	Run: func(cmd *cobra.Command, args []string) {
-		sessionCookie, err := os.ReadFile(".adventofcode.session")
-		cobra.CheckErr(err)
-		client := aoc.NewClient(string(sessionCookie))
-		leaderboard, _ := client.GetPrivateLeaderboard(conf.Year, conf.LeaderboardId)
-
 		path := conf.OutputPath
 		if conf.Language != "all" {
 			path = filepath.Join(conf.OutputPath, conf.Language)
@@ -38,10 +33,7 @@ var endCmd = &cobra.Command{
 		err = json.Unmarshal(file, &timings)
 		cobra.CheckErr(err)
 
-		end := getEndTime(leaderboard)
-		if end == nil {
-			end = &time.Time{}
-		}
+		end := getEndTime(part)
 		timings[fmt.Sprintf("part%dEnd", part)] = end.Format(time.RFC3339)
 
 		var start time.Time
@@ -74,22 +66,32 @@ var endCmd = &cobra.Command{
 	},
 }
 
-func getEndTime(leaderboard *aoc.Leaderboard) *time.Time {
-	part, err := rootCmd.Flags().GetInt("part")
-	cobra.CheckErr(err)
+// getEndTime gets the time it took to complete the part based on a leaderboard and member ID. If
+// there is an error getting the official time from Advent of Code, then the current time is used
+// instead.
+func getEndTime(part int) time.Time {
+	sessionCookie, err := os.ReadFile(".adventofcode.session")
+	if err != nil {
+		return time.Now()
+	}
+
+	client := aoc.NewClient(string(sessionCookie))
+	leaderboard, err := client.GetPrivateLeaderboard(conf.Year, conf.LeaderboardId)
+	if err != nil {
+		return time.Now()
+	}
 
 	day, ok := leaderboard.Members[conf.MemberId].CompletionDayLevel[fmt.Sprintf("%d", conf.Day)]
 	if !ok {
-		return nil
+		return time.Now()
 	}
 
 	partEnd, ok := day[fmt.Sprintf("%d", part)]
 	if !ok {
-		return nil
+		return time.Now()
 	}
 
-	t := time.Unix(partEnd.GetStarTs, 0)
-	return &t
+	return time.Unix(partEnd.GetStarTs, 0)
 }
 
 func init() {
