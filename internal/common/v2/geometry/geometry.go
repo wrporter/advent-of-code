@@ -92,7 +92,7 @@ func (p *Point) GetManhattanDistance() int {
 	return ints.Abs(p.X) + ints.Abs(p.Y)
 }
 
-func (p *Point) ManhattanDistance(p2 Point) int {
+func (p *Point) ManhattanDistance(p2 *Point) int {
 	return ints.Abs(p.X-p2.X) + ints.Abs(p.Y-p2.Y)
 }
 
