@@ -242,7 +242,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
 			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
 			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
-			3, color.RGBA{R: 255, G: 150, B: 40, A: 1}, false)
+			float32(g.TileSize/2), color.RGBA{R: 255, G: 150, B: 40, A: 1}, false)
 	}
 }
 
