@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/teacat/noire"
 	"github.com/wrporter/advent-of-code/internal/common/v2/animate"
 	"github.com/wrporter/advent-of-code/internal/common/v2/geometry"
 	"image/color"
@@ -13,16 +14,20 @@ import (
 )
 
 var (
-	gray      = color.RGBA{R: 90, G: 82, B: 85, A: 255}
-	green     = color.RGBA{R: 85, G: 158, B: 131, A: 255}
-	red       = color.RGBA{R: 174, G: 90, B: 65, A: 255}
-	yellow    = color.RGBA{R: 195, G: 203, B: 113, A: 255}
-	blue      = color.RGBA{R: 27, G: 133, B: 184, A: 255}
-	darkBlue  = color.RGBA{R: 12, G: 23, B: 39, A: 255}
-	fontColor = color.White
+	gray         = color.RGBA{R: 90, G: 82, B: 85, A: 255}
+	green        = color.RGBA{R: 85, G: 158, B: 131, A: 255}
+	insideColor  = color.RGBA{R: 0, G: 255, B: 0, A: 255}
+	outsideColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
+	red          = color.RGBA{R: 174, G: 90, B: 65, A: 255}
+	yellow       = color.RGBA{R: 195, G: 203, B: 113, A: 255}
+	blue         = color.RGBA{R: 27, G: 133, B: 184, A: 255}
+	darkBlue     = color.RGBA{R: 36, G: 54, B: 83, A: 255}
+	darkestBlue  = color.RGBA{R: 12, G: 23, B: 39, A: 255}
+	fontColor    = color.White
+	multiColor   = noire.NewHSL(0, 50, 60)
 
 	speedDefault  = 40
-	speedRayStart = 10
+	speedRayStart = 2
 )
 
 type mode int
@@ -32,9 +37,12 @@ const (
 	modePart2
 )
 
+var totalPipes int
+
 func Animate() {
 	solution := New()
 	input := solution.ReadInput()
+	totalPipes = solution.Part1(input).(int)
 	// Add input directly when compiling for WASM
 	//	input := `.....
 	//.S-7.
@@ -48,6 +56,11 @@ func Animate() {
 	}
 }
 
+type loopPipe struct {
+	char  string
+	color color.Color
+}
+
 type Game struct {
 	*animate.AbstractGame
 
@@ -58,7 +71,7 @@ type Game struct {
 
 	current *geometry.Point
 	pipe    Pipe
-	loop    map[geometry.Point]string
+	loop    map[geometry.Point]loopPipe
 
 	rayStarts     []*geometry.Point
 	rayIndex      int
@@ -100,7 +113,7 @@ func NewGame(input string) *Game {
 func (g *Game) Restart() {
 	g.pipe = g.startPipe
 	g.current = g.start.Copy()
-	g.loop = map[geometry.Point]string{*g.start.Copy(): g.pipe.char}
+	g.loop = map[geometry.Point]loopPipe{*g.start.Copy(): g.newLoopPipe(g.pipe.char)}
 	g.rayIndex = 0
 	g.rayEnd = g.rayStarts[g.rayIndex].Copy()
 	g.mode = modePart1
@@ -126,7 +139,7 @@ func (g *Game) step() {
 		g.current.Move(g.pipe.next)
 		char := g.grid[g.current.Y][g.current.X]
 		g.pipe = Pipes[IntoPipe{char, g.pipe.next}]
-		g.loop[*g.current.Copy()] = g.pipe.char
+		g.loop[*g.current.Copy()] = g.newLoopPipe(g.pipe.char)
 
 		if g.current.Equals(g.start) {
 			g.part1 = len(g.loop) / 2
@@ -166,18 +179,13 @@ func (g *Game) step() {
 	}
 }
 
+func (g *Game) newLoopPipe(char string) loopPipe {
+	return loopPipe{char: char, color: animate.ToColor(multiColor.AdjustHue(float64(len(g.loop)) / float64(totalPipes) * 360))}
+}
+
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(darkBlue)
 	cellBorder := divCeil(g.TileSize, 4)
-
-	if g.mode == modePart2 && g.Mode != animate.ModeDone {
-		vector.StrokeLine(screen,
-			float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
-			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
-			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
-			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
-			1, yellow, false)
-	}
 
 	if g.Mode == animate.ModeTitle {
 		animate.DrawText(screen, "Press [Enter] to Start! (Pipe Maze)", 8, 16, fontColor)
@@ -192,34 +200,49 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		for x := range g.grid[y] {
 			p := *geometry.NewPoint(x, y)
 			if _, ok := g.loop[p]; !ok {
-				clr := gray
+				clr := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 				if g.inside[p] {
-					clr = green
+					clr = insideColor
+					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize, 2*cellBorder, 2*cellBorder, darkestBlue)
 				} else if g.outside[p] {
-					clr = red
+					clr = outsideColor
+					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize, 2*cellBorder, 2*cellBorder, darkestBlue)
 				}
+
 				g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, 0, 0, clr)
 			} else {
-				switch g.loop[p] {
+				//pipeColor := animate.ToColor(multiColor.AdjustHue(float64(len(g.loop)) / float64(totalPipes) * 360))
+				g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize, 2*cellBorder, 2*cellBorder, color.Black)
+
+				switch pipe := g.loop[p]; pipe.char {
 				case "-":
-					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, 2*cellBorder, 0, blue)
+					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, 2*cellBorder, 0, pipe.color)
 				case "|":
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, 2*cellBorder, blue)
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, 2*cellBorder, pipe.color)
 				case "F":
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, cellBorder, 0, blue) // middle right
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, 0, cellBorder, blue) // bottom
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, cellBorder, 0, pipe.color) // middle right
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, 0, cellBorder, pipe.color) // bottom
 				case "7":
-					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, cellBorder, 0, blue)            // middle left
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, 0, cellBorder, blue) // bottom
+					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, cellBorder, 0, pipe.color)            // middle left
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, 0, cellBorder, pipe.color) // bottom
 				case "L":
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, cellBorder, 0, blue) // middle right
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, cellBorder, blue)            // top
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize+cellBorder, cellBorder, 0, pipe.color) // middle right
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, cellBorder, pipe.color)            // top
 				case "J":
-					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, cellBorder, 0, blue) // middle left
-					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, cellBorder, blue) // top
+					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize+cellBorder, cellBorder, 0, pipe.color) // middle left
+					g.drawFilledRect(screen, x*g.TileSize+cellBorder, y*g.TileSize, 0, cellBorder, pipe.color) // top
 				}
 			}
 		}
+	}
+
+	if g.mode == modePart2 && g.Mode != animate.ModeDone {
+		vector.StrokeLine(screen,
+			float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
+			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
+			3, color.RGBA{R: 255, G: 150, B: 40, A: 1}, false)
 	}
 }
 
