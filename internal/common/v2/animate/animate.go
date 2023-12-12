@@ -93,9 +93,6 @@ func (g *AbstractGame) Update() error {
 			g.Mode = ModePlay
 		}
 	case ModeDone:
-		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
-			g.Restart()
-		}
 	}
 
 	return nil

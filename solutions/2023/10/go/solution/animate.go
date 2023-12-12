@@ -16,22 +16,26 @@ var (
 	gray      = color.RGBA{R: 90, G: 82, B: 85, A: 255}
 	green     = color.RGBA{R: 85, G: 158, B: 131, A: 255}
 	red       = color.RGBA{R: 174, G: 90, B: 65, A: 255}
+	yellow    = color.RGBA{R: 195, G: 203, B: 113, A: 255}
 	blue      = color.RGBA{R: 27, G: 133, B: 184, A: 255}
 	darkBlue  = color.RGBA{R: 12, G: 23, B: 39, A: 255}
 	fontColor = color.White
+
+	speedDefault  = 40
+	speedRayStart = 10
 )
 
 type mode int
 
 const (
-	modeStart mode = iota
-	modePart1Done
-	modePart2Done
+	modePart1 mode = iota
+	modePart2
 )
 
 func Animate() {
 	solution := New()
 	input := solution.ReadInput()
+	// Add input directly when compiling for WASM
 	//	input := `.....
 	//.S-7.
 	//.|.|.
@@ -47,12 +51,19 @@ func Animate() {
 type Game struct {
 	*animate.AbstractGame
 
-	grid      [][]string
+	grid [][]string
+
 	start     *geometry.Point
 	startPipe Pipe
-	current   *geometry.Point
-	pipe      Pipe
-	loop      map[geometry.Point]string
+
+	current *geometry.Point
+	pipe    Pipe
+	loop    map[geometry.Point]string
+
+	rayStarts     []*geometry.Point
+	rayIndex      int
+	rayEnd        *geometry.Point
+	intersections int
 
 	inside  map[geometry.Point]bool
 	outside map[geometry.Point]bool
@@ -65,11 +76,13 @@ type Game struct {
 
 func NewGame(input string) *Game {
 	grid, start := parseInput(input)
+	topLeft := getTopAndLeftEdges(grid)
 	startPipe := getStartPipe(grid, start)
 	grid[start.Y][start.X] = startPipe.char
 
 	g := &Game{
 		grid:      grid,
+		rayStarts: topLeft,
 		start:     start,
 		startPipe: startPipe,
 	}
@@ -77,7 +90,7 @@ func NewGame(input string) *Game {
 	g.AbstractGame = animate.New(g)
 	g.AbstractGame.TileSize = 7
 
-	//audio.NewPlayer()
+	//_, _ = audio.NewPlayer()
 	ebiten.SetWindowSize(g.AbstractGame.TileSize*len(grid[0])+g.BorderHorizontal*2, g.AbstractGame.TileSize*len(grid)+g.BorderVertical*2)
 
 	g.Restart()
@@ -88,59 +101,83 @@ func (g *Game) Restart() {
 	g.pipe = g.startPipe
 	g.current = g.start.Copy()
 	g.loop = map[geometry.Point]string{*g.start.Copy(): g.pipe.char}
-	g.mode = modeStart
+	g.rayIndex = 0
+	g.rayEnd = g.rayStarts[g.rayIndex].Copy()
+	g.mode = modePart1
 	g.inside = make(map[geometry.Point]bool)
 	g.outside = make(map[geometry.Point]bool)
 
 	g.AbstractGame.Restart()
+	g.Speed = speedDefault
 }
 
 func (g *Game) Play() {
 	for i := 0; i < g.Speed; i++ {
 		g.step()
-
-		if g.mode == modeStart && g.current.Equals(g.start) {
-			g.part1 = len(g.loop) / 2
-			g.mode = modePart1Done
-		}
 	}
 }
 
 func (g *Game) step() {
-	if g.mode == modeStart {
+	if g.Mode == animate.ModeDone {
+		return
+	}
+
+	if g.mode == modePart1 {
 		g.current.Move(g.pipe.next)
 		char := g.grid[g.current.Y][g.current.X]
 		g.pipe = Pipes[IntoPipe{char, g.pipe.next}]
 		g.loop[*g.current.Copy()] = g.pipe.char
-	} else if g.mode == modePart1Done {
-		for _, ray := range getTopAndLeftEdges(g.grid) {
-			intersections := 0
 
-			for ray.Y < len(g.grid) && ray.X < len(g.grid[ray.Y]) {
-				tile := g.grid[ray.Y][ray.X]
+		if g.current.Equals(g.start) {
+			g.part1 = len(g.loop) / 2
+			g.mode = modePart2
+			g.Speed = speedRayStart
+		}
+	}
 
-				if _, isOnLoop := g.loop[*ray]; isOnLoop && strings.Contains("|-JF", tile) {
-					intersections += 1
-				} else if !isOnLoop {
-					if intersections%2 == 1 {
-						g.inside[*ray.Copy()] = true
-					} else {
-						g.outside[*ray.Copy()] = true
-					}
-				}
+	if g.mode == modePart2 {
+		tile := g.grid[g.rayEnd.Y][g.rayEnd.X]
 
-				ray.Move(geometry.DownRight)
+		if _, isOnLoop := g.loop[*g.rayEnd]; isOnLoop && strings.Contains("|-JF", tile) {
+			g.intersections += 1
+		} else if !isOnLoop {
+			if g.intersections%2 == 1 {
+				g.inside[*g.rayEnd.Copy()] = true
+			} else {
+				g.outside[*g.rayEnd.Copy()] = true
 			}
 		}
 
-		g.Mode = animate.ModeDone
+		g.rayEnd.Move(geometry.DownRight)
+
+		if g.rayEnd.Y >= len(g.grid) || g.rayEnd.X >= len(g.grid[g.rayEnd.Y]) {
+			g.rayIndex++
+			if g.rayIndex < len(g.rayStarts) {
+				g.rayEnd = g.rayStarts[g.rayIndex].Copy()
+			} else {
+				g.part2 = len(g.inside)
+				g.Mode = animate.ModeDone
+			}
+
+			if g.rayIndex > 5 && g.Speed < speedDefault {
+				g.Speed += 1
+			}
+		}
 	}
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(darkBlue)
-	//rectangle := geometry.MapToGrid(g.loop)
 	cellBorder := divCeil(g.TileSize, 4)
+
+	if g.mode == modePart2 && g.Mode != animate.ModeDone {
+		vector.StrokeLine(screen,
+			float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
+			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
+			1, yellow, false)
+	}
 
 	if g.Mode == animate.ModeTitle {
 		animate.DrawText(screen, "Press [Enter] to Start! (Pipe Maze)", 8, 16, fontColor)
@@ -149,8 +186,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	} else if g.Mode == animate.ModeDone {
 		animate.DrawText(screen, fmt.Sprintf("Part 1: %d, Part 2: %d", g.part1, g.part2), 8, 16, fontColor)
 	}
-	_, windowHeight := ebiten.WindowSize()
-	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, windowHeight-8, fontColor)
+	animate.DrawText(screen, fmt.Sprintf("[Speed: %d]", g.Speed), 8, 2*g.BorderVertical+len(g.grid)*g.TileSize-8, fontColor)
 
 	for y := range g.grid {
 		for x := range g.grid[y] {
