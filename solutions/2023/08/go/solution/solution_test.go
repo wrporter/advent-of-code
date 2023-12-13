@@ -80,3 +80,15 @@ func TestPart2(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkSolution_Part1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		s.Part1(tests[0].input)
+	}
+}
+
+func BenchmarkSolution_Part2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		s.Part2(tests[0].input)
+	}
+}
