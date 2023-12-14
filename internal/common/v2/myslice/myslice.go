@@ -2,7 +2,7 @@ package myslice
 
 import "golang.org/x/exp/constraints"
 
-// Rotate90DegreesCopy rotates the matrix by 90 degrees. For example, the following grid
+// Rotate90Copy rotates the grid by 90 degrees. For example, the following grid
 //
 // ```
 // 1 2 3
@@ -17,15 +17,15 @@ import "golang.org/x/exp/constraints"
 // 8 5 2
 // 9 6 3
 // ```
-func Rotate90DegreesCopy[T any](grid [][]T) [][]T {
+func Rotate90Copy[T any](grid [][]T) [][]T {
 	next := Copy2D(grid)
-	Rotate90Degrees(next)
+	Rotate90(next)
 	return next
 }
 
-// Rotate90Degrees does the same thing as Rotate90DegreesCopy, but rotates the grid in place rather than copying it
-// to a new one.
-func Rotate90Degrees[T any](grid [][]T) {
+// Rotate90 does the same thing as Rotate90Copy, but rotates the grid in place rather than copying
+// it to a new one.
+func Rotate90[T any](grid [][]T) {
 	size := len(grid)
 
 	for i := 0; i < size/2; i++ {

@@ -21,15 +21,15 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	for cycle := 1; cycle <= cycles; cycle++ {
 		for tilt := 1; tilt <= 4; tilt++ {
 			rollRocks(grid)
-			myslice.Rotate90Degrees(grid)
+			myslice.Rotate90(grid)
 		}
 
-		str := runegrid.String(grid)
-		if start, ok := seen[str]; ok {
+		key := runegrid.String(grid)
+		if start, ok := seen[key]; ok {
 			cycle += getCycleJumpLength(start, cycle, cycles)
 		}
 
-		seen[str] = cycle
+		seen[key] = cycle
 	}
 
 	return calculateNorthLoad(grid)

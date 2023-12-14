@@ -40,8 +40,8 @@ func TestRotate1(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
-			if got := Rotate90DegreesCopy(tt.grid); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Rotate90DegreesCopy() = %v, want %v", got, tt.want)
+			if got := Rotate90Copy(tt.grid); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Rotate90Copy() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -60,12 +60,12 @@ func TestRotateFull(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
-			got := Rotate90DegreesCopy(tt.grid)
-			got = Rotate90DegreesCopy(got)
-			got = Rotate90DegreesCopy(got)
-			got = Rotate90DegreesCopy(got)
+			got := Rotate90Copy(tt.grid)
+			got = Rotate90Copy(got)
+			got = Rotate90Copy(got)
+			got = Rotate90Copy(got)
 			if !reflect.DeepEqual(got, tt.grid) {
-				t.Errorf("Rotate90DegreesCopy() = %v, want %v", got, tt.grid)
+				t.Errorf("Rotate90Copy() = %v, want %v", got, tt.grid)
 			}
 		})
 	}
