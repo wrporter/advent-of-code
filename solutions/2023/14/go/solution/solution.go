@@ -3,6 +3,7 @@ package solution
 import (
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/runegrid"
+	"github.com/wrporter/advent-of-code/internal/common/v2/myslice"
 	"strings"
 )
 
@@ -21,7 +22,7 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	for ; cycle <= cycles; cycle++ {
 		for tilt := 1; tilt <= 4; tilt++ {
 			rollRocks(grid)
-			runegrid.RotateSwap(grid)
+			myslice.Rotate90Degrees(grid)
 		}
 
 		str := runegrid.String(grid)

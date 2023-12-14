@@ -5,8 +5,8 @@ import (
 	"github.com/wrporter/advent-of-code/internal/common/convert"
 	"github.com/wrporter/advent-of-code/internal/common/file"
 	"github.com/wrporter/advent-of-code/internal/common/out"
-	"github.com/wrporter/advent-of-code/internal/common/runegrid"
 	"github.com/wrporter/advent-of-code/internal/common/timeit"
+	"github.com/wrporter/advent-of-code/internal/common/v2/myslice"
 	"time"
 )
 
@@ -29,7 +29,7 @@ func part1(input []string) interface{} {
 
 	for step := 1; step <= 1000; step++ {
 		//fmt.Println(runegrid.String(grid))
-		next := runegrid.Copy2D(grid)
+		next := myslice.Copy2D(grid)
 		madeMove := false
 
 		for y, row := range grid {
@@ -45,7 +45,7 @@ func part1(input []string) interface{} {
 			}
 		}
 
-		grid = runegrid.Copy2D(next)
+		grid = myslice.Copy2D(next)
 
 		for y, row := range grid {
 			for x, spot := range row {
