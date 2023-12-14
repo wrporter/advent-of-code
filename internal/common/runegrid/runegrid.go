@@ -5,6 +5,21 @@ import (
 	"strings"
 )
 
+// Rotate rotates the matrix by 90 degrees. For example, the following grid
+//
+// ```
+// 1 2 3
+// 4 5 6
+// 7 8 9
+// ```
+//
+// Would result in the following:
+//
+// ```
+// 7 4 1
+// 8 5 2
+// 9 6 3
+// ```
 func Rotate(matrix [][]rune) [][]rune {
 	grid := runes.Copy2D(matrix)
 	size := len(grid)
@@ -31,6 +46,25 @@ func Rotate(matrix [][]rune) [][]rune {
 	}
 
 	return grid
+}
+
+// RotateSwap does the same thing as Rotate, but rotates the grid in place rather than copying it
+// to a new one.
+func RotateSwap(grid [][]rune) {
+	size := len(grid)
+
+	for i := 0; i < size/2; i++ {
+		for j := i; j < size-i-1; j++ {
+			a, b := grid[i][j], grid[size-j-1][i]
+			grid[i][j], grid[size-j-1][i] = b, a
+
+			a, b = grid[size-j-1][i], grid[size-i-1][size-j-1]
+			grid[size-j-1][i], grid[size-i-1][size-j-1] = b, a
+
+			a, b = grid[size-i-1][size-j-1], grid[j][size-i-1]
+			grid[size-i-1][size-j-1], grid[j][size-i-1] = b, a
+		}
+	}
 }
 
 func GetCol(grid [][]rune, col int) []rune {
