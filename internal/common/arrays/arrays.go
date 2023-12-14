@@ -1,21 +1,19 @@
 package arrays
 
-func Min(array []int) int {
-	var min = array[0]
+import "golang.org/x/exp/constraints"
+
+func Min[T constraints.Ordered](array []T) T {
+	result := array[0]
 	for _, value := range array {
-		if min > value {
-			min = value
-		}
+		result = min(result, value)
 	}
-	return min
+	return result
 }
 
-func Max(array []int) int {
-	var max = array[0]
+func Max[T constraints.Ordered](array []T) T {
+	result := array[0]
 	for _, value := range array {
-		if value > max {
-			max = value
-		}
+		result = max(result, value)
 	}
-	return max
+	return result
 }
