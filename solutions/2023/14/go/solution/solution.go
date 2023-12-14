@@ -17,9 +17,8 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	grid := convert.ToRuneGrid(strings.Split(input, "\n"))
 	seen := make(map[string]int)
 	cycles := 1_000_000_000
-	cycle := 1
 
-	for ; cycle <= cycles; cycle++ {
+	for cycle := 1; cycle <= cycles; cycle++ {
 		for tilt := 1; tilt <= 4; tilt++ {
 			rollRocks(grid)
 			myslice.Rotate90Degrees(grid)
@@ -27,16 +26,19 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 
 		str := runegrid.String(grid)
 		if start, ok := seen[str]; ok {
-			period := cycle - start
-			remaining := cycles - cycle
-			jump := (remaining / period) * period
-			cycle += jump
+			cycle += getCycleJumpLength(start, cycle, cycles)
 		}
 
 		seen[str] = cycle
 	}
 
 	return calculateNorthLoad(grid)
+}
+
+func getCycleJumpLength(start, current, total int) int {
+	length := current - start
+	remaining := total - current
+	return remaining / length * length
 }
 
 func rollRocks(grid [][]rune) {
