@@ -55,16 +55,15 @@ func RotateSwap(grid [][]rune) {
 
 	for i := 0; i < size/2; i++ {
 		for j := i; j < size-i-1; j++ {
-			a, b := grid[i][j], grid[size-j-1][i]
-			grid[i][j], grid[size-j-1][i] = b, a
-
-			a, b = grid[size-j-1][i], grid[size-i-1][size-j-1]
-			grid[size-j-1][i], grid[size-i-1][size-j-1] = b, a
-
-			a, b = grid[size-i-1][size-j-1], grid[j][size-i-1]
-			grid[size-i-1][size-j-1], grid[j][size-i-1] = b, a
+			swap(&grid[i][j], &grid[size-j-1][i])
+			swap(&grid[size-j-1][i], &grid[size-i-1][size-j-1])
+			swap(&grid[size-i-1][size-j-1], &grid[j][size-i-1])
 		}
 	}
+}
+
+func swap[T interface{}](a, b *T) {
+	*a, *b = *b, *a
 }
 
 func GetCol(grid [][]rune, col int) []rune {
