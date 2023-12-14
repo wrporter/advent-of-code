@@ -23,11 +23,17 @@ var (
 	blue         = color.RGBA{R: 27, G: 133, B: 184, A: 255}
 	darkBlue     = color.RGBA{R: 36, G: 54, B: 83, A: 255}
 	darkestBlue  = color.RGBA{R: 12, G: 23, B: 39, A: 255}
+	black        = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	fontColor    = color.White
 	multiColor   = noire.NewHSL(0, 50, 60)
 
-	speedDefault  = 40
-	speedRayStart = 2
+	speedDefault  = 10
+	speedRayStart = 1
+
+	slowDefaultFactor = 2
+	slowRayFactor     = 20
+
+	tileSize = 41
 )
 
 type mode int
@@ -41,14 +47,21 @@ var totalPipes int
 
 func Animate() {
 	solution := New()
-	input := solution.ReadInput()
-	totalPipes = solution.Part1(input).(int)
+	//input := solution.ReadInput()
 	// Add input directly when compiling for WASM
-	//	input := `.....
-	//.S-7.
-	//.|.|.
-	//.L-J.
-	//.....`
+	input := `......................
+..F----7F7F7F7F-7.....
+..|F--7||||||||FJ.....
+..||.FJ||||||||L7.....
+.FJL7L7LJLJ||LJ.L-7...
+.L--J.L7...LJS7F-7L7..
+.....F-J..F7FJ|L7L7L7.
+.....L7.F7||L7|.L7L7|.
+......|FJLJ|FJ|F7|.LJ.
+.....FJL-7.||.||||....
+.....L---J.LJ.LJLJ....
+......................`
+	totalPipes = solution.Part1(input).(int)
 
 	ebiten.SetWindowTitle(fmt.Sprintf("Advent of Code - %d Day %d", solution.Year, solution.Day))
 	if err := ebiten.RunGame(NewGame(input)); err != nil {
@@ -63,6 +76,8 @@ type loopPipe struct {
 
 type Game struct {
 	*animate.AbstractGame
+	updates    int
+	slowFactor int
 
 	grid [][]string
 
@@ -73,10 +88,11 @@ type Game struct {
 	pipe    Pipe
 	loop    map[geometry.Point]loopPipe
 
-	rayStarts     []*geometry.Point
-	rayIndex      int
-	rayEnd        *geometry.Point
-	intersections int
+	rayStarts        []*geometry.Point
+	rayIndex         int
+	rayEnd           *geometry.Point
+	rayIntersections map[geometry.Point]bool
+	intersections    int
 
 	inside  map[geometry.Point]bool
 	outside map[geometry.Point]bool
@@ -101,7 +117,7 @@ func NewGame(input string) *Game {
 	}
 
 	g.AbstractGame = animate.New(g)
-	g.AbstractGame.TileSize = 7
+	g.AbstractGame.TileSize = tileSize
 
 	//_, _ = audio.NewPlayer()
 	ebiten.SetWindowSize(g.AbstractGame.TileSize*len(grid[0])+g.BorderHorizontal*2, g.AbstractGame.TileSize*len(grid)+g.BorderVertical*2)
@@ -111,11 +127,17 @@ func NewGame(input string) *Game {
 }
 
 func (g *Game) Restart() {
+	g.updates = 0
+	g.slowFactor = slowDefaultFactor
+
 	g.pipe = g.startPipe
 	g.current = g.start.Copy()
 	g.loop = map[geometry.Point]loopPipe{*g.start.Copy(): g.newLoopPipe(g.pipe.char)}
+
 	g.rayIndex = 0
 	g.rayEnd = g.rayStarts[g.rayIndex].Copy()
+	g.rayIntersections = make(map[geometry.Point]bool)
+
 	g.mode = modePart1
 	g.inside = make(map[geometry.Point]bool)
 	g.outside = make(map[geometry.Point]bool)
@@ -125,9 +147,10 @@ func (g *Game) Restart() {
 }
 
 func (g *Game) Play() {
-	for i := 0; i < g.Speed; i++ {
+	if g.updates%g.slowFactor == 0 {
 		g.step()
 	}
+	g.updates++
 }
 
 func (g *Game) step() {
@@ -145,6 +168,7 @@ func (g *Game) step() {
 			g.part1 = len(g.loop) / 2
 			g.mode = modePart2
 			g.Speed = speedRayStart
+			g.slowFactor = slowRayFactor
 		}
 	}
 
@@ -153,6 +177,11 @@ func (g *Game) step() {
 
 		if _, isOnLoop := g.loop[*g.rayEnd]; isOnLoop && strings.Contains("|-JF", tile) {
 			g.intersections += 1
+			if g.intersections%2 == 1 {
+				g.rayIntersections[*g.rayEnd.Copy()] = true
+			} else {
+				g.rayIntersections[*g.rayEnd.Copy()] = false
+			}
 		} else if !isOnLoop {
 			if g.intersections%2 == 1 {
 				g.inside[*g.rayEnd.Copy()] = true
@@ -172,8 +201,14 @@ func (g *Game) step() {
 				g.Mode = animate.ModeDone
 			}
 
-			if g.rayIndex > 5 && g.Speed < speedDefault {
+			if g.rayIndex >= 3 && g.Speed < speedDefault {
 				g.Speed += 1
+				if g.slowFactor >= 1 {
+					g.slowFactor /= 2
+					if g.slowFactor <= 0 {
+						g.slowFactor = 1
+					}
+				}
 			}
 		}
 	}
@@ -186,6 +221,7 @@ func (g *Game) newLoopPipe(char string) loopPipe {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(darkBlue)
 	cellBorder := divCeil(g.TileSize, 4)
+	//cellSize := g.TileSize / 2
 
 	if g.Mode == animate.ModeTitle {
 		animate.DrawText(screen, "Press [Enter] to Start! (Pipe Maze)", 8, 16, fontColor)
@@ -200,7 +236,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		for x := range g.grid[y] {
 			p := *geometry.NewPoint(x, y)
 			if _, ok := g.loop[p]; !ok {
-				clr := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+				clr := black
 				if g.inside[p] {
 					clr = insideColor
 					g.drawFilledRect(screen, x*g.TileSize, y*g.TileSize, 2*cellBorder, 2*cellBorder, darkestBlue)
@@ -237,12 +273,51 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	if g.mode == modePart2 && g.Mode != animate.ModeDone {
+		var path vector.Path
+		path.MoveTo(
+			float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
+		)
+		path.LineTo(
+			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
+		)
+
+		path.Close()
+
 		vector.StrokeLine(screen,
 			float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
 			float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
 			float32(g.BorderHorizontal+g.rayEnd.X*g.TileSize+2*cellBorder),
 			float32(g.BorderVertical+g.rayEnd.Y*g.TileSize+2*cellBorder),
-			float32(g.TileSize/2), color.RGBA{R: 255, G: 150, B: 40, A: 1}, false)
+			float32(cellBorder), color.RGBA{R: 255, G: 150, B: 40, A: 1}, false)
+		//vector.DrawFilledCircle(
+		//	screen,
+		//	float32(g.BorderHorizontal+g.rayStarts[g.rayIndex].X*g.TileSize+2*cellBorder),
+		//	float32(g.BorderVertical+g.rayStarts[g.rayIndex].Y*g.TileSize+2*cellBorder),
+		//	float32(g.TileSize/8),
+		//	color.RGBA{R: 255, G: 150, B: 40, A: 1},
+		//	false,
+		//)
+	}
+
+	for intersection, inside := range g.rayIntersections {
+		clr := outsideColor
+		if inside {
+			clr = insideColor
+		}
+		vector.StrokeLine(screen,
+			float32(g.BorderHorizontal+intersection.X*g.TileSize),
+			float32(g.BorderVertical+intersection.Y*g.TileSize),
+			float32(g.BorderHorizontal+intersection.X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+intersection.Y*g.TileSize+2*cellBorder),
+			float32(g.TileSize/16), clr, false)
+		vector.StrokeLine(screen,
+			float32(g.BorderHorizontal+intersection.X*g.TileSize+2*cellBorder),
+			float32(g.BorderVertical+intersection.Y*g.TileSize),
+			float32(g.BorderHorizontal+intersection.X*g.TileSize),
+			float32(g.BorderVertical+intersection.Y*g.TileSize+2*cellBorder),
+			float32(g.TileSize/16), clr, false)
 	}
 }
 
@@ -254,6 +329,18 @@ func (g *Game) drawFilledRect(screen *ebiten.Image, x, y, width, height int, clr
 		float32(g.BorderVertical+y),
 		float32(cellSize+width),
 		float32(cellSize+height),
+		clr,
+		false,
+	)
+}
+
+func (g *Game) drawFilledCircle(screen *ebiten.Image, x, y, radius int, clr color.Color) {
+	cellSize := g.TileSize / 2
+	vector.DrawFilledCircle(
+		screen,
+		float32(g.BorderHorizontal+x),
+		float32(g.BorderVertical+y),
+		float32(cellSize+radius),
 		clr,
 		false,
 	)
