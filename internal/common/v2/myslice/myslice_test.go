@@ -1,4 +1,4 @@
-package runegrid
+package myslice
 
 import (
 	"fmt"
