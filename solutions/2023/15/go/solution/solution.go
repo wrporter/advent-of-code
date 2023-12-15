@@ -48,7 +48,7 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	total := 0
 	for box, lenses := range boxes {
 		for slot, lens := range lenses {
-			total += (int(box) + 1) * (slot + 1) * lens.focalLength
+			total += (box + 1) * (slot + 1) * lens.focalLength
 		}
 	}
 	return total
