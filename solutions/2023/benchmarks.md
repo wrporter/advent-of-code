@@ -1,7 +1,7 @@
 Benchmarks taken on an M1 Mac.
 
 ```shell
-go test -bench=. ./solutions/2023/...
+go test -benchmem -bench=. ./solutions/2023/...
 ```
 
 ```shell
@@ -24,4 +24,5 @@ goarch: arm64
 | Day 11 | `632ns`  | `636ns`   |
 | Day 12 | `2.24μs` | `18.42μs` |
 | Day 13 | `966ns`  | `950ns`   |
-| Day 13 | `633ns`  | `18.94μs` |
+| Day 14 | `633ns`  | `18.94μs` |
+| Day 15 | `229ns`  | `848ns`   |

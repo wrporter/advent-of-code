@@ -78,3 +78,10 @@ func Max[T constraints.Ordered](array []T) T {
 	}
 	return result
 }
+
+// Remove removes the element at the given index and returns a new slice.
+func Remove[T any](s []T, index int) []T {
+	result := make([]T, 0)
+	result = append(result, s[:index]...)
+	return append(result, s[index+1:]...)
+}
