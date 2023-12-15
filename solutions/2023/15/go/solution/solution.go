@@ -28,9 +28,9 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 			}
 			box := hash(lens.label)
 
-			index := slices.IndexFunc(boxes[box], lens.equals)
-			if index >= 0 {
-				boxes[box][index] = lens
+			slot := slices.IndexFunc(boxes[box], lens.equals)
+			if slot >= 0 {
+				boxes[box][slot] = lens
 			} else {
 				boxes[box] = append(boxes[box], lens)
 			}
@@ -38,9 +38,9 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 			lens := Lens{label: step[:len(step)-1]}
 			box := hash(lens.label)
 
-			index := slices.IndexFunc(boxes[box], lens.equals)
-			if index >= 0 {
-				boxes[box] = myslice.Remove(boxes[box], index)
+			slot := slices.IndexFunc(boxes[box], lens.equals)
+			if slot >= 0 {
+				boxes[box] = myslice.Remove(boxes[box], slot)
 			}
 		}
 	}
