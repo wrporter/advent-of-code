@@ -66,9 +66,7 @@ func (l Lens) equals(l2 Lens) bool {
 func hash(str string) int {
 	var value int
 	for _, c := range str {
-		value += int(c)
-		value *= 17
-		value %= 256
+		value = (value + int(c)) * 17 % 256
 	}
 	return value
 }
