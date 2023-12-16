@@ -85,3 +85,8 @@ func Remove[T any](s []T, index int) []T {
 	result = append(result, s[:index]...)
 	return append(result, s[index+1:]...)
 }
+
+func InBounds[T any](grid [][]T, row, col int) bool {
+	return row >= 0 && col >= 0 &&
+		row < len(grid) && col < len(grid[row])
+}

@@ -24,6 +24,7 @@ const (
 )
 
 var Directions = []Direction{Up, Right, Down, Left}
+var directionRunes = []rune{'^', '>', 'v', '<'}
 
 var AllDirectionsModifiers = []Point{
 	{0, -1},
@@ -40,9 +41,28 @@ func (d Direction) Rotate(degrees int) Direction {
 	return Directions[ints.WrapMod((int(d)-1)+(degrees*4/360), 4)]
 }
 
+func (d Direction) Rune() rune {
+	return directionRunes[d-1]
+}
+
 type Vector struct {
-	*Point
-	Direction
+	Point     Point
+	Direction Direction
+}
+
+func (v *Vector) Move() {
+	v.Point.Move(v.Direction)
+}
+
+func (v *Vector) Rotate(degrees int) {
+	v.Direction = v.Direction.Rotate(degrees)
+}
+
+func NewVector(x, y int, direction Direction) *Vector {
+	return &Vector{
+		Point:     Point{X: x, Y: y},
+		Direction: direction,
+	}
 }
 
 type Point struct {
