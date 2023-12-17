@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ type config struct {
 }
 
 var conf config
-
+var baseSolutionDirectory string
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -47,7 +48,7 @@ func init() {
 	defaultYear, _, defaultDay := time.Now().Date()
 	rootCmd.PersistentFlags().IntP("year", "y", defaultYear, "event year")
 	rootCmd.PersistentFlags().IntP("day", "d", defaultDay, "event day")
-	rootCmd.PersistentFlags().StringP("output-path", "o", "", "path to output files to (default is solutions/{year}/{day})")
+	rootCmd.PersistentFlags().StringP("output-path", "o", "", "path to output files to (default is src/solutions/{year}/{day})")
 	rootCmd.PersistentFlags().StringP("language", "l", "all", "specify writing templated files for a single language")
 
 	err := viper.BindPFlags(rootCmd.PersistentFlags())
@@ -82,6 +83,10 @@ func setConfig() {
 	cobra.CheckErr(err)
 
 	if conf.OutputPath == "" {
-		conf.OutputPath = fmt.Sprintf("solutions/%d/%02d", conf.Year, conf.Day)
+		baseSolutionDirectory = "src/solutions"
+		conf.OutputPath = path.Join(
+			baseSolutionDirectory,
+			fmt.Sprintf("%d/%02d", conf.Year, conf.Day),
+		)
 	}
 }

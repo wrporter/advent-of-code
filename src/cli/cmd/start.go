@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"aoc/src/cli/ao/cmd/color"
+	"aoc/src/cli/cmd/color"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"

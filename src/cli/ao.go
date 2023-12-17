@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aoc/src/cli/ao/cmd"
-	"aoc/src/cli/ao/cmd/prettylog"
+	"aoc/src/cli/cmd"
+	"aoc/src/cli/cmd/prettylog"
 	"log/slog"
 )
 

@@ -1,7 +1,7 @@
 package prettylog
 
 import (
-	"aoc/src/cli/ao/cmd/color"
+	"aoc/src/cli/cmd/color"
 	"bytes"
 	"context"
 	"encoding/json"

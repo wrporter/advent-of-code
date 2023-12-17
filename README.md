@@ -10,7 +10,7 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
 
 1. Install [aoc-cli](https://github.com/scarvalhojr/aoc-cli).
     - After you log in at https://adventofcode.com/, copy your `session` cookie and save it to `.adventofcode.session`.
-2. Compile and install the binary with `go install cmd/ao/ao.go`.
+2. Compile and install the binary with `go install src/cli/ao.go`.
 3. For convenience, create a `.ao.yaml` file. Example:
     ```yaml
     year: 2022
@@ -19,7 +19,7 @@ I wrote a small CLI wrapper around some other utilities out there to automate th
     leaderboardId: 11111
     memberId: 11111
     ```
-4. Copy the directory [templates/0-template](templates/0-template). This is the base directory for the Go templates to generate files for a new day.
+4. Copy the [src/templates](src/templates) directory. This is the base directory for the Go templates to generate files for a new day.
 5. Start a day with `ao start -d 13`.
     - Writes new files from the templates for the day.
     - Starts a timer.

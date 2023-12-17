@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/exec"
+	"path"
 )
 
 var runCmd = &cobra.Command{
@@ -15,7 +16,12 @@ var runCmd = &cobra.Command{
 		if conf.Day == 0 {
 			delimiter := ""
 			for day := 1; day <= 25; day++ {
-				filename := fmt.Sprintf("solutions/%d/%02d/go/main.go", conf.Year, day)
+				filename := path.Join(
+					baseSolutionDirectory,
+					fmt.Sprintf("%d/%02d", conf.Year, day),
+					// TODO: Add multi-language support
+					"go/main.go",
+				)
 				if _, err := os.Stat(filename); err == nil {
 					fmt.Print(delimiter)
 					delimiter = "\n"
@@ -23,7 +29,7 @@ var runCmd = &cobra.Command{
 				}
 			}
 		} else {
-			filename := fmt.Sprintf("solutions/%d/%02d/go/main.go", conf.Year, conf.Day)
+			filename := path.Join(conf.OutputPath, "go/main.go")
 			_ = runDay(filename)
 		}
 	},
