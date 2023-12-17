@@ -1,0 +1,26 @@
+use std::any::Any;
+use std::fmt::Debug;
+use crate::common::{AbstractSolution, AnyDebug, Solution};
+
+mod solution;
+mod color;
+
+
+impl AbstractSolution for Solution {
+    fn year(&self) -> u32 { {{.Year}} }
+    fn day(&self) -> u32 { {{.Day}} }
+
+    fn part_1(&self, input: &str) -> Box<dyn AnyDebug> {
+
+    }
+
+    fn part_2(&self, input: &str) -> Box<dyn AnyDebug> {
+
+    }
+}
+
+fn main() {
+    let runner = solution::Runner::new();
+    let s = Box::new(solution::Solution {});
+    runner.run(s)
+}

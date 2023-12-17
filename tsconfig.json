@@ -20,10 +20,10 @@
     "baseUrl": ".",
     "paths": {
       "~/": [
-        "./internal/js/index.ts"
+        "./src/lib/js/index.ts"
       ],
       "~/*": [
-        "./internal/js/*"
+        "./src/lib/js/*"
       ]
     }
   },

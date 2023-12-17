@@ -1,0 +1,21 @@
+package solution
+
+import "aoc/src/lib/go/v2/solution"
+
+func Run() {
+	s := New()
+	s.Run([]interface{}{}, []interface{}{})
+}
+
+func New() Solution {
+	s := Solution{AbstractSolution: solution.AbstractSolution{
+		Solution: Solution{},
+		Year:     2023,
+		Day:      4,
+	}}
+	return s
+}
+
+type Solution struct {
+	solution.AbstractSolution
+}

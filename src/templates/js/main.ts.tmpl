@@ -1,0 +1,23 @@
+import { AbstractSolution } from '~/';
+
+export class Solution extends AbstractSolution {
+    year = {{.Year}};
+    day = {{.Day}};
+    filename = 'input.txt';
+
+    part1(input: string, ...args: unknown[]): string | number {
+        const lines = input.split('\n');
+        return 'TBD';
+    }
+
+    part2(input: string, ...args: unknown[]): string | number {
+        const lines = input.split('\n');
+        return 'TBD';
+    }
+}
+
+function main() {
+    new Solution().run();
+}
+
+main();
