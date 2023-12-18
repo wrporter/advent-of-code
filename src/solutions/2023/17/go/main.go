@@ -5,7 +5,6 @@ import (
 	"aoc/src/lib/go/convert"
 	"aoc/src/lib/go/v2/geometry"
 	"aoc/src/lib/go/v2/myslice"
-	"aoc/src/solutions/2023/17/go/priorityqueue"
 )
 
 func part1(input string, _ ...interface{}) interface{} {
@@ -19,7 +18,7 @@ func part2(input string, _ ...interface{}) interface{} {
 }
 
 func getMinHeatLoss(grid [][]int, minDistance int, maxDistance int) int {
-	queue := priorityqueue.New()
+	queue := aoc.NewPriorityQueue()
 	goal := geometry.NewPoint(len(grid[0])-1, len(grid)-1)
 	queue.Push(&node{
 		vector: *geometry.NewVector(0, 0, geometry.Right),
@@ -86,9 +85,8 @@ type node struct {
 	cost   int
 }
 
-func (n *node) Less(item priorityqueue.Item) bool {
-	b := item.(*node)
-	return n.cost < b.cost
+func (n *node) Less(item aoc.PriorityQueueItem) bool {
+	return n.cost < item.(*node).cost
 }
 
 func main() {

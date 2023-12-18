@@ -1,12 +1,12 @@
 package main
 
 import (
+	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/convert"
 	"aoc/src/lib/go/file"
 	"aoc/src/lib/go/geometry"
 	"aoc/src/lib/go/out"
 	"aoc/src/lib/go/timeit"
-	"aoc/src/solutions/2021/day15/priorityqueue"
 	"fmt"
 	"math"
 	"strings"
@@ -60,7 +60,7 @@ func findLowestRiskLevel(cave [][]int) int {
 	//prev := make(map[geometry.Point]geometry.Point) // trails from nodes
 	source := geometry.NewPoint(0, 0)
 	target := geometry.NewPoint(len(cave[0])-1, len(cave)-1)
-	queue := priorityqueue.New()
+	queue := aoc.NewPriorityQueue()
 	queue.Push(&node{Point: source, risk: 0})
 
 	for y, row := range cave {
@@ -106,7 +106,7 @@ type node struct {
 	risk int
 }
 
-func (n *node) Less(item priorityqueue.Item) bool {
+func (n *node) Less(item aoc.PriorityQueueItem) bool {
 	b := item.(*node)
 	return n.risk < b.risk
 }
