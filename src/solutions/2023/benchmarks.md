@@ -1,7 +1,7 @@
 Benchmarks taken on an M1 Mac.
 
 ```shell
-go test -benchmem -bench=. ./solutions/2023/...
+go test -benchmem -bench=. ./src/solutions/2023/...
 ```
 
 ```shell
