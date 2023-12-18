@@ -1,46 +1,47 @@
 package solution
 
 import (
+	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/v2/geometry"
 	"strings"
 )
 
-func (s Solution) Part1(input string, _ ...interface{}) interface{} {
-	grid, start := parseInput(input)
+func part1(input string, _ ...interface{}) interface{} {
+	grid, start := ParseInput(input)
 
-	pipe := getStartPipe(grid, start)
+	pipe := GetStartPipe(grid, start)
 	current := start.Copy()
 	steps := 0
 
 	for ok := true; ok; ok = !current.Equals(start) {
-		current.Move(pipe.next)
+		current.Move(pipe.Next)
 		char := grid[current.Y][current.X]
-		pipe = Pipes[IntoPipe{char, pipe.next}]
+		pipe = Pipes[IntoPipe{char, pipe.Next}]
 		steps++
 	}
 
 	return steps / 2
 }
 
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
-	grid, start := parseInput(input)
+func part2(input string, _ ...interface{}) interface{} {
+	grid, start := ParseInput(input)
 
-	pipe := getStartPipe(grid, start)
-	grid[start.Y][start.X] = pipe.char
+	pipe := GetStartPipe(grid, start)
+	grid[start.Y][start.X] = pipe.Char
 	current := start.Copy()
 
 	loop := map[geometry.Point]bool{*current.Copy(): true}
 
 	for ok := true; ok; ok = !current.Equals(start) {
-		current.Move(pipe.next)
+		current.Move(pipe.Next)
 		char := grid[current.Y][current.X]
-		pipe = Pipes[IntoPipe{char, pipe.next}]
+		pipe = Pipes[IntoPipe{char, pipe.Next}]
 		loop[*current.Copy()] = true
 	}
 
 	// Use the ray-casting algorithm
 	inside := 0
-	for _, ray := range getTopAndLeftEdges(grid) {
+	for _, ray := range GetTopAndLeftEdges(grid) {
 		intersections := 0
 
 		for ray.Y < len(grid) && ray.X < len(grid[ray.Y]) {
@@ -60,7 +61,7 @@ func (s Solution) Part2(input string, _ ...interface{}) interface{} {
 	return inside
 }
 
-func getTopAndLeftEdges(grid [][]string) []*geometry.Point {
+func GetTopAndLeftEdges(grid [][]string) []*geometry.Point {
 	topLeft := make([]*geometry.Point, len(grid)+len(grid[0])-1)
 	i := 0
 	for x := 0; x < len(grid[0]); x, i = x+1, i+1 {
@@ -73,14 +74,14 @@ func getTopAndLeftEdges(grid [][]string) []*geometry.Point {
 }
 
 type Pipe struct {
-	char string
-	next geometry.Direction
-	prev geometry.Direction
+	Char string
+	Next geometry.Direction
+	Prev geometry.Direction
 }
 
 type IntoPipe struct {
-	char string
-	prev geometry.Direction
+	Char string
+	Prev geometry.Direction
 }
 
 var Pipes = map[IntoPipe]Pipe{
@@ -98,7 +99,7 @@ var Pipes = map[IntoPipe]Pipe{
 	{"F", geometry.Up}:    {"F", geometry.Right, geometry.Down},
 }
 
-func parseInput(input string) ([][]string, *geometry.Point) {
+func ParseInput(input string) ([][]string, *geometry.Point) {
 	lines := strings.Split(input, "\n")
 	grid := make([][]string, len(lines))
 	var start *geometry.Point
@@ -115,12 +116,12 @@ func parseInput(input string) ([][]string, *geometry.Point) {
 	return grid, start
 }
 
-func getStartPipe(grid [][]string, start *geometry.Point) Pipe {
+func GetStartPipe(grid [][]string, start *geometry.Point) Pipe {
 	var startPipe Pipe
 
 	for _, pipe := range Pipes {
-		prev := start.Copy().Move(pipe.prev)
-		next := start.Copy().Move(pipe.next)
+		prev := start.Copy().Move(pipe.Prev)
+		next := start.Copy().Move(pipe.Next)
 
 		if prev.Y < 0 || prev.Y >= len(grid) ||
 			prev.X < 0 || prev.X >= len(grid[prev.Y]) ||
@@ -129,15 +130,19 @@ func getStartPipe(grid [][]string, start *geometry.Point) Pipe {
 			continue
 		}
 
-		prevPipe, okPrev := Pipes[IntoPipe{grid[prev.Y][prev.X], pipe.prev}]
-		nextPipe, okNext := Pipes[IntoPipe{grid[next.Y][next.X], pipe.next}]
+		prevPipe, okPrev := Pipes[IntoPipe{grid[prev.Y][prev.X], pipe.Prev}]
+		nextPipe, okNext := Pipes[IntoPipe{grid[next.Y][next.X], pipe.Next}]
 
 		if okPrev && okNext &&
-			prev.Copy().Move(prevPipe.prev).Equals(start) &&
-			next.Copy().Move(nextPipe.prev).Equals(start) {
+			prev.Copy().Move(prevPipe.Prev).Equals(start) &&
+			next.Copy().Move(nextPipe.Prev).Equals(start) {
 			startPipe = pipe
 		}
 	}
 
 	return startPipe
+}
+
+func New() aoc.Solution {
+	return aoc.Solution{Year: 2023, Day: 10, Part1: part1, Part2: part2}
 }

@@ -38,7 +38,7 @@ move 1 from 1 to 2`,
 	},
 }
 
-func TestPart1(t *testing.T) {
+func Test_Part1(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
 			if got := s.Part1(tt.input, tt.args1...); !reflect.DeepEqual(got, tt.want1) {
@@ -48,7 +48,7 @@ func TestPart1(t *testing.T) {
 	}
 }
 
-func TestPart2(t *testing.T) {
+func Test_Part2(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("Test_%d", i), func(t *testing.T) {
 			if got := s.Part2(tt.input, tt.args2...); !reflect.DeepEqual(got, tt.want2) {

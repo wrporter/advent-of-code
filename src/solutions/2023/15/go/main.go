@@ -1,13 +1,14 @@
 package main
 
 import (
+	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/convert"
 	"aoc/src/lib/go/v2/myslice"
 	"slices"
 	"strings"
 )
 
-func (s Solution) Part1(input string, _ ...interface{}) interface{} {
+func part1(input string, _ ...interface{}) interface{} {
 	sequence := strings.Split(input, ",")
 	sum := 0
 	for _, step := range sequence {
@@ -16,7 +17,7 @@ func (s Solution) Part1(input string, _ ...interface{}) interface{} {
 	return sum
 }
 
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
+func part2(input string, _ ...interface{}) interface{} {
 	sequence := strings.Split(input, ",")
 	boxes := make(map[int][]Lens)
 
@@ -72,5 +73,9 @@ func hash(str string) int {
 }
 
 func main() {
-	Run()
+	New().Run(nil, nil)
+}
+
+func New() aoc.Solution {
+	return aoc.Solution{Year: 2023, Day: 15, Part1: part1, Part2: part2}
 }

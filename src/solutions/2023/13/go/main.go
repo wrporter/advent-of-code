@@ -1,14 +1,15 @@
 package main
 
 import (
+	"aoc/src/lib/go/aoc"
 	"strings"
 )
 
-func (s Solution) Part1(input string, _ ...interface{}) interface{} {
+func part1(input string, _ ...interface{}) interface{} {
 	return summarize(input, false)
 }
 
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
+func part2(input string, _ ...interface{}) interface{} {
 	return summarize(input, true)
 }
 
@@ -83,5 +84,9 @@ func parse(input string, process func(rows, cols []int)) {
 }
 
 func main() {
-	Run()
+	New().Run(nil, nil)
+}
+
+func New() aoc.Solution {
+	return aoc.Solution{Year: 2023, Day: 13, Part1: part1, Part2: part2}
 }

@@ -1,19 +1,17 @@
 package main
 
-func (s Solution) Part1(input string, _ ...interface{}) interface{} {
-	parse(input)
+func part1(input string, _ ...interface{}) interface{} {
 	return "TBD"
 }
 
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
-	parse(input)
+func part2(input string, _ ...interface{}) interface{} {
 	return "TBD"
-}
-
-func parse(input string) {
-
 }
 
 func main() {
-	Run()
+	New().Run(nil, nil)
+}
+
+func New() aoc.Solution {
+	return aoc.Solution{Year: {{.Year}}, Day: {{.Day}}, Part1: part1, Part2: part2}
 }

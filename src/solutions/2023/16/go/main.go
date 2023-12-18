@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/convert"
 	"aoc/src/lib/go/runegrid"
 	"aoc/src/lib/go/v2/geometry"
@@ -12,12 +13,12 @@ import (
 	"time"
 )
 
-func (s Solution) Part1(input string, _ ...interface{}) interface{} {
+func part1(input string, _ ...interface{}) interface{} {
 	grid := convert.ToRuneGrid(strings.Split(input, "\n"))
 	return countEnergized(grid, geometry.NewVector(0, 0, geometry.Right))
 }
 
-func (s Solution) Part2(input string, _ ...interface{}) interface{} {
+func part2(input string, _ ...interface{}) interface{} {
 	grid := convert.ToRuneGrid(strings.Split(input, "\n"))
 	most := 0
 
@@ -113,5 +114,9 @@ func debug(grid [][]rune, seen map[geometry.Vector]bool) {
 }
 
 func main() {
-	Run()
+	New().Run(nil, nil)
+}
+
+func New() aoc.Solution {
+	return aoc.Solution{Year: 2023, Day: 16, Part1: part1, Part2: part2}
 }

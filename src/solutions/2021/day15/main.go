@@ -18,7 +18,7 @@ func main() {
 
 	year, day := 2021, 15
 	out.Day(year, day)
-	input, _ := file.ReadFile(fmt.Sprintf("./solutions/%d/day%d/input.txt", year, day))
+	input, _ := file.ReadFile(fmt.Sprintf("./src/solutions/%d/day%d/input.txt", year, day))
 
 	answer1 := part1(input)
 	out.Part1(answer1)
