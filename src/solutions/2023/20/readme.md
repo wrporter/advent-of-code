@@ -28,3 +28,85 @@ We know that a **conjunction** module can only deliver a **low pulse** if all it
    2. Process each signal.
    3. Check if the memory for our **conjunction module** had any new high pulses. Add them to our map.
 5. Return the least common multiple of each of the first encounters with high pulses on the inputs.
+
+### Visualization
+
+```mermaid
+flowchart TD
+    broadcaster((broadcaster)):::broadcaster ---> sr & ch & hd & bx
+
+    sr{{sr}}:::flipFlop --> gf & vl
+    gf[\gf/]:::conjunction --> fj & qm & sr
+    fj{{fj}}:::flipFlop --> zd
+    qm{{qm}}:::flipFlop --> gm
+
+    zd{{zd}}:::flipFlop --> ln & gf
+    ln{{ln}}:::flipFlop --> gf & qq
+    qq{{qq}}:::flipFlop --> qm & gf
+    vl{{vl}}:::flipFlop --> gf & fj
+    gm{{gm}}:::flipFlop --> tj & gf
+    tj{{tj}}:::flipFlop --> lc & gf
+    lc{{lc}}:::flipFlop --> gf & fn
+    fn{{fn}}:::flipFlop --> pr & gf
+    pr{{pr}}:::flipFlop --> gf
+
+    gf -----------> xn
+    xn[\xn/]:::conjunction --> th
+
+    ch{{ch}}:::flipFlop --> db & mc
+    db[\db/]:::conjunction --> ff & ds & sf & ch & cc
+    mc{{mc}}:::flipFlop --> ds & db
+    ff{{ff}}:::flipFlop --> pl
+    ds{{ds}}:::flipFlop --> cc
+    sf{{sf}}:::flipFlop --> bp
+    cc{{cc}}:::flipFlop --> nn
+    pl{{pl}}:::flipFlop --> sf & db
+    nn{{nn}}:::flipFlop --> ff & db
+    bp{{bp}}:::flipFlop --> db & jz
+    jz{{jz}}:::flipFlop --> qj & db
+    qj{{qj}}:::flipFlop --> xm & db
+    xm{{xm}}:::flipFlop --> db
+
+    db --> xf
+    xf[\xf/]:::conjunction --> th
+
+    hd{{hd}}:::flipFlop --> vc & nh
+    vc[\vc/]:::conjunction --> lr & hd & ks & gx & nh & hv
+    nh{{nh}}:::flipFlop --> hv
+    lr{{lr}}:::flipFlop --> sb
+    ks{{ks}}:::flipFlop --> vz
+    gx{{gx}}:::flipFlop --> cd
+    hv{{hv}}:::flipFlop --> lr
+    vz{{vz}}:::flipFlop --> cr & vc
+    cr{{cr}}:::flipFlop --> gx & vc
+    pm{{pm}}:::flipFlop --> vc & qk
+    sb{{sb}}:::flipFlop --> ks & vc
+    cd{{cd}}:::flipFlop --> pm & vc
+    qk{{qk}}:::flipFlop --> vc
+
+    vc --> qn
+    qn[\qn/]:::conjunction --> th
+
+    bx{{bx}}:::flipFlop --> qx & qp
+    qx[\qx/]:::conjunction --> cb & cv & bx & xz & vm
+    qp{{qp}}:::flipFlop --> cb & qx
+    cb{{cb}}:::flipFlop --> kt
+    cv{{cv}}:::flipFlop --> xz
+    xz{{xz}}:::flipFlop --> jd
+    vm{{vm}}:::flipFlop --> cl
+    kt{{kt}}:::flipFlop --> qx & rz
+    rz{{rz}}:::flipFlop --> qx & cv
+    jd{{jd}}:::flipFlop --> qx & vm
+    cl{{cl}}:::flipFlop --> qx & bf
+    bf{{bf}}:::flipFlop --> qx & pf
+    pf{{pf}}:::flipFlop --> qx
+
+    qx --> zl
+    zl[\zl/]:::conjunction --> th
+
+    th[\th/]:::conjunction --> rx
+
+    classDef broadcaster fill:#99ff99
+    classDef flipFlop fill:#ff9999
+    classDef conjunction fill:#9999ff
+```

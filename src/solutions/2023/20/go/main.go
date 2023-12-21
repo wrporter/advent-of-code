@@ -3,6 +3,7 @@ package main
 import (
 	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/v2/mymath"
+	"fmt"
 	"strings"
 )
 
@@ -114,6 +115,7 @@ type Module interface {
 	Init(modules map[string]Module)
 	GetDestinations() []string
 	Pulse(input Signal) []Signal
+	MermaidString() string
 }
 
 type AbstractModule struct {
@@ -162,6 +164,10 @@ func (m *FlipFlopModule) Pulse(input Signal) []Signal {
 	return m.Send(output)
 }
 
+func (m *FlipFlopModule) MermaidString() string {
+	return fmt.Sprintf("%s{{%s}}:::flipFlop --> %s", m.Name, m.Name, strings.Join(m.GetDestinations(), " & "))
+}
+
 type ConjunctionModule struct {
 	AbstractModule
 	Memory map[string]Pulse
@@ -192,12 +198,20 @@ func (m *ConjunctionModule) Pulse(input Signal) []Signal {
 	return m.Send(output)
 }
 
+func (m *ConjunctionModule) MermaidString() string {
+	return fmt.Sprintf("%s[\\%s/]:::conjunction --> %s", m.Name, m.Name, strings.Join(m.GetDestinations(), " & "))
+}
+
 type BroadcastModule struct {
 	AbstractModule
 }
 
 func (m *BroadcastModule) Pulse(input Signal) []Signal {
 	return m.Send(input.Pulse)
+}
+
+func (m *BroadcastModule) MermaidString() string {
+	return fmt.Sprintf("%s((%s)):::broadcaster --------> %s", m.Name, m.Name, strings.Join(m.GetDestinations(), " & "))
 }
 
 type Signal struct {
@@ -259,8 +273,58 @@ var button = Signal{
 	Pulse:       Low,
 }
 
+func toMermaidFlowchart(modules map[string]Module) string {
+	current := []string{"broadcaster"}
+	seen := make(map[string]bool)
+
+	str := "flowchart TD\n"
+	for len(current) > 0 {
+		module := current[0]
+		current = current[1:]
+
+		if m, ok := modules[module]; ok && !seen[module] {
+			str += fmt.Sprintf("    %s\n", m.MermaidString())
+			current = append(current, modules[module].GetDestinations()...)
+		}
+		seen[module] = true
+	}
+
+	str += `
+    classDef broadcaster fill:#99ff99
+    classDef flipFlop fill:#ff9999
+    classDef conjunction fill:#9999ff`
+
+	return str
+}
+
+func toMermaidFlowchartBack(modules map[string]Module) string {
+	current := []string{getInputs(modules, "rx")[0]}
+	seen := make(map[string]bool)
+
+	str := ""
+
+	for len(current) > 0 {
+		module := current[len(current)-1]
+		current = current[:len(current)-1]
+
+		if !seen[module] {
+			str = fmt.Sprintf("    %s\n", modules[module].MermaidString()) + str
+			current = append(current, getInputs(modules, module)...)
+		}
+		seen[module] = true
+	}
+
+	str = "flowchart TD\n" + str + `
+    classDef broadcaster fill:#99ff99
+    classDef flipFlop fill:#ff9999
+    classDef conjunction fill:#9999ff`
+
+	return str
+}
+
 func main() {
 	New().Run(nil, nil)
+	//fmt.Println(toMermaidFlowchartBack(parse(New().ReadInput())))
 }
 
 func New() aoc.Solution {
