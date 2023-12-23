@@ -15,8 +15,7 @@ func part1(input string, _ ...interface{}) interface{} {
 
 	for i := range bricks {
 		next := clone(bricks)
-		next = append(next[:i], next[i+1:]...)
-		fallen := drop(next)
+		fallen := drop(append(next[:i], next[i+1:]...))
 
 		if fallen == 0 {
 			stable++
@@ -33,8 +32,7 @@ func part2(input string, _ ...interface{}) interface{} {
 
 	for i := range bricks {
 		next := clone(bricks)
-		next = append(next[:i], next[i+1:]...)
-		fallen += drop(next)
+		fallen += drop(append(next[:i], next[i+1:]...))
 	}
 
 	return fallen
@@ -46,7 +44,7 @@ func drop(bricks []*brick) int {
 
 	for _, b := range bricks {
 		area := make(map[point]bool)
-		peak := 0
+		peak := 1
 
 		for x := b.sx; x <= b.ex; x++ {
 			for y := b.sy; y <= b.ey; y++ {
@@ -56,10 +54,8 @@ func drop(bricks []*brick) int {
 			}
 		}
 
-		peak += 1
-
 		for p := range area {
-			peaks[p] = peak + b.ez - b.sz
+			peaks[p] = peak + b.ez - b.sz + 1
 		}
 
 		fall := b.sz - peak
