@@ -93,12 +93,11 @@ func part2(input string, _ ...interface{}) interface{} {
 		}
 
 		for next, distance := range graph[current] {
-			if seen[next] {
-				continue
+			if !seen[next] {
+				seen[next] = true
+				longest = max(longest, dfs(next, steps+distance))
+				seen[next] = false
 			}
-			seen[next] = true
-			longest = max(longest, dfs(next, steps+distance))
-			seen[next] = false
 		}
 
 		return longest
