@@ -1,6 +1,9 @@
 package myslice
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+	"slices"
+)
 
 // Rotate90Copy rotates the grid by 90 degrees. For example, the following grid
 //
@@ -84,6 +87,15 @@ func Remove[T any](s []T, index int) []T {
 	result := make([]T, 0)
 	result = append(result, s[:index]...)
 	return append(result, s[index+1:]...)
+}
+
+// RemoveFunc removes the first element where the function is true.
+func RemoveFunc[T any](s []T, f func(T) bool) []T {
+	index := slices.IndexFunc(s, f)
+	if index >= 0 {
+		return Remove(s, index)
+	}
+	return s
 }
 
 func InBounds[T any](grid [][]T, row, col int) bool {
