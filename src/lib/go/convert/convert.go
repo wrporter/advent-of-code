@@ -57,6 +57,15 @@ func ToIntsV2(values []string) (result []int) {
 	return result
 }
 
+func ToFloats(values []string) []float64 {
+	result := make([]float64, len(values))
+	for i, stringValue := range values {
+		value, _ := strconv.ParseFloat(stringValue, 64)
+		result[i] = value
+	}
+	return result
+}
+
 func RuneToInt(rune uint8) int {
 	return int(rune - '0')
 }
