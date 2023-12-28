@@ -48,14 +48,10 @@ func part2(input string, _ ...interface{}) interface{} {
 	start := geometry.NewPoint(1, 0)
 	goal := geometry.NewPoint(len(grid[0])-2, len(grid)-1)
 	seen := make(map[geometry.Point]bool)
-	graph := make(map[geometry.Point]map[geometry.Point]int)
+	graph := make(map[geometry.Point][]Edge)
 
 	var collapse func(current *geometry.Point)
 	collapse = func(current *geometry.Point) {
-		if _, ok := graph[*current]; !ok {
-			graph[*current] = make(map[geometry.Point]int)
-		}
-
 		for _, next := range getEdges(grid, current, current) {
 			if seen[*next] {
 				continue
@@ -70,11 +66,8 @@ func part2(input string, _ ...interface{}) interface{} {
 				next = edges[0]
 			}
 
-			if _, ok := graph[*next]; !ok {
-				graph[*next] = make(map[geometry.Point]int)
-			}
-			graph[*current][*next] = distance
-			graph[*next][*current] = distance
+			graph[*current] = append(graph[*current], Edge{*next, distance})
+			graph[*next] = append(graph[*next], Edge{*current, distance})
 			seen[*prev] = true
 
 			collapse(next)
@@ -92,7 +85,8 @@ func part2(input string, _ ...interface{}) interface{} {
 			return steps
 		}
 
-		for next, distance := range graph[current] {
+		for _, edge := range graph[current] {
+			next, distance := edge.point, edge.distance
 			if !seen[next] {
 				seen[next] = true
 				longest = max(longest, dfs(next, steps+distance))
@@ -104,6 +98,11 @@ func part2(input string, _ ...interface{}) interface{} {
 	}
 
 	return dfs(*start, 0)
+}
+
+type Edge struct {
+	point    geometry.Point
+	distance int
 }
 
 func getEdges(grid []string, current, prev *geometry.Point) []*geometry.Point {
