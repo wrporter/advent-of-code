@@ -47,8 +47,11 @@ func part2(input string, _ ...interface{}) interface{} {
 	grid := strings.Split(input, "\n")
 	start := geometry.NewPoint(1, 0)
 	goal := geometry.NewPoint(len(grid[0])-2, len(grid)-1)
+
+	graph := []Node{{id: 0}}
+	ids := map[geometry.Point]int{*start: 0}
+
 	seen := make(map[geometry.Point]bool)
-	graph := make(map[geometry.Point][]Edge)
 
 	var collapse func(current *geometry.Point)
 	collapse = func(current *geometry.Point) {
@@ -56,6 +59,7 @@ func part2(input string, _ ...interface{}) interface{} {
 			if seen[*next] {
 				continue
 			}
+
 			seen[*next] = true
 			prev := current
 			distance := 1
@@ -66,8 +70,17 @@ func part2(input string, _ ...interface{}) interface{} {
 				next = edges[0]
 			}
 
-			graph[*current] = append(graph[*current], Edge{*next, distance})
-			graph[*next] = append(graph[*next], Edge{*current, distance})
+			currentId := ids[*current]
+			nextId, ok := ids[*next]
+			if !ok {
+				nextId = len(graph)
+				graph = append(graph, Node{id: nextId})
+			}
+
+			graph[currentId].edges = append(graph[currentId].edges, Edge{nextId, distance})
+			graph[nextId].edges = append(graph[nextId].edges, Edge{currentId, distance})
+
+			ids[*next] = nextId
 			seen[*prev] = true
 
 			collapse(next)
@@ -75,33 +88,40 @@ func part2(input string, _ ...interface{}) interface{} {
 	}
 
 	collapse(start)
-	seen = make(map[geometry.Point]bool)
 
-	var dfs func(current geometry.Point, steps int) int
-	dfs = func(current geometry.Point, steps int) int {
+	goalIndex := ids[*goal]
+	seen2 := make(map[int]bool)
+
+	var dfs func(current int, steps int) int
+	dfs = func(current int, steps int) int {
 		longest := -1
 
-		if current.Equals(goal) {
+		if current == goalIndex {
 			return steps
 		}
 
-		for _, edge := range graph[current] {
-			next, distance := edge.point, edge.distance
-			if !seen[next] {
-				seen[next] = true
+		for _, edge := range graph[current].edges {
+			next, distance := edge.id, edge.distance
+			if !seen2[next] {
+				seen2[next] = true
 				longest = max(longest, dfs(next, steps+distance))
-				seen[next] = false
+				seen2[next] = false
 			}
 		}
 
 		return longest
 	}
 
-	return dfs(*start, 0)
+	return dfs(0, 0)
+}
+
+type Node struct {
+	id    int
+	edges []Edge
 }
 
 type Edge struct {
-	point    geometry.Point
+	id       int
 	distance int
 }
 
