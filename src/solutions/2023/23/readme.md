@@ -18,11 +18,11 @@ By pre-constructing a graph of the connected nodes, collapsing the paths between
 
 1. `28m` - Brute force with original grid (Part 1 solution).
 2. `4.19s` - Collapse paths.
-3. 35d10284e7777aff89051d7297da20caf86f7575 - `2.28s` - Switch edges from a map to a slice. 
-4. c5153e5cc5816679d9fe1a5cf05fb7936b5fa99c - `1.27s` - Switch the graph from a map of points to a slice. Assign each node an index ID. This introduced some minor code complexity by keeping track of and assigning an index ID to each node when constructing the graph.
-5. 3b0e71ffb582e135d619d59ff9695717bbd42aa5 - `211ms` - Switch the seen map to a slice. This was made possible by switching the graph to a list so we could now index directly into a slice of a pre-defined size.
-6. 698e1cf9c49f22f0803ed98b5c0dd09a7d110723 - `112ms` - Trim the start and end nodes from the graph and advance the start and end pointers to the first junctions. We can do this because these nodes only have a single edge connection. Trimming them from the graph greatly reduces the backtracking required in the depth-first search.
-7. 8fb1b382d0dcbc886cad83c95311dd589601568c - `105ms` - Use a bitset for tracking visited nodes. We can do this because we have less than 64 nodes, and we specified an ID from 0 to 36 (less for the sample input).
+3. [35d10284](https://github.com/wrporter/advent-of-code/commit/35d10284e7777aff89051d7297da20caf86f7575) - `2.28s` - Switch edges from a map to a slice. 
+4. [c5153e5c](https://github.com/wrporter/advent-of-code/commit/c5153e5cc5816679d9fe1a5cf05fb7936b5fa99c) - `1.27s` - Switch the graph from a map of points to a slice. Assign each node an index ID. This introduced some minor code complexity by keeping track of and assigning an index ID to each node when constructing the graph.
+5. [3b0e71ff](https://github.com/wrporter/advent-of-code/commit/3b0e71ffb582e135d619d59ff9695717bbd42aa5) - `211ms` - Switch the seen map to a slice. This was made possible by switching the graph to a list so we could now index directly into a slice of a pre-defined size.
+6. [698e1cf9](https://github.com/wrporter/advent-of-code/commit/698e1cf9c49f22f0803ed98b5c0dd09a7d110723) - `112ms` - Trim the start and end nodes from the graph and advance the start and end pointers to the first junctions. We can do this because these nodes only have a single edge connection. Trimming them from the graph greatly reduces the backtracking required in the depth-first search.
+7. [8fb1b382](https://github.com/wrporter/advent-of-code/commit/8fb1b382d0dcbc886cad83c95311dd589601568c) - `105ms` - Use a bitset for tracking visited nodes. We can do this because we have less than 64 nodes, and we specified an ID from 0 to 36 (less for the sample input).
 
 Changes that did not work:
 
