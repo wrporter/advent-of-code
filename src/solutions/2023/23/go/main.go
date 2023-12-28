@@ -109,11 +109,8 @@ func part2(input string, _ ...interface{}) interface{} {
 	startId := trim(start)
 	goalId := trim(goal)
 
-	seen2 := make([]bool, len(graph))
-	seen2[startId] = true
-
-	var dfs func(current int, distance int) int
-	dfs = func(current int, distance int) int {
+	var dfs func(current int, distance int, seen int) int
+	dfs = func(current int, distance int, seen int) int {
 		longest := -1
 
 		if current == goalId {
@@ -121,18 +118,16 @@ func part2(input string, _ ...interface{}) interface{} {
 		}
 
 		for _, edge := range graph[current].edges {
-			next := edge.id
-			if !seen2[next] {
-				seen2[next] = true
-				longest = max(longest, dfs(next, distance+edge.distance))
-				seen2[next] = false
+			bit := 1 << edge.id
+			if (seen & bit) == 0 {
+				longest = max(longest, dfs(edge.id, distance+edge.distance, seen|bit))
 			}
 		}
 
 		return longest
 	}
 
-	return dfs(startId, trimmedDistance)
+	return dfs(startId, trimmedDistance, 1<<startId)
 }
 
 type Node struct {
