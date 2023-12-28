@@ -129,7 +129,7 @@ type Item struct {
 }
 
 func main() {
-	New().Run(nil, nil)
+	New().Run([]interface{}{3}, nil)
 }
 
 func New() aoc.Solution {
