@@ -133,7 +133,15 @@ func dfsRecursive(graph []Node, goalId, current, distance, seen int) int {
 }
 
 func dfsIterative(graph []Node, goalId int, startId int) int {
-	stack := []Item{{startId, 0, 1 << startId}}
+	totalRemainingDistance := 0
+	for _, node := range graph {
+		for _, edge := range node.edges {
+			totalRemainingDistance += edge.distance
+		}
+	}
+	totalRemainingDistance /= 2
+
+	stack := []Item{{startId, 0, 1 << startId, totalRemainingDistance}}
 	longest := 0
 
 	for len(stack) > 0 {
@@ -145,10 +153,25 @@ func dfsIterative(graph []Node, goalId int, startId int) int {
 			continue
 		}
 
+		remainingDistance := current.remainingDistance
 		for _, edge := range graph[current.id].edges {
 			bit := 1 << edge.id
 			if (current.seen & bit) == 0 {
-				stack = append(stack, Item{edge.id, current.distance + edge.distance, current.seen | bit})
+				remainingDistance -= edge.distance
+			}
+		}
+
+		for _, edge := range graph[current.id].edges {
+			bit := 1 << edge.id
+			distance := current.distance + edge.distance
+
+			if current.seen&bit == 0 && remainingDistance+distance > longest {
+				stack = append(stack, Item{
+					id:                edge.id,
+					distance:          distance,
+					seen:              current.seen | bit,
+					remainingDistance: remainingDistance,
+				})
 			}
 		}
 	}
@@ -157,9 +180,10 @@ func dfsIterative(graph []Node, goalId int, startId int) int {
 }
 
 type Item struct {
-	id       int
-	distance int
-	seen     int
+	id                int
+	distance          int
+	seen              int
+	remainingDistance int
 }
 
 func (i Item) Less(item aoc.PriorityQueueItem) bool {
