@@ -54,8 +54,8 @@ func part2(input string, _ ...interface{}) interface{} {
 	startId := trim(graph, ids, start)
 	goalId := trim(graph, ids, goal)
 
-	return dfsRecursive(graph, goalId, startId, 0, 1<<startId) + trimmedDistance
-	//return dfsIterative(graph, goalId, startId) + trimmedDistance
+	//return dfsRecursive(graph, goalId, startId, 0, 1<<startId) + trimmedDistance
+	return dfsIterative(graph, goalId, startId) + trimmedDistance
 }
 
 func collapse(grid []string, start *geometry.Point) ([]Node, map[geometry.Point]int) {
@@ -142,6 +142,7 @@ func dfsIterative(graph []Node, goalId int, startId int) int {
 
 		if current.id == goalId {
 			longest = max(longest, current.distance)
+			continue
 		}
 
 		for _, edge := range graph[current.id].edges {
