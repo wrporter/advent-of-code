@@ -3,6 +3,7 @@ package main
 import (
 	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/v2/geometry"
+	"aoc/src/lib/go/v2/myslice"
 	"strings"
 )
 
@@ -89,22 +90,41 @@ func part2(input string, _ ...interface{}) interface{} {
 
 	collapse(start)
 
-	goalIndex := ids[*goal]
-	seen2 := make([]bool, len(graph))
+	trimmedDistance := 0
 
-	var dfs func(current int, steps int) int
-	dfs = func(current int, steps int) int {
+	trim := func(current *geometry.Point) int {
+		id := ids[*current]
+		next := graph[ids[*current]].edges[0].id
+		for i, edge := range graph[next].edges {
+			if edge.id == id {
+				graph[next].edges = myslice.Remove(graph[next].edges, i)
+				trimmedDistance += edge.distance
+				graph[id].edges = nil
+				break
+			}
+		}
+		return next
+	}
+
+	startId := trim(start)
+	goalId := trim(goal)
+
+	seen2 := make([]bool, len(graph))
+	seen2[startId] = true
+
+	var dfs func(current int, distance int) int
+	dfs = func(current int, distance int) int {
 		longest := -1
 
-		if current == goalIndex {
-			return steps
+		if current == goalId {
+			return distance
 		}
 
 		for _, edge := range graph[current].edges {
-			next, distance := edge.id, edge.distance
+			next := edge.id
 			if !seen2[next] {
 				seen2[next] = true
-				longest = max(longest, dfs(next, steps+distance))
+				longest = max(longest, dfs(next, distance+edge.distance))
 				seen2[next] = false
 			}
 		}
@@ -112,7 +132,7 @@ func part2(input string, _ ...interface{}) interface{} {
 		return longest
 	}
 
-	return dfs(0, 0)
+	return dfs(startId, trimmedDistance)
 }
 
 type Node struct {
