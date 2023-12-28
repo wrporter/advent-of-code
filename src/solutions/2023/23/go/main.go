@@ -90,7 +90,7 @@ func part2(input string, _ ...interface{}) interface{} {
 	collapse(start)
 
 	goalIndex := ids[*goal]
-	seen2 := make(map[int]bool)
+	seen2 := make([]bool, len(graph))
 
 	var dfs func(current int, steps int) int
 	dfs = func(current int, steps int) int {
