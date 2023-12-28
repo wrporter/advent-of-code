@@ -1,12 +1,32 @@
-Benchmarks taken on an M1 Mac.
+Benchmarks taken on:
+
+```
+Chip: Apple M1 Max
+Cores: 8
+Memory: 32 GB
+CPU: 3.2 GHz
+```
+
+Helpful tools:
+
+```shell
+GOPROXY= GOPRIVATE= GONOPROXY= go install golang.org/x
+/perf/cmd/benchstat 
+GOPROXY= GOPRIVATE= GONOPROXY= go install golang.org/x/tools/cmd/benchcmp@latest
+```
+
+Run benchmarks for all solutions:
 
 ```shell
 go test -benchmem -bench=. ./src/solutions/2023/...
 ```
 
+Compare benchmarks:
+
 ```shell
-goos: darwin
-goarch: arm64
+go test ./src/solutions/2023/23/go -bench=BenchmarkSolution_Part2 -benchmem -benchtime=5s | tee old.txt
+go test ./src/solutions/2023/23/go -bench=BenchmarkSolution_Part2 -benchmem -benchtime=5s | tee new.txt
+benchcmp old.txt new.txt
 ```
 
 | Day    | Part 1    | Part 2    |
