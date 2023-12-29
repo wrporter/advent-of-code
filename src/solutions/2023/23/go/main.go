@@ -4,6 +4,8 @@ import (
 	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/v2/geometry"
 	"aoc/src/lib/go/v2/myslice"
+	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -15,7 +17,7 @@ func part1(input string, _ ...interface{}) interface{} {
 
 	var dfs func(current *geometry.Point, steps int) int
 	dfs = func(current *geometry.Point, steps int) int {
-		longest := -1
+		longest := 0
 
 		if current.Equals(goal) {
 			return steps
@@ -49,6 +51,8 @@ func part2(input string, _ ...interface{}) interface{} {
 	start := geometry.NewPoint(1, 0)
 	goal := geometry.NewPoint(len(grid[0])-2, len(grid)-1)
 	graph, ids := collapse(grid, start)
+
+	//printMermaid(ids, graph)
 
 	trimmedDistance := graph[ids[*start]].edges[0].distance + graph[ids[*goal]].edges[0].distance
 	startId := trim(graph, ids, start)
@@ -212,6 +216,41 @@ func getEdges(grid []string, current, prev *geometry.Point) []*geometry.Point {
 		}
 	}
 	return edges
+}
+
+func printMermaid(ids map[geometry.Point]int, graph []Node) {
+	var sb strings.Builder
+	sb.WriteString("graph LR")
+
+	points := make([]geometry.Point, len(ids))
+	for k, v := range ids {
+		points[v] = k
+	}
+	seen := make(map[[2]int]bool)
+	queue := []int{0}
+
+	for len(queue) > 0 {
+		id := queue[0]
+		queue = queue[1:]
+
+		p := points[id]
+		str := fmt.Sprintf("\n  %d[\"`(%d, %d)`\"]--", id, p.X, p.Y)
+
+		for _, edge := range graph[id].edges {
+			parts := []int{id, edge.id}
+			sort.Ints(parts)
+			key := [2]int{parts[0], parts[1]}
+
+			if !seen[key] {
+				ep := points[edge.id]
+				sb.WriteString(fmt.Sprintf("%s %d ---%d[\"`(%d, %d)`\"]", str, edge.distance, edge.id, ep.X, ep.Y))
+				queue = append(queue, edge.id)
+			}
+			seen[key] = true
+		}
+	}
+
+	fmt.Println(sb.String())
 }
 
 func main() {
