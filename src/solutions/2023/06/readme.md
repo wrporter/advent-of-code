@@ -50,7 +50,7 @@ Which reduces down to $x = 2$ and $x = 5$. So we know that holding the button do
 
 ![Parabola Shifted](parabola-shift.png)
 
-What this look like in code is `x2 - x1 + 1` to be inclusive of the final millisecond. Because we are dealing with integers and not floating point values, we need to take the ceiling of the second first intercept because we can only hold the button down for full milliseconds and not a fraction of a millisecond. 
+What this looks like in code is `x2 - x1 + 1` to be inclusive of the final millisecond. Because we are dealing with integers and not floating point values, we need to take the ceiling of the second first intercept because we can only hold the button down for full milliseconds and not a fraction of a millisecond. 
 
 This takes us from a processing time to solve Part 2 of 9ms down to 830ns. Nearly a 10,000x speed up!
 
