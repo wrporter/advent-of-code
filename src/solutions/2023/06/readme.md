@@ -18,7 +18,7 @@ I kicked this one off with a quick brute force algorithm.
 
 I worried that we'd need to use a math trick for performance, but my brute force solution ran in 38ms! However, I wasn't satisfied, so I explored better approaches.
 
-First, I realized I could get run up to the first time we beat the record, then start from the end and find the last time we'd beat the record and get the difference between the two (and add one to be inclusive). This improved performance by 4x for my input.
+First, I realized I could run up to the first time we beat the record, then start from the end and find the last time we'd beat the record and get the difference between the two (and add one to be inclusive). This improved performance by 4x for my input.
 
 But I wasn't satisfied with the naive approaches. I really, really wanted to use the algebra I learned 18 years ago. (Man, I feel old saying that.) That was my favorite and most challenging class in high school because I was homeschooled for 2 years and self-taught prior to going into Algebra 2 back in public school. I flipped a C grade to an A+ between semesters and most of that came down to understanding the quadratic formula. 
 
