@@ -19,23 +19,22 @@ var tests = []struct {
 	want2 interface{}
 }{
 	{
-		input: `MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX`,
-		want1: 18,
-		want2: 9,
+		input: `190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20`,
+		want1: 3749,
+		want2: 11387,
 	},
 	{
 		input: input,
-		want1: 2591,
-		want2: 1880,
+		want1: 663613490587,
+		want2: 110365987435001,
 	},
 }
 

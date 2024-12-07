@@ -31,7 +31,7 @@ var tests = []struct {
 	{
 		input: input,
 		want1: 369,
-		want2: "TBD",
+		want2: 428,
 	},
 }
 
