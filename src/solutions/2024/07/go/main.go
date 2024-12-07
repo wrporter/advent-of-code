@@ -39,7 +39,7 @@ type operatorFunc func(a, b int) int
 func add(a, b int) int      { return a + b }
 func multiply(a, b int) int { return a * b }
 func concatenate(a, b int) int {
-	return convert.StringToInt(fmt.Sprintf("%d", a) + fmt.Sprintf("%d", b))
+	return convert.StringToInt(fmt.Sprintf("%d%d", a, b))
 }
 
 func isTrueEquation(operators []operatorFunc, target int, numbers []int, value int) bool {
