@@ -5,6 +5,7 @@ import (
 	"aoc/src/lib/go/ints"
 	"aoc/src/lib/go/v2/mymath"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -27,14 +28,27 @@ var Directions = []Direction{Up, Right, Down, Left}
 var directionRunes = []rune{'^', '>', 'v', '<'}
 
 var AllDirectionsModifiers = []Point{
-	{0, -1},
-	{1, 0},
-	{0, 1},
-	{-1, 0},
-	{-1, -1},
-	{1, -1},
-	{-1, 1},
-	{1, 1},
+	{0, -1},  // Up
+	{1, 0},   // Right
+	{0, 1},   // Down
+	{-1, 0},  // Left
+	{-1, -1}, // Up-Left
+	{1, -1},  // Up-Right
+	{-1, 1},  // Down-Left
+	{1, 1},   // Down-Right
+}
+
+func IsArrow(character rune) bool {
+	return slices.Contains(directionRunes, character)
+}
+
+func NewDirection(character rune) Direction {
+	for i, val := range directionRunes {
+		if val == character {
+			return Directions[i]
+		}
+	}
+	return Up
 }
 
 func (d Direction) Rotate(degrees int) Direction {
@@ -63,6 +77,10 @@ func NewVector(x, y int, direction Direction) *Vector {
 		Point:     Point{X: x, Y: y},
 		Direction: direction,
 	}
+}
+
+func (v *Vector) Copy() *Vector {
+	return NewVector(v.Point.X, v.Point.Y, v.Direction)
 }
 
 type Point struct {
