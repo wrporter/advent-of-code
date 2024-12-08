@@ -32,9 +32,9 @@ func part2(input string, _ ...interface{}) interface{} {
 	return count
 }
 
-func precompute(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point]bool, jumps map[geometry.Vector]*geometry.Point) {
+func precompute(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point]bool, jumps map[geometry.Vector]*geometry.Vector) {
 	steps = make(map[geometry.Point]bool)
-	jumps = make(map[geometry.Vector]*geometry.Point)
+	jumps = make(map[geometry.Vector]*geometry.Vector)
 	lastJump := guard.Copy()
 
 	for isInBounds(grid, guard.Point) {
@@ -43,10 +43,9 @@ func precompute(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point
 		p := guard.Copy().Move().Point
 
 		if isInBounds(grid, p) && grid[p.Y][p.X] == '#' {
-			next := guard.Copy()
-			jumps[*lastJump] = &next.Point
+			next := guard.Rotate(90).Copy()
+			jumps[*lastJump] = next
 			lastJump = next
-			guard.Rotate(90)
 		} else {
 			guard.Move()
 		}
@@ -55,7 +54,7 @@ func precompute(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point
 	return steps, jumps
 }
 
-func moveGuard(grid [][]rune, guard *geometry.Vector, obstacle geometry.Point, jumps map[geometry.Vector]*geometry.Point) (steps map[geometry.Point]bool, hasCycle bool) {
+func moveGuard(grid [][]rune, guard *geometry.Vector, obstacle geometry.Point, jumps map[geometry.Vector]*geometry.Vector) (steps map[geometry.Point]bool, hasCycle bool) {
 	seen := make(map[geometry.Vector]bool)
 
 	for isInBounds(grid, guard.Point) {
@@ -65,9 +64,8 @@ func moveGuard(grid [][]rune, guard *geometry.Vector, obstacle geometry.Point, j
 		seen[*guard] = true
 
 		if next := jumps[*guard]; next != nil &&
-			next.Y != obstacle.Y && next.X != obstacle.X {
-			guard.Point = *next
-			guard.Rotate(90)
+			next.Point.Y != obstacle.Y && next.Point.X != obstacle.X {
+			guard = next.Copy()
 			continue
 		}
 
