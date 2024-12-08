@@ -9,7 +9,7 @@ import (
 
 func part1(input string, _ ...interface{}) interface{} {
 	grid, guard := parse(input)
-	steps, _ := moveGuard(grid, guard)
+	steps, _ := precompute(grid, guard)
 	return len(steps)
 }
 
@@ -17,12 +17,12 @@ func part2(input string, _ ...interface{}) interface{} {
 	grid, guard := parse(input)
 	count := 0
 
-	potentialObstacleSpots, _ := moveGuard(grid, guard.Copy())
+	potentialObstacleSpots, jumps := precompute(grid, guard.Copy())
 	for p := range potentialObstacleSpots {
 		x, y := p.X, p.Y
 		if grid[y][x] == '.' && !p.Equals(&guard.Point) {
 			grid[y][x] = '#'
-			if _, hasCycle := moveGuard(grid, guard.Copy()); hasCycle {
+			if _, hasCycle := moveGuard(grid, guard.Copy(), *geometry.NewPoint(x, y), jumps); hasCycle {
 				count++
 			}
 			grid[y][x] = '.'
@@ -32,8 +32,30 @@ func part2(input string, _ ...interface{}) interface{} {
 	return count
 }
 
-func moveGuard(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point]bool, hasCycle bool) {
+func precompute(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point]bool, jumps map[geometry.Vector]*geometry.Point) {
 	steps = make(map[geometry.Point]bool)
+	jumps = make(map[geometry.Vector]*geometry.Point)
+	lastJump := guard.Copy()
+
+	for isInBounds(grid, guard.Point) {
+		steps[guard.Point] = true
+
+		p := guard.Copy().Move().Point
+
+		if isInBounds(grid, p) && grid[p.Y][p.X] == '#' {
+			next := guard.Copy()
+			jumps[*lastJump] = &next.Point
+			lastJump = next
+			guard.Rotate(90)
+		} else {
+			guard.Move()
+		}
+	}
+
+	return steps, jumps
+}
+
+func moveGuard(grid [][]rune, guard *geometry.Vector, obstacle geometry.Point, jumps map[geometry.Vector]*geometry.Point) (steps map[geometry.Point]bool, hasCycle bool) {
 	seen := make(map[geometry.Vector]bool)
 
 	for isInBounds(grid, guard.Point) {
@@ -41,12 +63,15 @@ func moveGuard(grid [][]rune, guard *geometry.Vector) (steps map[geometry.Point]
 			return steps, true
 		}
 		seen[*guard] = true
-		steps[guard.Point] = true
 
-		next := guard.Copy()
-		next.Move()
-		p := next.Point
+		if next := jumps[*guard]; next != nil &&
+			next.Y != obstacle.Y && next.X != obstacle.X {
+			guard.Point = *next
+			guard.Rotate(90)
+			continue
+		}
 
+		p := guard.Copy().Move().Point
 		if isInBounds(grid, p) && grid[p.Y][p.X] == '#' {
 			guard.Rotate(90)
 		} else {

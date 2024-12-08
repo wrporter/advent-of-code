@@ -64,12 +64,14 @@ type Vector struct {
 	Direction Direction
 }
 
-func (v *Vector) Move() {
+func (v *Vector) Move() *Vector {
 	v.Point.Move(v.Direction)
+	return v
 }
 
-func (v *Vector) Rotate(degrees int) {
+func (v *Vector) Rotate(degrees int) *Vector {
 	v.Direction = v.Direction.Rotate(degrees)
+	return v
 }
 
 func NewVector(x, y int, direction Direction) *Vector {

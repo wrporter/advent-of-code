@@ -13,3 +13,5 @@ The problem looked large at first, but was pretty straightforward in implementat
 We can optimize by only placing obstacles along the guard's original path. Other locations won't make a difference because the guard will never travel there.
 
 I had a bug in my cycle detection logic. I would take a step forward at the same time as rotating. We need to add to our seen locations just after rotating as well to properly detect every moment of a cycle.
+
+Edit 1: Optimized much further by precomputing jumps between obstacles. We can jump rather than taking single steps, unless we are on the same row or column as the new obstacle we have placed.
