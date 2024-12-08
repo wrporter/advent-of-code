@@ -104,9 +104,10 @@ func (p *Point) Move(direction Direction) *Point {
 	return p
 }
 
-func (p *Point) Add(point *Point) {
+func (p *Point) Add(point *Point) *Point {
 	p.X += point.X
 	p.Y += point.Y
+	return p
 }
 
 func (p *Point) MoveAmount(direction Direction, amount int) {
