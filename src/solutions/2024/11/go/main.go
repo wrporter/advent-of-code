@@ -3,7 +3,7 @@ package main
 import (
 	"aoc/src/lib/go/aoc"
 	"aoc/src/lib/go/convert"
-	"math"
+	"strconv"
 	"strings"
 )
 
@@ -37,11 +37,11 @@ func countStonesRec(cache map[cacheKey]int, number, blinks int) int {
 	result := 0
 	if number == 0 {
 		result += countStonesRec(cache, 1, blinks-1)
-	} else if digits := countDigits(number); digits%2 == 0 {
-		firstHalf := number / int(math.Pow10(digits/2))
+	} else if digits := strconv.Itoa(number); len(digits)%2 == 0 {
+		firstHalf, _ := strconv.Atoi(digits[:len(digits)/2])
 		result += countStonesRec(cache, firstHalf, blinks-1)
 
-		secondHalf := number % int(math.Pow10(digits/2))
+		secondHalf, _ := strconv.Atoi(digits[len(digits)/2:])
 		result += countStonesRec(cache, secondHalf, blinks-1)
 	} else {
 		result += countStonesRec(cache, number*2024, blinks-1)
@@ -49,10 +49,6 @@ func countStonesRec(cache map[cacheKey]int, number, blinks int) int {
 
 	cache[key] = result
 	return result
-}
-
-func countDigits(number int) int {
-	return int(math.Floor(math.Log10(float64(number)))) + 1
 }
 
 type cacheKey struct {
