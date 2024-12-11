@@ -25,17 +25,14 @@ func countStones(input string, numBlinks int) int {
 
 func countStonesRec(cache map[cacheKey]int, number, blinks int) int {
 	key := cacheKey{number, blinks}
-	if blinks == 0 {
-		cache[key] = 1
-		return 1
-	}
-
 	if count, ok := cache[key]; ok {
 		return count
 	}
 
 	result := 0
-	if number == 0 {
+	if blinks == 0 {
+		result = 1
+	} else if number == 0 {
 		result += countStonesRec(cache, 1, blinks-1)
 	} else if digits := strconv.Itoa(number); len(digits)%2 == 0 {
 		firstHalf, _ := strconv.Atoi(digits[:len(digits)/2])
