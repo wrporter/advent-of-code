@@ -33,15 +33,14 @@ func countStonesRec(cache map[cacheKey]int, number, blinks int) int {
 	if blinks == 0 {
 		result = 1
 	} else if number == 0 {
-		result += countStonesRec(cache, 1, blinks-1)
+		result = countStonesRec(cache, 1, blinks-1)
 	} else if digits := strconv.Itoa(number); len(digits)%2 == 0 {
 		firstHalf, _ := strconv.Atoi(digits[:len(digits)/2])
-		result += countStonesRec(cache, firstHalf, blinks-1)
-
 		secondHalf, _ := strconv.Atoi(digits[len(digits)/2:])
-		result += countStonesRec(cache, secondHalf, blinks-1)
+		result = countStonesRec(cache, firstHalf, blinks-1) +
+			countStonesRec(cache, secondHalf, blinks-1)
 	} else {
-		result += countStonesRec(cache, number*2024, blinks-1)
+		result = countStonesRec(cache, number*2024, blinks-1)
 	}
 
 	cache[key] = result
