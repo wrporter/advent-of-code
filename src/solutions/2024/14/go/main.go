@@ -29,9 +29,7 @@ func part2(input string, args1 ...interface{}) interface{} {
 			minSafetyFactor = safetyFactor
 			minTime = t
 		}
-		//fmt.Print("\033[H\033[2J")
-		//fmt.Printf("\n\nAfter %d seconds\n", t)
-		//fmt.Println(render(robots, width, height))
+		//fmt.Printf("\u001B[H\u001B[2J\n\nAfter %d seconds\n%s\n", t, render(robots, width, height))
 		//time.Sleep(100 * time.Millisecond)
 	}
 

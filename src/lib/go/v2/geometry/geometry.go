@@ -262,6 +262,8 @@ func getChar[T string | bool](value T, exists bool) uint8 {
 	}
 
 	switch any(value).(type) {
+	case rune:
+		return uint8(any(value).(rune))
 	case string:
 		return any(value).(string)[0]
 	case bool:
