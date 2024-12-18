@@ -7,33 +7,25 @@ import (
 )
 
 func part1(input string, args ...interface{}) interface{} {
-	size, exit, start, byteList := parse(input, args)
+	size, start, exit, byteList := parse(input, args)
 	numBytes := args[1].(int)
-
-	grid := make([][]bool, size+1)
-	for i := range grid {
-		grid[i] = make([]bool, size+1)
-	}
+	bytes := make([]bool, size*size)
 
 	for i := 0; i < len(byteList) && i < numBytes; i++ {
 		b := byteList[i]
-		grid[b.Y][b.X] = true
+		bytes[b.Y*size+b.X] = true
 	}
 
-	return getShortestPath(start, exit, size, grid)
+	return getShortestPath(start, exit, size, bytes)
 }
 
 func part2(input string, args ...interface{}) interface{} {
-	size, exit, start, byteList := parse(input, args)
-
-	grid := make([][]bool, size+1)
-	for i := range grid {
-		grid[i] = make([]bool, size+1)
-	}
+	size, start, exit, byteList := parse(input, args)
+	bytes := make([]bool, size*size)
 
 	for _, b := range byteList {
-		grid[b.Y][b.X] = true
-		steps := getShortestPath(start, exit, size, grid)
+		bytes[b.Y*size+b.X] = true
+		steps := getShortestPath(start, exit, size, bytes)
 		if steps == -1 {
 			return b.String()
 		}
@@ -43,20 +35,16 @@ func part2(input string, args ...interface{}) interface{} {
 }
 
 func parse(input string, args []interface{}) (int, *geometry.Point, *geometry.Point, []*geometry.Point) {
-	size := args[0].(int)
-	exit := geometry.NewPoint(size, size)
+	size := args[0].(int) + 1
 	start := geometry.NewPoint(0, 0)
-	byteList := geometry.ToPoints(strings.Split(input, "\n"))
-	return size, exit, start, byteList
+	exit := geometry.NewPoint(size-1, size-1)
+	bytes := geometry.ToPoints(strings.Split(input, "\n"))
+	return size, start, exit, bytes
 }
 
-func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, bytes [][]bool) interface{} {
+func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, bytes []bool) interface{} {
 	queue := []Node{{*start, 0}}
-
-	seen := make([][]bool, size+1)
-	for i := range seen {
-		seen[i] = make([]bool, size+1)
-	}
+	seen := make([]bool, size*size)
 
 	for len(queue) > 0 {
 		current := queue[0]
@@ -68,10 +56,12 @@ func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, byte
 
 		for _, d := range geometry.Directions {
 			next := *current.Copy().Move(d)
+			index := next.Y*size + next.X
+
 			if next.Y >= 0 && next.X >= 0 &&
-				next.Y <= size && next.X <= size &&
-				!bytes[next.Y][next.X] && !seen[next.Y][next.X] {
-				seen[next.Y][next.X] = true
+				next.Y < size && next.X < size &&
+				!bytes[index] && !seen[index] {
+				seen[index] = true
 				queue = append(queue, Node{next, current.steps + 1})
 			}
 		}

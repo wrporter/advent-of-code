@@ -10,5 +10,6 @@ The only addition to this that really has to be done is to try our BFS solution 
 
 #### Optimizations
 
-1. `1.7s` - Use maps with `O(log(n))` lookup to track byte and visited positions.
-2. `150ms` - Use 2D grids instead of a map to track byte and visited positions. Grid indexing is `O(1)`, whereas map lookup is `O(log(n))`.
+1. `1.7s` - Use maps with expensive lookup to track byte and visited positions.
+2. [f0dacdbd](https://github.com/wrporter/advent-of-code/commit/f0dacdbdff3a30a687954e2ba92b6cfd7aabbe0d) - `150ms` - Use 2D grids instead of a map to track byte and visited positions. Maps have a constant time $O(1)$ lookup, but the hashing function is far more expensive than indexing into an array/slice.
+3. `135ms` - Use 1D arrays instead of a grid to track byte and visited positions. This barely reduces setup and lookup time.
