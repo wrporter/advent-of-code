@@ -10,21 +10,30 @@ func part1(input string, args ...interface{}) interface{} {
 	size, exit, start, byteList := parse(input, args)
 	numBytes := args[1].(int)
 
-	bytes := make(map[geometry.Point]bool)
-	for i := 0; i < len(byteList) && i < numBytes; i++ {
-		bytes[*byteList[i]] = true
+	grid := make([][]bool, size+1)
+	for i := range grid {
+		grid[i] = make([]bool, size+1)
 	}
 
-	return getShortestPath(start, exit, size, bytes)
+	for i := 0; i < len(byteList) && i < numBytes; i++ {
+		b := byteList[i]
+		grid[b.Y][b.X] = true
+	}
+
+	return getShortestPath(start, exit, size, grid)
 }
 
 func part2(input string, args ...interface{}) interface{} {
 	size, exit, start, byteList := parse(input, args)
 
-	bytes := make(map[geometry.Point]bool)
+	grid := make([][]bool, size+1)
+	for i := range grid {
+		grid[i] = make([]bool, size+1)
+	}
+
 	for _, b := range byteList {
-		bytes[*b] = true
-		steps := getShortestPath(start, exit, size, bytes)
+		grid[b.Y][b.X] = true
+		steps := getShortestPath(start, exit, size, grid)
 		if steps == -1 {
 			return b.String()
 		}
@@ -41,9 +50,13 @@ func parse(input string, args []interface{}) (int, *geometry.Point, *geometry.Po
 	return size, exit, start, byteList
 }
 
-func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, bytes map[geometry.Point]bool) interface{} {
+func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, bytes [][]bool) interface{} {
 	queue := []Node{{*start, 0}}
-	seen := make(map[geometry.Point]bool)
+
+	seen := make([][]bool, size+1)
+	for i := range seen {
+		seen[i] = make([]bool, size+1)
+	}
 
 	for len(queue) > 0 {
 		current := queue[0]
@@ -57,8 +70,8 @@ func getShortestPath(start *geometry.Point, exit *geometry.Point, size int, byte
 			next := *current.Copy().Move(d)
 			if next.Y >= 0 && next.X >= 0 &&
 				next.Y <= size && next.X <= size &&
-				!bytes[next] && !seen[next] {
-				seen[next] = true
+				!bytes[next.Y][next.X] && !seen[next.Y][next.X] {
+				seen[next.Y][next.X] = true
 				queue = append(queue, Node{next, current.steps + 1})
 			}
 		}
