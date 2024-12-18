@@ -2,36 +2,37 @@ package contain
 
 import "container/heap"
 
-// Item represents the interface to be implemented stored in this queue
-type Item interface {
-	Less(item Item) bool
+// PriorityQueueItem is an item that can be stored in a PriorityQueue.
+type PriorityQueueItem interface {
+	Less(item PriorityQueueItem) bool
 }
 
-// priorityQueueImpl for the underlying implementation of priority queues
-type priorityQueueImpl []Item
+// priorityQueueImpl is a concrete implementation of a priority queue, using a
+// slice.
+type priorityQueueImpl []PriorityQueueItem
 
-// Len get queue length
+// Len returns the size of the queue.
 func (pqi priorityQueueImpl) Len() int {
 	return len(pqi)
 }
 
-// Less is used for element comparison
+// Less compares two items in the queue to determine their priority.
 func (pqi priorityQueueImpl) Less(i, j int) bool {
 	return pqi[i].Less(pqi[j])
 }
 
-// Swap
+// Swap switches the order or items in the queue.
 func (pqi priorityQueueImpl) Swap(i, j int) {
 	pqi[i], pqi[j] = pqi[j], pqi[i]
 }
 
-// Push is used to push an object into the queue
+// Push adds an item to the queue.
 func (pqi *priorityQueueImpl) Push(x interface{}) {
-	item := x.(Item)
+	item := x.(PriorityQueueItem)
 	*pqi = append(*pqi, item)
 }
 
-// Pop pops an object out of the queue
+// Pop removes the top item from the queue.
 func (pqi *priorityQueueImpl) Pop() interface{} {
 	old := *pqi
 	n := len(old)
@@ -40,35 +41,35 @@ func (pqi *priorityQueueImpl) Pop() interface{} {
 	return item
 }
 
-// PriorityQueue implements priority queue
+// PriorityQueue implements priorityQueueImpl
 type PriorityQueue struct {
 	priorityQueueImpl priorityQueueImpl
 }
 
-// New is used to build PriorityQueue
+// NewPriorityQueue returns an empty priority queue.
 func NewPriorityQueue() *PriorityQueue {
 	var pq PriorityQueue
 	heap.Init(&pq.priorityQueueImpl)
 	return &pq
 }
 
-// Push is used to push an object into the queue
-func (pq *PriorityQueue) Push(item Item) {
+// Push adds an item to the queue.
+func (pq *PriorityQueue) Push(item PriorityQueueItem) {
 	heap.Push(&pq.priorityQueueImpl, item)
 }
 
-// Pop is used to pop an object from the queue
-func (pq *PriorityQueue) Pop() Item {
-	return heap.Pop(&pq.priorityQueueImpl).(Item)
+// Pop removes the top item from the queue.
+func (pq *PriorityQueue) Pop() PriorityQueueItem {
+	return heap.Pop(&pq.priorityQueueImpl).(PriorityQueueItem)
 }
 
-// Front is used to get the minimum value in the current queue
-func (pq *PriorityQueue) Front() Item {
+// Front returns the top item from the queue without removing it.
+func (pq *PriorityQueue) Front() PriorityQueueItem {
 	// The first bit in the queue should be the minimum
 	return pq.priorityQueueImpl[0]
 }
 
-// Length is used to get the length of the current queue
+// Length returns the size of the queue.
 func (pq *PriorityQueue) Length() int {
 	return pq.priorityQueueImpl.Len()
 }
