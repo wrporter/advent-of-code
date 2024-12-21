@@ -58,14 +58,9 @@ func getMinNumberKeyPresses(cache map[cacheKey]int, code string, area int, numKe
 	}
 
 	sum := 0
-	for i := 0; i < len(code); i++ {
-		from := 'A'
-		if i > 0 {
-			from = rune(code[i-1])
-		}
-		to := rune(code[i])
-
-		sequence := getShortestSequence(keypad, from, to)
+	code = "A" + code
+	for i := 0; i < len(code)-1; i++ {
+		sequence := getShortestSequence(keypad, rune(code[i]), rune(code[i+1]))
 		sum += getMinNumberKeyPresses(cache, sequence, area+1, numKeypads)
 	}
 
