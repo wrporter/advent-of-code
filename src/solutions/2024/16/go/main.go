@@ -30,11 +30,6 @@ func getBestPath(start geometry.Vector, grid []string) (int, int) {
 	for queue.Length() > 0 {
 		current := queue.Pop().(Node)
 
-		if score, ok := distance[current.Vector]; ok && current.score > score {
-			continue
-		}
-		distance[current.Vector] = current.score
-
 		if grid[current.Point.Y][current.Point.X] == 'E' && current.score <= best {
 			for _, position := range current.path {
 				sit[position] = true
@@ -43,7 +38,10 @@ func getBestPath(start geometry.Vector, grid []string) (int, int) {
 		}
 
 		for _, option := range getNeighbors(current) {
-			if grid[option.Point.Y][option.Point.X] != '#' {
+			score, seen := distance[option.Vector]
+
+			if grid[option.Point.Y][option.Point.X] != '#' && (!seen || option.score <= score) {
+				distance[option.Vector] = option.score
 				queue.Push(option)
 			}
 		}
@@ -68,19 +66,21 @@ func parse(input string) ([]string, geometry.Vector) {
 func getNeighbors(current Node) []Node {
 	next := *current.Copy().Move()
 	path := copyPath(current.path)
+	right := current.Copy().Rotate(90).Move()
+	left := current.Copy().Rotate(-90).Move()
 
 	return []Node{{
 		Vector: next,
 		score:  current.score + 1,
-		path:   append(path, *next.Point.Copy()),
+		path:   append(path, next.Point),
 	}, {
-		Vector: *current.Copy().Rotate(90),
-		score:  current.score + 1000,
-		path:   path,
+		Vector: *right,
+		score:  current.score + 1001,
+		path:   append(path, right.Point),
 	}, {
-		Vector: *current.Copy().Rotate(-90),
-		score:  current.score + 1000,
-		path:   path,
+		Vector: *left,
+		score:  current.score + 1001,
+		path:   append(path, left.Point),
 	}}
 }
 
