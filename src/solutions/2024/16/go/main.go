@@ -65,18 +65,14 @@ func parse(input string) ([]string, geometry.Vector) {
 }
 
 func getNeighbors(current Node) []Node {
-	forward := *current.Copy().Move()
-	right := current.Copy().Rotate(90).Move()
-	left := current.Copy().Rotate(-90).Move()
-
 	return []Node{{
-		Vector: forward,
+		Vector: *current.Copy().Move(),
 		score:  current.score + 1,
 	}, {
-		Vector: *right,
+		Vector: *current.Copy().Rotate(90).Move(),
 		score:  current.score + 1001,
 	}, {
-		Vector: *left,
+		Vector: *current.Copy().Rotate(-90).Move(),
 		score:  current.score + 1001,
 	}}
 }
