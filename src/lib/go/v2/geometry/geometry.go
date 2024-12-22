@@ -60,8 +60,8 @@ func (d Direction) Rune() rune {
 }
 
 type Vector struct {
-	Point     Point
-	Direction Direction
+	Point
+	Direction
 }
 
 func (v *Vector) Move() *Vector {
