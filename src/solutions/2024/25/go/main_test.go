@@ -59,12 +59,12 @@ var tests = []struct {
 #.#.#
 #####`,
 		want1: 3,
-		want2: "Merry Christmas!",
+		want2: "Merry Christmas! 🎄",
 	},
 	{
 		input: input,
 		want1: 3439,
-		want2: "Merry Christmas!",
+		want2: "Merry Christmas! 🎄",
 	},
 }
 

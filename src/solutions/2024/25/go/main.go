@@ -28,7 +28,7 @@ func part1(input string, _ ...interface{}) interface{} {
 }
 
 func part2(_ string, _ ...interface{}) interface{} {
-	return "Merry Christmas!"
+	return "Merry Christmas! 🎄"
 }
 
 func (s Schematic) fits(b Schematic) bool {
